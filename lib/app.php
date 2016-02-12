@@ -79,5 +79,7 @@ abstract class App {
 		}
 
 		$this->send_response();
+
+		return $this->response->status->getCode();
 	}
 }
