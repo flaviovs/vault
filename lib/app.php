@@ -11,6 +11,7 @@ abstract class App {
 	protected $db;
 
 	abstract protected function init_basic_logging();
+	abstract protected function handle_request();
 	abstract protected function handle_exception( \Exception $ex );
 
 	public function __construct( array $globals = NULL ) {
@@ -84,6 +85,7 @@ abstract class App {
 			$this->init_basic_logging();
 			$this->load_config();
 			$this->init_database();
+			$this->handle_request();
 		}
 		catch ( \Exception $ex )
 		{
