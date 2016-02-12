@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f73f84234cfc489b18c286573ef5f02a",
-    "content-hash": "11c80a0bcf52125bcadeb25b8a0f21d5",
+    "hash": "2dba59d9dee53e85fbcacdf655852b4b",
+    "content-hash": "21e25688359981f8efd1e35f3e02e4a9",
     "packages": [
         {
             "name": "aura/router",
@@ -399,6 +399,10 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^5.6",
+        "ext-mysql": "*",
+        "ext-openssl": "*"
+    },
     "platform-dev": []
 }
