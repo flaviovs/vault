@@ -4,6 +4,8 @@ namespace Vault;
 
 abstract class App {
 
+	protected $request;
+	protected $response;
 	protected $log;
 
 	abstract protected function init_basic_logging();
