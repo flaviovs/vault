@@ -15,6 +15,7 @@
         "aura/web": "^2.0",
         "aura/sql": "^2.4",
         "aura/sqlquery": "^2.6",
-        "aura/router": "^3.0"
+        "aura/router": "^3.0",
+        "monolog/monolog": "^1.17"
     }
 }
