@@ -8,6 +8,7 @@ abstract class App {
 	protected $response;
 	protected $log;
 	protected $conf;
+	protected $db;
 
 	abstract protected function init_basic_logging();
 	abstract protected function handle_exception( \Exception $ex );
@@ -29,6 +30,17 @@ abstract class App {
 		} else {
 			$this->conf = [];
 		}
+	}
+
+	protected function init_database() {
+		if ( empty( $this->conf[ 'db.default' ] ) ) {
+			throw new \RuntimeException('Database configuration missing');
+		}
+
+		$conf = $this->conf[ 'db.default' ];
+		$this->db = new \Aura\Sql\ExtendedPdo( $conf[ 'dsn' ],
+		                                       $conf[ 'user' ],
+		                                       $conf[ 'password' ]);
 	}
 
 	protected function send_response_status() {
@@ -71,6 +83,7 @@ abstract class App {
 		{
 			$this->init_basic_logging();
 			$this->load_config();
+			$this->init_database();
 		}
 		catch ( \Exception $ex )
 		{
