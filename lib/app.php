@@ -4,6 +4,9 @@ namespace Vault;
 
 abstract class App {
 
+	protected $log;
+
+	abstract protected function init_basic_logging();
 	abstract protected function handle_exception( \Exception $ex );
 
 	public function __construct( array $globals = NULL ) {
@@ -12,6 +15,8 @@ abstract class App {
 		$web_factory = new \Aura\Web\WebFactory( $globals );
 		$this->request = $web_factory->newRequest();
 		$this->response = $web_factory->newResponse();
+
+		$this->log = new \Monolog\Logger('app');
 	}
 
 	protected function load_config() {
@@ -57,10 +62,12 @@ abstract class App {
 	public function run() {
 		try
 		{
+			$this->init_basic_logging();
 			$this->load_config();
 		}
 		catch ( \Exception $ex )
 		{
+			$this->log->addCritical( $ex );
 			$this->handle_exception( $ex );
 		}
 
