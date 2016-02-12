@@ -1,0 +1,11 @@
+{
+    "name": "automattic/vault",
+    "description": "The Vault",
+    "authors": [
+        {
+            "name": "Flávio Veloso",
+            "email": "flaviovs@magnux.com"
+        }
+    ],
+    "require": {}
+}
