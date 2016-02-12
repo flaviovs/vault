@@ -7,5 +7,10 @@
             "email": "flaviovs@magnux.com"
         }
     ],
-    "require": {}
+    "require": {
+        "aura/web": "^2.0",
+        "aura/sql": "^2.4",
+        "aura/sqlquery": "^2.6",
+        "aura/router": "^3.0"
+    }
 }
