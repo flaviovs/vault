@@ -7,6 +7,7 @@ abstract class App {
 	protected $request;
 	protected $response;
 	protected $log;
+	protected $conf;
 
 	abstract protected function init_basic_logging();
 	abstract protected function handle_exception( \Exception $ex );
@@ -23,7 +24,11 @@ abstract class App {
 
 	protected function load_config() {
 		$ini = VAULT_ROOT . '/config.ini';
-		$this->conf = parse_ini_file($ini);
+		if ( file_exists( $ini ) ) {
+			$this->conf = parse_ini_file( $ini, TRUE );
+		} else {
+			$this->conf = [];
+		}
 	}
 
 	protected function send_response_status() {

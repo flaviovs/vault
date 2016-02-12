@@ -1,0 +1,4 @@
+[db.default]
+dsn = "mysql:dbname=vault"
+user = vault
+password = vault
