@@ -75,7 +75,9 @@ abstract class Console_App extends Vault_App {
 		}
 
 		if ( $this->getopt->get('-v') ) {
-			$this->log->setLevel(\Monolog\Logger::INFO);
+			foreach ( $this->log->getHandlers() as $handler ) {
+				$handler->setLevel(\Monolog\Logger::INFO);
+			}
 		}
 	}
 
