@@ -58,12 +58,12 @@ abstract class Console_App extends Vault_App {
 		$this->getopt = $this->cli_context->getopt( $this->get_options() );
 		$has_errors = $this->getopt->hasErrors();
 		if ( $has_errors ) {
-			foreach ( $this->getopt->getErrors() as $error ) {
-				$this->stdio->err( '<<red>>' );
-				fwrite( STDERR, $error->getMessage() );
-				$this->stdio->errln( '<<reset>>' );
-			}
-			$this->stdio->errln( "Try '--help'" );
+			throw new \InvalidArgumentException(
+				implode("\n",
+				        array_map(function ( $ex ) {
+						        return $ex->getMessage();
+					        }, $this->getopt->getErrors()))
+			);
 		};
 		return ! $has_errors;
 	}
@@ -81,11 +81,21 @@ abstract class Console_App extends Vault_App {
 		}
 	}
 
+	protected function print_error($message) {
+		$this->stdio->err( "<<red>>" );
+		fwrite( STDERR, $message );
+		$this->stdio->errln( "<<reset>>" );
+		$this->stdio->errln( "Try '--help'." );
+	}
+
 	protected function bootstrap() {
 		parent::bootstrap();
-		if ( ! $this->parse_arguments() ) {
+		try {
+			$this->parse_arguments();
+			$this->process_arguments();
+		} catch ( \InvalidArgumentException $ex ) {
+			$this->print_error( $ex->getMessage() );
 			exit( 1 );
 		}
-		$this->process_arguments();
 	}
 }
