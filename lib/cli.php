@@ -4,7 +4,11 @@ namespace Vault;
 
 class CLI_App extends Console_App {
 
+	protected function get_usage() {
+		return 'COMMAND [COMMAND-ARGS]';
+	}
+
 	public function run() {
-		// Do nothing
+		$this->bootstrap();
 	}
 }
