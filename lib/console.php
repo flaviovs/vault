@@ -36,7 +36,7 @@ abstract class Console_App extends Vault_App {
 	}
 
 	protected function print_help() {
-		$this->stdio->out("Usage: $_SERVER[SCRIPT_NAME] [OPTIONS]");
+		$this->stdio->out("Usage: " . $this->getopt->get(0) . " [OPTIONS]");
 		$usage = $this->get_usage();
 		if ( $usage ) {
 			$this->stdio->out(" $usage");
