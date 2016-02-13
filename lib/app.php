@@ -2,7 +2,7 @@
 
 namespace Vault;
 
-abstract class App {
+abstract class Vault_App {
 
 	protected $request;
 	protected $response;

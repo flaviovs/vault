@@ -2,7 +2,7 @@
 
 namespace Vault;
 
-class REST_App extends App {
+class REST_App extends Vault_App {
 
 	public function __construct( array $globals = NULL ) {
 		parent::__construct( $globals );

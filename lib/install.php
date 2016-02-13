@@ -4,7 +4,7 @@ namespace Vault;
 
 require __DIR__ . '/schema.php';
 
-class Installer_App extends App {
+class Installer_App extends Vault_App {
 
 	protected function init_basic_logging() {
 		$handler = new \Monolog\Handler\StreamHandler('php://stderr');
