@@ -14,15 +14,9 @@ class Installer_App extends Vault_App {
 		$this->log->setHandlers([$handler]);
 	}
 
-	protected function handle_exception( \Exception $ex ) {
-		$this->response->status->setCode(500);
-	}
+	public function run() {
 
-	protected function send_response() {
-		// Do nothing. We send all output in handle_request()
-	}
-
-	protected function handle_request() {
+		$this->bootstrap();
 
 		foreach ( SCHEMA as $sql ) {
 			$this->log->addInfo( "Executing: " . strtok( $sql, "\n" ));

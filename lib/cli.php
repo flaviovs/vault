@@ -12,11 +12,7 @@ class CLI_App extends Vault_App {
 		$this->log->setHandlers([$handler]);
 	}
 
-	protected function handle_exception( \Exception $ex ) {
-		$this->response->status->setCode(500);
-	}
-
-	protected function handle_request() {
+	public function run() {
 		// Do nothing
 	}
 }
