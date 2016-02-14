@@ -10,7 +10,7 @@ const SCHEMA = [
 	appkey VARCHAR(16) NOT NULL UNIQUE,
 	secret VARCHAR(40) NOT NULL,
 	name VARCHAR(100) NOT NULL,
-	ping_url VARCHAR(200)
+	ping_url VARCHAR(200) UNIQUE
 )
 ',
 
