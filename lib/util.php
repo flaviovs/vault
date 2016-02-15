@@ -33,3 +33,31 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 		                       $appid ] );
 	}
 }
+
+
+class MailerFactory {
+	protected $conf;
+
+	public function __construct(array $conf) {
+		if ( ! isset( $conf[ 'mailer' ] ) ) {
+			throw new VaultException('No mailer configuration found');
+		}
+
+		$this->conf = $conf[ 'mailer' ];
+
+		if ( empty( $this->conf[ 'from_address' ] ) ) {
+			throw new VaultException('Missing from_address mailer configuration');
+		}
+
+		if ( empty( $this->conf[ 'from_name' ] ) ) {
+			throw new VaultException('Missing from_name mailer configuration');
+		}
+	}
+
+	public function new_mailer() {
+		$mailer = new \PHPMailer();
+		$mailer->setFrom( $this->conf[ 'from_address' ],
+		                  $this->conf[ 'from_name' ] );
+		return $mailer;
+	}
+}

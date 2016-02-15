@@ -7,10 +7,14 @@ class VaultException extends \Exception {}
 class Service {
 	protected $repo;
 	protected $log;
+	protected $mailer_factory;
 
-	public function __construct( Repository $repo, \Monolog\Logger $log ) {
+	public function __construct( Repository $repo,
+	                             \Monolog\Logger $log,
+	                             MailerFactory $mailer_factory ) {
 		$this->repo = $repo;
 		$this->log = $log;
+		$this->mailer_factory = $mailer_factory;
 	}
 
 	protected function generate_app_key() {

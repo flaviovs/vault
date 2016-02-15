@@ -20,6 +20,7 @@
         "aura/sqlquery": "^2.6",
         "aura/router": "^3.0",
         "monolog/monolog": "^1.17",
-        "aura/cli": "^2.1"
+        "aura/cli": "^2.1",
+        "phpmailer/phpmailer": "^5.2"
     }
 }
