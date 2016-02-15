@@ -35,6 +35,7 @@ class Service {
 		if ( $ping_url && ! filter_var( $ping_url, FILTER_VALIDATE_URL ) ) {
 			throw new VaultException( "Invalid Ping URL '$ping_url'" );
 		}
+		$app->ping_url = $ping_url;
 		$this->repo->add_app($app);
 		$this->log->addNotice("Added app $app->key ($name)");
 
