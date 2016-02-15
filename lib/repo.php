@@ -29,7 +29,7 @@ class Repository {
 		$sth->execute($query->getBindValues());
 		$row = $sth->fetch();
 		if (!$row) {
-			throw new DataException("App not found");
+			throw new VaultDataException("App '$key' not found");
 		}
 
 		$app = new App($key, $row['secret'], $row['name']);
