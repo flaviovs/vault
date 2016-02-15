@@ -8,14 +8,19 @@ class CLI_App extends Console_App {
 		return 'COMMAND [COMMAND-ARGS]';
 	}
 
+	protected function print_result(array $result) {
+		echo json_encode( $result, JSON_PRETTY_PRINT );
+		echo "\n";
+	}
+
 	protected function handle_app_add() {
 		$name = $this->getopt->get( 3 );
 		if ( !$name ) {
 			throw new \InvalidArgumentException( "Missing app name" );
 		}
-		$app = $this->service->add_app( $name, $this->getopt->get( 4 ) );
-		echo "Key: " . $app->key . "\n";
-		echo "Secret: " . $app->secret . "\n";
+		$res = $this->service->add_app( $name, $this->getopt->get( 4 ) );
+
+		$this->print_result( $res );
 	}
 
 	protected function handle_app() {
@@ -44,8 +49,7 @@ class CLI_App extends Console_App {
 
 		$res = $this->service->add_request($appkey, $email, $instructions, $app_data);
 
-		echo json_encode($res, JSON_PRETTY_PRINT);
-		echo "\n";
+		$this->print_result( $res );
 	}
 
 	protected function process_command() {

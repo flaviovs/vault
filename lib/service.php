@@ -38,7 +38,10 @@ class Service {
 		$this->repo->add_app($app);
 		$this->log->addNotice("Added app $app->key ($name)");
 
-		return $app;
+		return [
+			'key' => $app->key,
+			'secret' => $app->secret,
+		];
 	}
 
 	protected function get_input_url( Request $request ) {
