@@ -2,10 +2,16 @@
 
 namespace Vault;
 
+class NotFoundException extends VaultException {}
+
 abstract class Web_App extends Vault_App {
 
 	protected $request;
 	protected $response;
+	protected $router;
+
+	abstract protected function init_router();
+	abstract protected function handle_request( \Aura\Router\Route $route );
 
 	public function __construct($name, array $globals = NULL ) {
 		parent::__construct($name);
@@ -14,6 +20,9 @@ abstract class Web_App extends Vault_App {
 		$web_factory = new \Aura\Web\WebFactory( $globals );
 		$this->request = $web_factory->newRequest();
 		$this->response = $web_factory->newResponse();
+
+		$router_factory = new \Aura\Router\RouterFactory();
+		$this->router = $router_factory->newInstance();
 	}
 
 	protected function init_basic_logging() {
@@ -65,10 +74,30 @@ abstract class Web_App extends Vault_App {
 		$this->send_response_contents();
 	}
 
+	protected function dispatch_request() {
+		$path = $this->request->url->get( PHP_URL_PATH );
+		$route = $this->router->match( $path, $this->request->server->get() );
+		if ( ! $route ) {
+			throw new NotFoundException($path);
+		}
+
+		$this->handle_request( $route );
+	}
+
+	protected function handle_not_found( $message ) {
+		$this->log->addNotice( "Not found ($message)" );
+		$this->response->status->set( '404', 'Not Found', '1.1' );
+	}
+
 	public function run() {
 		try
 		{
 			$this->bootstrap();
+			$this->init_router();
+			$this->dispatch_request();
+		}
+		catch ( NotFoundException $ex ) {
+			$this->handle_not_found( $ex->getMessage() );
 		}
 		catch ( \Exception $ex )
 		{
