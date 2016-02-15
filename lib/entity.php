@@ -22,6 +22,7 @@ class Request {
 	public $app_data;
 	public $email;
 	public $instructions;
+	public $input_key;
 	public $created;
 
 	public function __construct($appid, $email) {
