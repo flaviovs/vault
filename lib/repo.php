@@ -43,7 +43,6 @@ class Repository {
 		$query = $this->q->newInsert()
 			->into('apps')
 			->cols([
-					   'appid' => $app->appid,
 					   'appkey' => $app->key,
 					   'secret' => $app->secret,
 					   'name' => $app->name,
@@ -51,6 +50,8 @@ class Repository {
 				   ]);
 		$sth = $this->db->prepare($query);
 		$sth->execute($query->getBindValues());
+
+		$app->appid = intval($this->db->lastInsertId());
 	}
 
 	public function add_request( Request $request ) {
