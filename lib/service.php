@@ -50,7 +50,7 @@ class Service {
 
 		return $this->conf[ 'url' ][ 'input' ]
 			. '/' . $request->reqid
-			. '?' . urlencode( base64_encode ( $input_hash ) );
+			. '?m=' . urlencode( base64_encode ( $input_hash ) );
 	}
 
 	protected function email_user( Request $request ) {
