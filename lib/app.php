@@ -37,6 +37,13 @@ abstract class Vault_App {
 
 		// Initialize our repository abstraction.
 		$this->repo = new Repository($this->db);
+
+		$this->init_database_logging();
+	}
+
+	protected function init_database_logging() {
+		// Initialize database logging
+		$this->log->pushHandler(new DatabaseLoggingHandler($this->db));
 	}
 
 	protected function bootstrap() {

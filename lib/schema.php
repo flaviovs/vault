@@ -34,4 +34,30 @@ const SCHEMA = [
 )
 ',
 
+	"CREATE TABLE log_level (
+	loglevelid CHAR(1) PRIMARY KEY,
+	name VARCHAR(10) NOT NULL UNIQUE
+)",
+
+	"INSERT INTO log_level (loglevelid, name) VALUES
+		('D', 'Debug'),
+		('I', 'Info'),
+		('N', 'Notice'),
+		('W', 'Warning'),
+		('E', 'Error'),
+		('C', 'Critial'),
+		('A', 'Alert'),
+		('!', 'Emergency')
+",
+
+
+	"CREATE TABLE log (
+	logid INTEGER PRIMARY KEY AUTO_INCREMENT,
+	created DATETIME NOT NULL,
+	loglevelid CHAR(1) NOT NULL REFERENCES log_level,
+	message TEXT NOT NULL,
+	appid INTEGER REFERENCES apps
+)
+"
+
 ];
