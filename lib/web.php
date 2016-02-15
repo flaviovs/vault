@@ -68,9 +68,7 @@ abstract class Web_App extends Vault_App {
 	public function run() {
 		try
 		{
-			$this->init_basic_logging();
-			$this->load_config();
-			$this->init_database();
+			$this->bootstrap();
 		}
 		catch ( \Exception $ex )
 		{
