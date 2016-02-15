@@ -31,6 +31,7 @@ class CLI_App extends Console_App {
 			                                     . $app->ping_url );
 		}
 		$this->repo->add_app($app);
+		$this->log->addNotice("Added app $app->key ($name)");
 		echo "Key: " . $app->key . "\n";
 		echo "Secret: " . $app->secret . "\n";
 	}
