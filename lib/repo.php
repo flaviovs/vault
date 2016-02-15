@@ -68,7 +68,7 @@ class Repository {
 		$sth = $this->db->prepare($query);
 		$sth->execute($query->getBindValues());
 
-		$request->reqid = $this->db->lastInsertId();
+		$request->reqid = intval($this->db->lastInsertId());
 
 		return $request;
 	}
