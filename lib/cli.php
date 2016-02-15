@@ -30,6 +30,24 @@ class CLI_App extends Console_App {
 		}
 	}
 
+	protected function handle_request() {
+		$appkey = $this->getopt->get( 2 );
+		$email = $this->getopt->get( 3 );
+
+		if ( !( $appkey && $email ) ) {
+			throw new \InvalidArgumentException("Usage 'request APPKEY EMAIL'");
+		}
+
+		$app_data = $this->getopt->get(4);
+
+		$instructions = file_get_contents( "php://stdin" );
+
+		$res = $this->service->add_request($appkey, $email, $instructions, $app_data);
+
+		echo json_encode($res, JSON_PRETTY_PRINT);
+		echo "\n";
+	}
+
 	protected function process_command() {
 		$command = $this->getopt->get( 1 );
 
@@ -40,6 +58,11 @@ class CLI_App extends Console_App {
 		case 'app':
 			$this->handle_app();
 			break;
+
+		case 'request':
+			$this->handle_request();
+			break;
+
 		default:
 			throw new \InvalidArgumentException("Unkown command '$command'");
 		}

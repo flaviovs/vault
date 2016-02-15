@@ -7,3 +7,7 @@ password = vault
 [mailer]
 from_address = do-not-reply@automattic.com
 from_name = Automattic Vault
+
+[url]
+input = https://vault.automattic.com/input
+unlock = https://vault.automattic.com/unlock

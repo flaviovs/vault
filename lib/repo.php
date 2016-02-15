@@ -52,4 +52,23 @@ class Repository {
 		$sth = $this->db->prepare($query);
 		$sth->execute($query->getBindValues());
 	}
+
+	public function add_request( Request $request ) {
+		$query = $this->q->newInsert()
+			->into('requests')
+			->set('created', 'NOW()')
+			->cols([
+				       'appid' => $request->appid,
+				       'app_data' => $request->app_data,
+				       'email' => $request->email,
+					   'instructions' => $request->instructions,
+				       'input_key' => $request->input_key,
+			       ]);
+		$sth = $this->db->prepare($query);
+		$sth->execute($query->getBindValues());
+
+		$request->reqid = $this->db->lastInsertId();
+
+		return $request;
+	}
 }
