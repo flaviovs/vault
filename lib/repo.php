@@ -72,4 +72,33 @@ class Repository {
 
 		return $request;
 	}
+
+	public function find_request( $reqid ) {
+		$query = $this->q->newSelect()
+			->cols([
+					   'appid',
+					   'app_data',
+					   'email',
+					   'instructions',
+					   'input_key',
+					   'created',
+				   ])
+			->from('requests')
+			->where('reqid = ?', $reqid);
+		$sth = $this->db->prepare($query->getStatement());
+		$sth->execute($query->getBindValues());
+		$row = $sth->fetch();
+		if (!$row) {
+			throw new VaultDataException("Request $reqid not found");
+		}
+
+		$request = new Request($row['appid'], $row['email']);
+		$request->reqid = $reqid;
+		$request->app_data = $row['app_data'];
+		$request->instructions = $row['instructions'];
+		$request->input_key = $row['input_key'];
+		$request->created = new \DateTime($row['created']);
+
+		return $request;
+	}
 }
