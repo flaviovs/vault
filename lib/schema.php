@@ -3,7 +3,8 @@
 namespace Vault;
 
 const SCHEMA = [
-	'SET default_storage_engine=InnoDB;',
+	'ALTER DATABASE DEFAULT CHARACTER SET = utf8',
+	'SET default_storage_engine=InnoDB',
 
 	'CREATE TABLE apps (
 	appid INTEGER PRIMARY KEY AUTO_INCREMENT,

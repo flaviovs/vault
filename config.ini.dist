@@ -1,4 +1,5 @@
 [db.default]
-dsn = "mysql:dbname=vault"
+; Important: do not forget to set the charset with "charset=utf8"
+dsn = "mysql:dbname=vault;charset=utf8"
 user = vault
 password = vault
