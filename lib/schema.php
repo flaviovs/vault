@@ -22,7 +22,7 @@ const SCHEMA = [
 	app_data TEXT,
 	email VARCHAR(100) NOT NULL,
 	instructions TEXT,
-	input_key TEXT NOT NULL COLLATE utf8_bin,
+	input_key TEXT COLLATE utf8_bin,
 	created DATETIME NOT NULL
 )
 ',
