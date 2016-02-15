@@ -2,7 +2,7 @@
 
 namespace Vault;
 
-class DataException extends \RuntimeException {}
+class VaultDataException extends VaultException {}
 
 class Repository {
 

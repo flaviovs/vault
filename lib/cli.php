@@ -8,30 +8,12 @@ class CLI_App extends Console_App {
 		return 'COMMAND [COMMAND-ARGS]';
 	}
 
-	protected function generate_app_key() {
-		return base64_encode(openssl_random_pseudo_bytes(12));
-	}
-
-	protected function generate_app_secret() {
-		return base64_encode(openssl_random_pseudo_bytes(30));
-	}
-
 	protected function handle_app_add() {
 		$name = $this->getopt->get( 3 );
 		if ( !$name ) {
 			throw new \InvalidArgumentException( "Missing app name" );
 		}
-		$app = new App( $this->generate_app_key(),
-						$this->generate_app_secret(),
-						$name );
-		$app->ping_url = $this->getopt->get( 4 );
-		if ( $app->ping_url
-		     && ! filter_var( $app->ping_url, FILTER_VALIDATE_URL ) ) {
-			throw new \InvalidArgumentException( "Invalid Ping URL: "
-			                                     . $app->ping_url );
-		}
-		$this->repo->add_app($app);
-		$this->log->addNotice("Added app $app->key ($name)");
+		$app = $this->service->add_app( $name, $this->getopt->get( 4 ) );
 		echo "Key: " . $app->key . "\n";
 		echo "Secret: " . $app->secret . "\n";
 	}

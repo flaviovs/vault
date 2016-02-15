@@ -8,6 +8,7 @@ abstract class Vault_App {
 	protected $conf;
 	protected $db;
 	protected $repo;
+	protected $service;
 
 	abstract protected function init_basic_logging();
 	abstract protected function run();
@@ -46,9 +47,14 @@ abstract class Vault_App {
 		$this->log->pushHandler(new DatabaseLoggingHandler($this->db));
 	}
 
+	protected function init_service() {
+		$this->service = new Service($this->repo, $this->log);
+	}
+
 	protected function bootstrap() {
 		$this->init_basic_logging();
 		$this->load_config();
 		$this->init_database();
+		$this->init_service();
 	}
 }
