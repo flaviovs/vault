@@ -7,8 +7,8 @@ abstract class Web_App extends Vault_App {
 	protected $request;
 	protected $response;
 
-	public function __construct( array $globals = NULL ) {
-		parent::__construct();
+	public function __construct($name, array $globals = NULL ) {
+		parent::__construct($name);
 		if ( ! $globals )
 			$globals = $GLOBALS;
 		$web_factory = new \Aura\Web\WebFactory( $globals );

@@ -12,8 +12,8 @@ abstract class Vault_App {
 	abstract protected function init_basic_logging();
 	abstract protected function run();
 
-	public function __construct() {
-		$this->log = new \Monolog\Logger('app');
+	public function __construct($name) {
+		$this->log = new \Monolog\Logger($name);
 	}
 
 	protected function load_config() {

@@ -8,8 +8,8 @@ abstract class Console_App extends Vault_App {
 	protected $stdio;
 	private $cli_context;
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($name) {
+		parent::__construct($name);
 
 		$cli_factory = new \Aura\Cli\CliFactory();
 		$this->cli_context = $cli_factory->newContext($GLOBALS);

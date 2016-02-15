@@ -4,8 +4,8 @@ namespace Vault;
 
 class REST_App extends Web_App {
 
-	public function __construct( array $globals = NULL ) {
-		parent::__construct( $globals );
+	public function __construct( $name, array $globals = NULL ) {
+		parent::__construct( $name, $globals );
 		$this->response->content->setType( 'application/json' );
 	}
 
