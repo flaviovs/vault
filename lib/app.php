@@ -7,6 +7,7 @@ abstract class Vault_App {
 	protected $log;
 	protected $conf;
 	protected $db;
+	protected $repo;
 
 	abstract protected function init_basic_logging();
 	abstract protected function run();
@@ -31,8 +32,11 @@ abstract class Vault_App {
 
 		$conf = $this->conf[ 'db.default' ];
 		$this->db = new \Aura\Sql\ExtendedPdo( $conf[ 'dsn' ],
-		                                       $conf[ 'user' ],
-		                                       $conf[ 'password' ]);
+											   $conf[ 'user' ],
+											   $conf[ 'password' ]);
+
+		// Initialize our repository abstraction.
+		$this->repo = new Repository($this->db);
 	}
 
 	protected function bootstrap() {
