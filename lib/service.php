@@ -5,13 +5,16 @@ namespace Vault;
 class VaultException extends \Exception {}
 
 class Service {
+	protected $conf;
 	protected $repo;
 	protected $log;
 	protected $mailer_factory;
 
-	public function __construct( Repository $repo,
+	public function __construct( array $conf,
+	                             Repository $repo,
 	                             \Monolog\Logger $log,
 	                             MailerFactory $mailer_factory ) {
+		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;
 		$this->mailer_factory = $mailer_factory;
