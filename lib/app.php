@@ -50,8 +50,7 @@ abstract class Vault_App {
 	protected function init_service() {
 		$this->service = new Service( $this->conf,
 		                              $this->repo,
-		                              $this->log,
-		                              new MailerFactory($this->conf) );
+		                              $this->log );
 	}
 
 	protected function bootstrap() {

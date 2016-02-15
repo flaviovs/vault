@@ -8,16 +8,13 @@ class Service {
 	protected $conf;
 	protected $repo;
 	protected $log;
-	protected $mailer_factory;
 
 	public function __construct( array $conf,
 	                             Repository $repo,
-	                             \Monolog\Logger $log,
-	                             MailerFactory $mailer_factory ) {
+	                             \Monolog\Logger $log) {
 		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;
-		$this->mailer_factory = $mailer_factory;
 	}
 
 	protected function generate_app_key() {
@@ -59,7 +56,7 @@ class Service {
 	protected function email_user( Request $request ) {
 		$input_url = $this->get_input_url( $request );
 
-		$mail = $this->mailer_factory->new_mailer();
+		$mail = new Mailer($this->conf, $this->log);
 
 		$mail->addAddress($request->email);
 		$mail->Subject = "## Input URL ##";

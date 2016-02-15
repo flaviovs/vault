@@ -8,6 +8,9 @@ password = vault
 from_address = do-not-reply@automattic.com
 from_name = Automattic Vault
 
+; Change debug to yes to not send emails (just log them)
+debug = no
+
 [url]
 input = https://vault.automattic.com/input
 unlock = https://vault.automattic.com/unlock

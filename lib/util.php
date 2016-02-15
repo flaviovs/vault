@@ -35,29 +35,46 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 }
 
 
-class MailerFactory {
-	protected $conf;
+class Mailer extends \PHPMailer {
+	protected $debug;
+	protected $log;
 
-	public function __construct(array $conf) {
+	public function __construct(array $conf, \Monolog\Logger $log) {
+		parent::__construct( TRUE ); // Tell PHPMailer that we want exceptions.
+
 		if ( ! isset( $conf[ 'mailer' ] ) ) {
 			throw new VaultException('No mailer configuration found');
 		}
 
-		$this->conf = $conf[ 'mailer' ];
+		$conf = $conf[ 'mailer' ];
 
-		if ( empty( $this->conf[ 'from_address' ] ) ) {
+		if ( empty( $conf[ 'from_address' ] ) ) {
 			throw new VaultException('Missing from_address mailer configuration');
 		}
 
-		if ( empty( $this->conf[ 'from_name' ] ) ) {
+		if ( empty( $conf[ 'from_name' ] ) ) {
 			throw new VaultException('Missing from_name mailer configuration');
 		}
+
+		$this->debug = ! empty( $conf[ 'debug' ] );
+
+		if ( $this->debug ) {
+			$this->Mailer = 'debug';
+		}
+
+		$this->setFrom( $conf[ 'from_address' ], $conf[ 'from_name' ] );
+
+		$this->log = $log;
 	}
 
-	public function new_mailer() {
-		$mailer = new \PHPMailer();
-		$mailer->setFrom( $this->conf[ 'from_address' ],
-		                  $this->conf[ 'from_name' ] );
-		return $mailer;
+	protected function debugSend($headers, $body) {
+		$this->log->addDebug('Omitting email to '
+		                     . implode( ',',
+		                                array_keys( $this->all_recipients ) ),
+		                     [
+			                     'headers' => $headers,
+			                     'body' => $body,
+		                     ]);
+		return TRUE;
 	}
 }
