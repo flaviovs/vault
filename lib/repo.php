@@ -24,6 +24,24 @@ class Repository {
 		$this->db->rollBack();
 	}
 
+	public function find_app( $appid ) {
+		$sth = $this->db->perform('SELECT '
+		                          . 'appkey, secret, name, ping_url '
+		                          . 'FROM apps '
+		                          . 'WHERE appid = ?',
+		                          [ $appid ]);
+		$row = $sth->fetch();
+		if (!$row) {
+			throw new VaultDataException("App '$key' not found");
+		}
+
+		$app = new App($row[ 'appkey' ], $row[ 'secret' ], $row[ 'name' ]);
+		$app->appid = $appid;
+		$app->ping_url = $row[ 'ping_url' ];
+
+		return $app;
+	}
+
 	public function find_app_by_key( $key ) {
 		$sth = $this->db->perform('SELECT '
 		                          . 'appid, secret, name, ping_url '
