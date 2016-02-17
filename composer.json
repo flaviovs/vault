@@ -15,6 +15,7 @@
 		"php": "^5.6",
 		"ext-mysql": "*",
 		"ext-openssl": "*",
+		"ext-curl": "*",
         "aura/web": "^2.0",
         "aura/sql": "^2.4",
         "aura/router": "^2.3",

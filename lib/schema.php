@@ -31,7 +31,8 @@ const SCHEMA = [
 	reqid INTEGER PRIMARY KEY
 		REFERENCES request ON DELETE CASCADE,
 	secret BLOB NOT NULL,
-	created DATETIME NOT NULL
+	created DATETIME NOT NULL,
+	pinged DATETIME
 )
 ',
 

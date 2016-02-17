@@ -93,6 +93,46 @@ class Service {
 		];
 	}
 
+	protected function ping_back( Request $request, $unlock_key ) {
+		$app = $this->repo->find_app( $request->appid );
+		if ( ! $app->ping_url ) {
+			return;
+		}
+
+		$postdata = [
+			'reqid' => $request->reqid,
+			'unlock_key' => $unlock_key,
+			'app_data' => $request->app_data,
+			'mac' => base64_encode( hash_hmac( 'sha1',
+			                                   $request->reqid . ' '
+			                                   . $unlock_key . ' '
+			                                   . $request->app_data,
+			                                   $app->secret,
+			                                   TRUE ) )
+		];
+
+		if ( $this->log->isHandling(\Monolog\Logger::DEBUG) ) {
+			$this->log->addDebug( "Pinging $app->ping_url",
+			                      [ 'postdata' => $postdata ] );
+		}
+
+		$ch = curl_init();
+		curl_setopt( $ch, CURLOPT_URL, $app->ping_url );
+		curl_setopt( $ch, CURLOPT_USERAGENT, 'Vault' );
+		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 20 );
+		curl_setopt( $ch, CURLOPT_TIMEOUT, 20 );
+		curl_setopt( $ch, CURLOPT_POST, TRUE );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postdata );
+
+		$res = curl_exec( $ch );
+		if ( curl_getinfo( $ch, CURLINFO_HTTP_CODE ) == 200 ) {
+			$this->log->addInfo( "Pinged back $app->key@$app->ping_url for request $request->reqid" );
+			$this->repo->record_ping( $request->reqid );
+		} else {
+			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " . curl_error( $ch ) );
+		}
+	}
+
 	public function register_secret( Request $request , $plaintext ) {
 
 		$unlock_key = base64_encode(openssl_random_pseudo_bytes(24));
@@ -109,6 +149,7 @@ class Service {
 		$this->repo->begin();
 		$this->repo->add_secret( $secret );
 		$this->repo->clear_request_input_key( $request );
+		$this->ping_back( $request, $unlock_key );
 		$this->repo->commit();
 
 		return [
