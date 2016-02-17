@@ -15,6 +15,18 @@ class Repository {
 			$db->getAttribute( \PDO::ATTR_DRIVER_NAME ) );
 	}
 
+	public function begin() {
+		$this->db->beginTransaction();
+	}
+
+	public function commit() {
+		$this->db->commit();
+	}
+
+	public function rollback() {
+		$this->db->rollBack();
+	}
+
 	public function find_app($key) {
 		$query = $this->q->newSelect()
 			->cols([
