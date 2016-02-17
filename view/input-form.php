@@ -8,8 +8,7 @@
   </div>
   <?php endif ?>
 
-  <textarea name="secret" id="secret">
-  </textarea>
+  <textarea name="secret" id="secret" required></textarea>
 
   <input type="submit">
 </form>
