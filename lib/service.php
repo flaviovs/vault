@@ -42,10 +42,13 @@ class Service {
 		];
 	}
 
-	public function get_request_mac( Request $request ) {
+	public function get_request_mac( Request $request, $key = NULL ) {
+		if ( ! $key ) {
+			$key = $request->input_key;
+		}
 		return hash_hmac( 'sha1',
 		                  $request->reqid . ' ' . $request->email,
-		                  $request->input_key,
+		                  $key,
 		                  TRUE );
 	}
 
