@@ -24,7 +24,7 @@ class Repository {
 		$this->db->rollBack();
 	}
 
-	public function find_app($key) {
+	public function find_app_by_key( $key ) {
 		$sth = $this->db->perform('SELECT '
 		                          . 'appid, secret, name, ping_url '
 		                          . 'FROM apps '

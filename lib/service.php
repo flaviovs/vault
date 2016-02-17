@@ -76,7 +76,7 @@ class Service {
 			throw new \InvalidArgumentException("Invalid e-mail '$email'");
 		}
 
-		$app = $this->repo->find_app($key);
+		$app = $this->repo->find_app_by_key($key);
 
 		$request = new Request($app->appid, $email);
 		$request->instructions = $instructions;
