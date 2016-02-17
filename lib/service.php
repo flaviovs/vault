@@ -93,4 +93,27 @@ class Service {
 			'reqid' => $request->reqid,
 		];
 	}
+
+	public function register_secret( Request $request , $plaintext ) {
+
+		$unlock_key = base64_encode(openssl_random_pseudo_bytes(24));
+
+		$iv_size = openssl_cipher_iv_length(Secret::CIPHER);
+		$iv = openssl_random_pseudo_bytes($iv_size);
+
+		$secret = new Secret( $request->reqid,
+		                      $iv . openssl_encrypt( $plaintext,
+		                                             Secret::CIPHER,
+		                                             $unlock_key,
+		                                             OPENSSL_RAW_DATA,
+		                                             $iv ) );
+		$this->repo->begin();
+		$this->repo->add_secret( $secret );
+		$this->repo->clear_request_input_key( $request );
+		$this->repo->commit();
+
+		return [
+			'unlock_key' => $unlock_key,
+		];
+	}
 }

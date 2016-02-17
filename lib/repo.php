@@ -113,4 +113,25 @@ class Repository {
 
 		return $request;
 	}
+
+	public function add_secret( Secret $secret ) {
+		$query = $this->q->newInsert()
+			->into('secrets')
+			->set('created', 'NOW()')
+			->cols([
+				       'reqid' => $secret->reqid,
+				       'secret' => $secret->secret,
+			       ]);
+		$sth = $this->db->prepare($query);
+		$sth->execute($query->getBindValues());
+
+		return $secret;
+	}
+
+	public function clear_request_input_key( Request $request ) {
+		$sth = $this->db->prepare( 'UPDATE requests '
+		                           . 'SET input_key = NULL '
+		                           . 'WHERE reqid = ?' );
+		$sth->execute( [ $request->reqid ] );
+	}
 }

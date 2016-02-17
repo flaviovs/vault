@@ -24,6 +24,8 @@ class Front_End_App extends Web_App {
 				            'reqid'     => '\d+',
 			            ]);
 
+		$this->router->addGet('input.request.thank-you',
+		                      '/thank-you/{reqid}');
 		$this->router->addGet('input.request', '/input/{reqid}');
 		$this->router->addPost('input.request.submit', '/input/{reqid}');
 	}
@@ -93,7 +95,28 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException( 'Invalid MAC' );
 		}
 
-		print 'submit';
+		$res = $this->service->register_secret(
+			$request,
+			$this->request->post->get( 'secret' ) );
+
+		// Add a flash flag so that we can control form submission in
+		// the "thank you" page.
+		$this->session->setFlash( 'reqid', $request->reqid );
+
+		$this->response->redirect->afterPost(
+			$this->router->generate( 'input.request.thank-you',
+			                         [
+				                         'reqid' => $request->reqid,
+			                         ] ) );
+	}
+
+	protected function handle_request_input_thank_you( $reqid ) {
+		if ( $this->session->getFlash( 'reqid' ) != $reqid ) {
+			throw new NotFoundException();
+		}
+
+		$this->display_page( 'Thank you!',
+		                     $this->views->get( 'input-thank-you' ));
 	}
 
 	protected function handle_request( \Aura\Router\Route $route ) {
@@ -106,6 +129,10 @@ class Front_End_App extends Web_App {
 
 		case 'input.request.submit':
 			$this->handle_input_request_submission( $route->params[ 'reqid' ] );
+			break;
+
+		case 'input.request.thank-you':
+			$this->handle_request_input_thank_you( $route->params[ 'reqid' ] );
 			break;
 
 		default:
