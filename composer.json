@@ -21,6 +21,7 @@
         "aura/router": "^2.3",
         "monolog/monolog": "^1.17",
         "aura/cli": "^2.1",
-        "phpmailer/phpmailer": "^5.2"
+        "phpmailer/phpmailer": "^5.2",
+        "aura/session": "^2.0"
     }
 }
