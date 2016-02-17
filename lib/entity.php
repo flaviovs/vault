@@ -37,6 +37,8 @@ class Secret {
 	public $secret;
 	public $created;
 
+	const CIPHER = 'aes-128-cbc';
+
 	public function __construct($reqid, $secret)
 	{
 		$this->reqid = $reqid;
