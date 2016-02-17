@@ -47,7 +47,10 @@ class CLI_App extends Console_App {
 
 		$instructions = file_get_contents( "php://stdin" );
 
-		$res = $this->service->add_request($appkey, $email, $instructions, $app_data);
+		$res = $this->service->register_request( $appkey,
+		                                         $email,
+		                                         $instructions,
+		                                         $app_data );
 
 		$this->print_result( $res );
 	}
