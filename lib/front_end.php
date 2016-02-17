@@ -24,10 +24,14 @@ class Front_End_App extends Web_App {
 				            'reqid'     => '\d+',
 			            ]);
 
-		$this->router->addGet('input.request.thank-you',
-		                      '/thank-you/{reqid}');
-		$this->router->addGet('input.request', '/input/{reqid}');
-		$this->router->addPost('input.request.submit', '/input/{reqid}');
+		$this->router->addGet( 'request.reqid.input',
+		                       '/request/{reqid}/input' );
+
+		$this->router->addPost( 'request.reqid.input#submission',
+		                        '/request/{reqid}/input' );
+
+		$this->router->addGet( 'request.reqid.thank-you',
+		                       '/request/{reqid}/thank-you' );
 	}
 
 	protected function display_page( $title, $contents ) {
@@ -71,7 +75,11 @@ class Front_End_App extends Web_App {
 		$view = $this->views->get( 'input-form' );
 
 		$view->set( 'reqid', $reqid );
-		$view->set( 'action', "/input/$reqid" );
+		$view->set( 'action',
+		            $this->router->generate( 'request.reqid.input#submission',
+		                                       [
+			                                       'reqid' => $request->reqid,
+		                                       ] ) );
 		$view->set( 'mac', $mac );
 
 		$this->display_page( "Input your credentials", $view );
@@ -104,7 +112,7 @@ class Front_End_App extends Web_App {
 		$this->session->setFlash( 'reqid', $request->reqid );
 
 		$this->response->redirect->afterPost(
-			$this->router->generate( 'input.request.thank-you',
+			$this->router->generate( 'request.reqid.thank-you',
 			                         [
 				                         'reqid' => $request->reqid,
 			                         ] ) );
@@ -123,15 +131,15 @@ class Front_End_App extends Web_App {
 
 		switch ( $route->params['action'] ) {
 
-		case 'input.request':
+		case 'request.reqid.input':
 			$this->handle_input_request( $route->params[ 'reqid' ] );
 			break;
 
-		case 'input.request.submit':
+		case 'request.reqid.input#submission':
 			$this->handle_input_request_submission( $route->params[ 'reqid' ] );
 			break;
 
-		case 'input.request.thank-you':
+		case 'request.reqid.thank-you':
 			$this->handle_request_input_thank_you( $route->params[ 'reqid' ] );
 			break;
 

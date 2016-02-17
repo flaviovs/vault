@@ -52,10 +52,9 @@ class Service {
 	protected function get_input_url( Request $request ) {
 		$input_hash = $this->get_input_hash( $request );
 
-
 		return $this->conf[ 'url' ][ 'input' ]
-			. '/' . $request->reqid
-			. '?m=' . urlencode( base64_encode ( $input_hash ) );
+			. '/request/' . $request->reqid . '/input?'
+			. 'm=' . urlencode( base64_encode ( $input_hash ) );
 	}
 
 	protected function email_user( Request $request ) {
