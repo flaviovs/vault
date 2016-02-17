@@ -42,15 +42,15 @@ class Service {
 		];
 	}
 
-	public function get_input_hash( Request $request ) {
+	public function get_request_mac( Request $request ) {
 		return hash_hmac( 'sha1',
-		                  'input ' . $request->reqid . ' ' . $request->email,
+		                  $request->reqid . ' ' . $request->email,
 		                  $request->input_key,
 		                  TRUE );
 	}
 
 	protected function get_input_url( Request $request ) {
-		$input_hash = $this->get_input_hash( $request );
+		$input_hash = $this->get_request_mac( $request );
 
 		return $this->conf[ 'url' ][ 'input' ]
 			. '/request/' . $request->reqid . '/input?'

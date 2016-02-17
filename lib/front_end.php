@@ -68,7 +68,7 @@ class Front_End_App extends Web_App {
 		}
 
 		if ( ! hash_equals( base64_decode($mac),
-		                    $this->service->get_input_hash( $request ) ) ) {
+		                    $this->service->get_request_mac( $request ) ) ) {
 			throw new NotFoundException( 'Invalid MAC' );
 		}
 
@@ -99,7 +99,7 @@ class Front_End_App extends Web_App {
 		}
 
 		if ( ! hash_equals( base64_decode($mac),
-		                    $this->service->get_input_hash( $request ) ) ) {
+		                    $this->service->get_request_mac( $request ) ) ) {
 			throw new NotFoundException( 'Invalid MAC' );
 		}
 
