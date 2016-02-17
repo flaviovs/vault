@@ -60,6 +60,14 @@ class Service {
 			. 'm=' . urlencode( base64_encode ( $input_hash ) );
 	}
 
+	protected function get_unlock_url( Request $request, $unlock_key ) {
+		$mac = $this->get_request_mac( $request, $unlock_key );
+
+		return $this->conf[ 'url' ][ 'unlock' ]
+			. '/unlock/' . $request->reqid . '/input?'
+			. 'm=' . urlencode( base64_encode ( $mac ) );
+	}
+
 	protected function email_request( Request $request ) {
 		$input_url = $this->get_input_url( $request );
 
@@ -106,6 +114,7 @@ class Service {
 			'reqid' => $request->reqid,
 			'unlock_key' => $unlock_key,
 			'app_data' => $request->app_data,
+			'unlock_url' => $this->get_unlock_url( $request, $unlock_key ),
 			'mac' => base64_encode( hash_hmac( 'sha1',
 			                                   $request->reqid . ' '
 			                                   . $unlock_key . ' '
