@@ -57,7 +57,7 @@ class Service {
 			. 'm=' . urlencode( base64_encode ( $input_hash ) );
 	}
 
-	protected function email_user( Request $request ) {
+	protected function email_request( Request $request ) {
 		$input_url = $this->get_input_url( $request );
 
 		$mail = new Mailer($this->conf, $this->log);
@@ -86,7 +86,7 @@ class Service {
 		$this->repo->add_request($request);
 		$this->log->info("Added request $request->reqid for '$email' by $key");
 
-		$this->email_user($request);
+		$this->email_request($request);
 
 		return [
 			'reqid' => $request->reqid,
