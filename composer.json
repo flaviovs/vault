@@ -17,7 +17,6 @@
 		"ext-openssl": "*",
         "aura/web": "^2.0",
         "aura/sql": "^2.4",
-        "aura/sqlquery": "^2.6",
         "aura/router": "^2.3",
         "monolog/monolog": "^1.17",
         "aura/cli": "^2.1",

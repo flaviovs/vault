@@ -7,12 +7,9 @@ class VaultDataException extends VaultException {}
 class Repository {
 
 	protected $db;
-	protected $q;
 
 	public function __construct( \Aura\Sql\ExtendedPdo $db ) {
 		$this->db = $db;
-		$this->q = new \Aura\SqlQuery\QueryFactory(
-			$db->getAttribute( \PDO::ATTR_DRIVER_NAME ) );
 	}
 
 	public function begin() {
@@ -28,17 +25,11 @@ class Repository {
 	}
 
 	public function find_app($key) {
-		$query = $this->q->newSelect()
-			->cols([
-					   'appid',
-					   'secret',
-					   'name',
-					   'ping_url',
-				   ])
-			->from('apps')
-			->where('appkey = ?', $key);
-		$sth = $this->db->prepare($query->getStatement());
-		$sth->execute($query->getBindValues());
+		$sth = $this->db->perform('SELECT '
+		                          . 'appid, secret, name, ping_url '
+		                          . 'FROM apps '
+		                          . 'WHERE appkey = ?',
+		                          [ $key ]);
 		$row = $sth->fetch();
 		if (!$row) {
 			throw new VaultDataException("App '$key' not found");
@@ -52,53 +43,41 @@ class Repository {
 	}
 
 	public function add_app(App $app) {
-		$query = $this->q->newInsert()
-			->into('apps')
-			->cols([
-					   'appkey' => $app->key,
-					   'secret' => $app->secret,
-					   'name' => $app->name,
-					   'ping_url' => $app->ping_url,
-				   ]);
-		$sth = $this->db->prepare($query);
-		$sth->execute($query->getBindValues());
-
-		$app->appid = intval($this->db->lastInsertId());
+		$sth = $this->db->perform( 'INSERT INTO apps '
+		                           . '(appkey, secret, name, ping_url) '
+		                           . 'VALUES (?, ?, ?, ?)',
+		                           [
+			                           $app->key,
+			                           $app->secret,
+			                           $app->name,
+			                           $app->ping_url,
+		                           ] );
+		$app->appid = intval( $this->db->lastInsertId() );
 	}
 
 	public function add_request( Request $request ) {
-		$query = $this->q->newInsert()
-			->into('requests')
-			->set('created', 'NOW()')
-			->cols([
-				       'appid' => $request->appid,
-				       'app_data' => $request->app_data,
-				       'email' => $request->email,
-					   'instructions' => $request->instructions,
-				       'input_key' => $request->input_key,
-			       ]);
-		$sth = $this->db->prepare($query);
-		$sth->execute($query->getBindValues());
-
-		$request->reqid = intval($this->db->lastInsertId());
+		$sth = $this->db->perform( 'INSERT INTO requests '
+		                           . '(appid, app_data, email, instructions, '
+		                           . 'input_key, created) '
+		                           . 'VALUES (?, ?, ?, ?, ?, NOW())',
+		                           [
+			                           $request->appid,
+			                           $request->app_data,
+			                           $request->email,
+			                           $request->instructions,
+			                           $request->input_key,
+		                           ] );
+		$request->reqid = intval( $this->db->lastInsertId() );
 
 		return $request;
 	}
 
 	public function find_request( $reqid ) {
-		$query = $this->q->newSelect()
-			->cols([
-					   'appid',
-					   'app_data',
-					   'email',
-					   'instructions',
-					   'input_key',
-					   'created',
-				   ])
-			->from('requests')
-			->where('reqid = ?', $reqid);
-		$sth = $this->db->prepare($query->getStatement());
-		$sth->execute($query->getBindValues());
+		$sth = $this->db->perform( 'SELECT appid, app_data, email, '
+		                           . 'instructions, input_key, created '
+		                           . 'FROM requests '
+		                           . 'WHERE reqid = ?',
+		                           [ $reqid ] );
 		$row = $sth->fetch();
 		if (!$row) {
 			throw new VaultDataException("Request $reqid not found");
@@ -115,23 +94,21 @@ class Repository {
 	}
 
 	public function add_secret( Secret $secret ) {
-		$query = $this->q->newInsert()
-			->into('secrets')
-			->set('created', 'NOW()')
-			->cols([
-				       'reqid' => $secret->reqid,
-				       'secret' => $secret->secret,
-			       ]);
-		$sth = $this->db->prepare($query);
-		$sth->execute($query->getBindValues());
-
+		$this->db->perform( 'INSERT into secrets '
+		                    . '(reqid, secret, created) '
+		                    . 'VALUES (?, ?, ?)',
+		                    [
+			                    $secret->reqid,
+			                    $secret->secret,
+			                    $secret->created->format(\DateTime::ISO8601),
+		                    ] );
 		return $secret;
 	}
 
 	public function clear_request_input_key( Request $request ) {
-		$sth = $this->db->prepare( 'UPDATE requests '
-		                           . 'SET input_key = NULL '
-		                           . 'WHERE reqid = ?' );
-		$sth->execute( [ $request->reqid ] );
+		$this->db->perform( 'UPDATE requests '
+		                    . 'SET input_key = NULL '
+		                    . 'WHERE reqid = ?',
+		                    [ $request->reqid ] );
 	}
 }
