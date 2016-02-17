@@ -13,9 +13,12 @@ Basic installation
 Adding apps
 -----------
 
-To add an app, run the following command:
+The syntax is:
 
-    $ php bin/vault.php app add 'Here goes the app name'
+    $ php bin/vault.php app add APP-NAME [PING-URL]
+
+Where *APP-NAME* is a human-readable app name, and *PING-URL* is the
+optional ping url.
 
 
 Generating request
@@ -23,7 +26,7 @@ Generating request
 
 The syntax is:
 
-    $ php bin/vault.php request *KEY* *EMAIL*
+    $ php bin/vault.php request KEY EMAIL
 
 Where *KEY* is the app key, and *EMAIL* is the email address of the
 user we are requesting a secret from.
