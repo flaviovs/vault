@@ -28,7 +28,7 @@ class Request {
 	public function __construct($appid, $email) {
 		$this->appid = $appid;
 		$this->email = $email;
-		$this->created = time();
+		$this->created = new \DateTime();
 	}
 }
 
@@ -41,6 +41,6 @@ class Secret {
 	{
 		$this->reqid = $reqid;
 		$this->secret = $secret;
-		$this->created = time();
+		$this->created = new \DateTime();
 	}
 }
