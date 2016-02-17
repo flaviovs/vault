@@ -129,4 +129,9 @@ class Repository {
 		                    . 'WHERE reqid = ?',
 		                    [ $request->reqid ] );
 	}
+
+	public function record_ping( $reqid ) {
+		$this->db->perform( 'UPDATE secrets SET pinged = NOW() WHERE reqid = ?',
+		                    [ $reqid ] );
+	}
 }
