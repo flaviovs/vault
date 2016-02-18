@@ -103,7 +103,7 @@ class Front_End_App extends Web_App {
 		                                       ] ) );
 		$view->set( 'mac', $mac );
 
-		$this->display_page( "Input your credentials", $view );
+		$this->display_page( __( "Input your credentials" ), $view );
 	}
 
 	protected function handle_input_request_submission( $reqid ) {
@@ -144,7 +144,7 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException();
 		}
 
-		$this->display_page( 'Thank you!',
+		$this->display_page( __( 'Thank you!' ),
 		                     $this->views->get( 'input-thank-you' ));
 	}
 
@@ -167,7 +167,7 @@ class Front_End_App extends Web_App {
 		                                       ] ) );
 		$view->set( 'mac', $mac );
 
-		$this->display_page( "Input the unlock key", $view );
+		$this->display_page( __( "Input the unlock key" ), $view );
 	}
 
 	protected function handle_unlock_auth_submission( $reqid ) {
@@ -233,7 +233,7 @@ class Front_End_App extends Web_App {
 		$view = $this->views->get( 'unlock-view' );
 		$view->set( 'plaintext', nl2br( htmlspecialchars( $plaintext ) ) );
 
-		$this->display_page( 'Unlocked', $view );
+		$this->display_page( __( 'Unlocked' ), $view );
 	}
 
 	protected function handle_request( \Aura\Router\Route $route ) {

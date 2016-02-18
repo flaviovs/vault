@@ -5,6 +5,13 @@ namespace Vault;
 define( 'VAULT_ROOT', dirname( __DIR__ ) );
 
 /**
+ * Stub translation procedure.
+ */
+function __( $text ) {
+	return $text;
+}
+
+/**
  * Our error handler
  */
 function error_handler( $severity, $message, $file, $line ) {
