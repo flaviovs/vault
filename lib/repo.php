@@ -32,7 +32,7 @@ class Repository {
 		                          [ $appid ]);
 		$row = $sth->fetch();
 		if (!$row) {
-			throw new VaultDataException("App '$key' not found");
+			throw new VaultDataException("App $appid not found");
 		}
 
 		$app = new App($row[ 'appkey' ], $row[ 'secret' ], $row[ 'name' ]);
