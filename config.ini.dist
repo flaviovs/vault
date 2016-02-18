@@ -7,20 +7,29 @@
 ; Default: 60
 view_time = 60
 
+
 [db.default]
-; Important: do not forget to set the charset with "charset=utf8"
+; Important:
+;
+;   * Using a database driver other than "mysql" is not supported
+;
+;   * Do not forget to set the charset with "charset=utf8"
+;
 dsn = "mysql:dbname=vault;charset=utf8"
 user = vault
 password = vault
 
+
 [mailer]
+; This is the e-mail address that all e-mail should be sent from.
 from_address = do-not-reply@automattic.com
 from_name = Automattic Vault
 
-; Change debug to yes to not send emails (just log them)
-debug = no
+; Change debug to true to not send emails (just log them).
+debug = false
+
 
 [url]
-; No trailing slashes
+; Base URLs only. No trailing slashes.
 input = https://vault.automattic.com
 unlock = https://vault.automattic.com
