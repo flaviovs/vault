@@ -20,7 +20,7 @@ be used to add other client apps, and generate secret requests.
 ### Client apps
 
 Client apps play a fundamental part in the Vault. They are responsible
-for issuing *secret requests*, and are notitified when users reply to
+for issuing *secret requests*, and are notified when users reply to
 them.
 
 When created, client apps are issued an *app key* and *secret*, which
@@ -101,7 +101,7 @@ following:
 5. Erase the request's *input key*, which effectively prevent the user
    to input the secret again by visiting the unique URL.
 
-6. Pingback the app that issued the request. In this pingback, the
+6. Ping-back the app that issued the request. In this ping-back, the
    Vault will send to the app the *unlock key*, plus the *unlock URL*.
 
 
@@ -110,7 +110,7 @@ following:
 
 ### Secret unlocking
 
-After receiving a pingback from the Vault informing that the user had
+After receiving a ping-back from the Vault informing that the user had
 input the requested secret, the client app should use whatever means
 to notify the engineer that the secret data is now available. The *app
 data* that is linked to the request may be used for this (for example,
@@ -118,7 +118,7 @@ the app may use it to store an engineer ID or e-mail address).
 
 When notifying engineers that the request was answered, the app should
 send them the *unlock key* and the *unlock URL* it has just received
-from the Vault via pingback.
+from the Vault via ping-back.
 
 (It should be stressed here that *unlock keys and URLs* are not tied
 to any person or credential in particular, so anyone that possess them
