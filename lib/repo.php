@@ -154,4 +154,9 @@ class Repository {
 
 		return $app;
 	}
+
+	public function record_unlock( Secret $secret ) {
+		$this->db->perform( 'UPDATE secrets SET secret = NULL WHERE reqid = ?',
+		                    [ $secret->reqid ] );
+	}
 }
