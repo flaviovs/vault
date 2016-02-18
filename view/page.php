@@ -2,6 +2,7 @@
 <html>
   <head>
 	<title><?php echo $title ?></title>
+	<?php echo $scripts ?>
   </head>
   <body>
 	<main>
