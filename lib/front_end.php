@@ -34,6 +34,15 @@ class Front_End_App extends Web_App {
 
 		$this->router->addGet( 'request.reqid.thank-you',
 		                       '/request/{reqid}/thank-you' );
+
+		$this->router->addGet( 'unlock.reqid.auth',
+		                       '/unlock/{reqid}/auth' );
+
+		$this->router->addPost( 'unlock.reqid.auth#submission',
+		                        '/unlock/{reqid}/auth' );
+
+		$this->router->addGet( 'unlock.reqid.view',
+		                       '/unlock/{reqid}/view' );
 	}
 
 	protected function display_page( $title, $contents ) {
@@ -139,6 +148,94 @@ class Front_End_App extends Web_App {
 		                     $this->views->get( 'input-thank-you' ));
 	}
 
+	protected function handle_unlock_auth( $reqid ) {
+
+		$request = $this->load_request( $reqid );
+
+		$mac = $this->request->query->get('m');
+		if ( ! $mac ) {
+			throw new NotFoundException( 'No MAC' );
+		}
+
+		$view = $this->views->get( 'unlock-form' );
+
+		$view->set( 'reqid', $reqid );
+		$view->set( 'action',
+		            $this->router->generate( 'unlock.reqid.auth#submission',
+		                                       [
+			                                       'reqid' => $request->reqid,
+		                                       ] ) );
+		$view->set( 'mac', $mac );
+
+		$this->display_page( "Input the unlock key", $view );
+	}
+
+	protected function handle_unlock_auth_submission( $reqid ) {
+		$request = $this->load_request( $reqid );
+
+		$mac = $this->request->post->get('m');
+		if ( ! $mac ) {
+			throw new NotFoundException( 'No MAC' );
+		}
+
+		$unlock_key = $this->request->post->get('key');
+
+		if ( ! hash_equals( base64_decode($mac),
+		                    $this->service->get_request_mac( $request, $unlock_key ) ) ) {
+			throw new NotFoundException( 'Invalid MAC' );
+		}
+
+		try {
+			$secret = $this->repo->find_secret( $reqid );
+		} catch ( ValtDataException $ex ) {
+			throw new NotFoundException( 'Secret not found ' );
+		}
+
+		if ( ! $secret->secret ) {
+			throw new NotFoundException( 'Secret already unlocked' );
+		}
+
+		$this->session->setFlash( 'reqid', $request->reqid );
+		$this->session->setFlash( 'view_expire',
+		                          time() + $this->get_conf( 'general',
+		                                                    'view_time', 60) );
+		$this->session->setFlash( 'plaintext',
+		                          $this->service->unlock_secret( $secret,
+		                                                         $unlock_key ) );
+
+		$this->response->redirect->afterPost(
+			$this->router->generate( 'unlock.reqid.view',
+			                         [
+				                         'reqid' => $request->reqid,
+			                         ] ) );
+	}
+
+	protected function handle_unlock_view( $reqid ) {
+		if ( $this->session->getFlash( 'reqid' ) != $reqid ) {
+			throw new NotFoundException();
+		}
+
+		$plaintext = $this->session->getFlash( 'plaintext' );
+
+		$remaining_time = $this->session->getFlash( 'view_expire' ) - time();
+		if ( $remaining_time <= 0 ) {
+			throw new NotFoundException();
+		}
+
+		$this->session->keepFlash();
+		// Refresh to the same URL after the remaining time is
+		// over (which then will fatally return a 404).
+		$remaining_time++;
+		$this->response->headers->set( 'Refresh',
+		                               $remaining_time. "; URL=" . $this->request->url->get());
+		$this->script_config['refresh'] = $remaining_time;
+
+		$view = $this->views->get( 'unlock-view' );
+		$view->set( 'plaintext', nl2br( htmlspecialchars( $plaintext ) ) );
+
+		$this->display_page( 'Unlocked', $view );
+	}
+
 	protected function handle_request( \Aura\Router\Route $route ) {
 
 		switch ( $route->params['action'] ) {
@@ -153,6 +250,18 @@ class Front_End_App extends Web_App {
 
 		case 'request.reqid.thank-you':
 			$this->handle_request_input_thank_you( $route->params[ 'reqid' ] );
+			break;
+
+		case 'unlock.reqid.auth':
+			$this->handle_unlock_auth( $route->params[ 'reqid' ] );
+			break;
+
+		case 'unlock.reqid.auth#submission':
+			$this->handle_unlock_auth_submission( $route->params[ 'reqid' ] );
+			break;
+
+		case 'unlock.reqid.view':
+			$this->handle_unlock_view( $route->params[ 'reqid' ] );
 			break;
 
 		default:

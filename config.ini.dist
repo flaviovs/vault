@@ -1,3 +1,12 @@
+[general]
+
+; This is the time in seconds a secret should be kept in the engineer
+; session before it is removed forever. Notice that this only control
+; secret retention on the vieweing session -- after an engineer
+; unlocks the secret, it is always erased from the Vault immediately.
+; Default: 60
+view_time = 60
+
 [db.default]
 ; Important: do not forget to set the charset with "charset=utf8"
 dsn = "mysql:dbname=vault;charset=utf8"
