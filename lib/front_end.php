@@ -7,7 +7,7 @@ class Front_End_App extends Web_App {
 	protected $views;
 	protected $session;
 	protected $script_config = [];
-	protected $script_files = [];
+	protected $script_files = [ '/script.js' ];
 
 	public function __construct($name, array $globals = NULL ) {
 		parent::__construct($name, $globals);
@@ -41,12 +41,10 @@ class Front_End_App extends Web_App {
 		$view->set('title', $title);
 		$view->set('contents', $contents);
 
-		$scripts = '';
-		if ( $this->script_config ) {
-			// NB: script tags broken apart to avoid problems with
-			// code editors. Please, do not join them!
-			$scripts .= "<sc" . "ript>Vault.config = " . json_encode($this->script_config) . ";</scri" ."pt>\n";
-		}
+		// NB: script tags broken apart to avoid problems with
+		// code editors. Please, do not join them!
+		$scripts = "<sc" . "ript>var Vault = {'config': " . json_encode($this->script_config) . "};</scri" ."pt>\n";
+
 		foreach ( $this->script_files as $url ) {
 			$scripts .= "<sc" . "ript src=\"$url\"></scri" ."pt>\n";
 		}
