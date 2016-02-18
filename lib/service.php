@@ -158,6 +158,8 @@ class Service {
 		                                             $unlock_key,
 		                                             OPENSSL_RAW_DATA,
 		                                             $iv ) );
+		$secret->set_mac( $unlock_key );
+
 		$this->repo->begin();
 		$this->repo->add_secret( $secret );
 		$this->repo->clear_request_input_key( $request );

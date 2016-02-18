@@ -185,17 +185,21 @@ class Front_End_App extends Web_App {
 
 		if ( ! hash_equals( base64_decode($mac),
 		                    $this->service->get_request_mac( $request, $unlock_key ) ) ) {
-			throw new NotFoundException( 'Invalid MAC' );
+			throw new NotFoundException( 'Invalid URL MAC' );
 		}
 
 		try {
 			$secret = $this->repo->find_secret( $reqid );
 		} catch ( ValtDataException $ex ) {
-			throw new NotFoundException( 'Secret not found ' );
+			throw new NotFoundException( 'Secret not found' );
 		}
 
 		if ( ! $secret->secret ) {
 			throw new NotFoundException( 'Secret already unlocked' );
+		}
+
+		if ( ! $secret->is_mac_valid( $unlock_key ) ) {
+			throw new NotFoundException( 'Invalid secret MAC' );
 		}
 
 		$this->session->setFlash( 'reqid', $request->reqid );

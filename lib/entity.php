@@ -37,6 +37,7 @@ class Request {
 class Secret {
 	public $reqid;
 	public $secret;
+	public $mac;
 	public $created;
 
 	const CIPHER = 'aes-128-cbc';
@@ -46,5 +47,17 @@ class Secret {
 		$this->reqid = $reqid;
 		$this->secret = $secret;
 		$this->created = new \DateTime();
+	}
+
+	protected function get_secret_mac($key) {
+		return hash_hmac( 'sha1', $this->secret, $key, TRUE );
+	}
+
+	public function set_mac( $key ) {
+		$this->mac = $this->get_secret_mac( $key );
+	}
+
+	public function is_mac_valid( $key ) {
+		return hash_equals( $this->mac, $this->get_secret_mac( $key ) );
 	}
 }

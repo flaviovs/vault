@@ -113,11 +113,12 @@ class Repository {
 
 	public function add_secret( Secret $secret ) {
 		$this->db->perform( 'INSERT into secrets '
-		                    . '(reqid, secret, created) '
-		                    . 'VALUES (?, ?, ?)',
+		                    . '(reqid, secret, mac, created) '
+		                    . 'VALUES (?, ?, ?, ?)',
 		                    [
 			                    $secret->reqid,
 			                    $secret->secret,
+			                    $secret->mac,
 			                    $secret->created->format(\DateTime::ISO8601),
 		                    ] );
 		return $secret;
@@ -137,7 +138,7 @@ class Repository {
 
 	public function find_secret( $reqid ) {
 		$sth = $this->db->perform( 'SELECT '
-		                           . 'secret, created, pinged '
+		                           . 'secret, mac, created, pinged '
 		                           . 'FROM secrets '
 		                           . 'WHERE reqid = ?',
 		                           [ $reqid ] );
@@ -148,6 +149,7 @@ class Repository {
 
 
 		$app = new Secret( $reqid, $row[ 'secret' ] );
+		$app->mac = $row[ 'mac' ];
 		$app->created = new \DateTime( $row[ 'created' ] );
 		$app->ping_url = ( ! empty($row[ 'pinged' ]) ?
 		                   new \DateTime( $row[ 'pinged' ] ) : NULL );
@@ -156,7 +158,8 @@ class Repository {
 	}
 
 	public function record_unlock( Secret $secret ) {
-		$this->db->perform( 'UPDATE secrets SET secret = NULL WHERE reqid = ?',
+		$this->db->perform( 'UPDATE secrets '
+		                    . 'SET secret = NULL, mac = NULL WHERE reqid = ?',
 		                    [ $secret->reqid ] );
 	}
 }

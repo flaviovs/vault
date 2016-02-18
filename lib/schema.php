@@ -29,7 +29,8 @@ const SCHEMA = [
 
 	'CREATE TABLE secrets (
 	reqid INTEGER PRIMARY KEY,
-	secret BLOB NOT NULL,
+	secret BLOB,
+	mac BLOB,
 	created DATETIME NOT NULL,
 	pinged DATETIME,
 
