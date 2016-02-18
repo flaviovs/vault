@@ -25,6 +25,8 @@ class Request {
 	public $input_key;
 	public $created;
 
+	const INSTRUCTIONS_ALLOWED_TAGS = '<p><br><b><i><strong><em><ul><ol><li>';
+
 	public function __construct($appid, $email) {
 		$this->appid = $appid;
 		$this->email = $email;
