@@ -28,11 +28,14 @@ const SCHEMA = [
 ',
 
 	'CREATE TABLE secrets (
-	reqid INTEGER PRIMARY KEY
-		REFERENCES request ON DELETE CASCADE,
+	reqid INTEGER PRIMARY KEY,
 	secret BLOB NOT NULL,
 	created DATETIME NOT NULL,
-	pinged DATETIME
+	pinged DATETIME,
+
+	CONSTRAINT secrets_reqid
+		FOREIGN KEY secrets_reqid (reqid) REFERENCES requests (reqid)
+			ON DELETE CASCADE
 )
 ',
 
