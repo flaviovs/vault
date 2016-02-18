@@ -168,4 +168,16 @@ class Service {
 			'unlock_key' => $unlock_key,
 		];
 	}
+
+	public function unlock_secret( Secret $secret, $key ) {
+		$this->repo->record_unlock( $secret );
+
+		$iv_size = openssl_cipher_iv_length(Secret::CIPHER);
+
+		return openssl_decrypt( substr($secret->secret, $iv_size),
+		                        Secret::CIPHER,
+		                        $key,
+		                        OPENSSL_RAW_DATA,
+		                        substr($secret->secret, 0, $iv_size) );
+	}
 }
