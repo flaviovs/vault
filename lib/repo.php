@@ -134,4 +134,24 @@ class Repository {
 		$this->db->perform( 'UPDATE secrets SET pinged = NOW() WHERE reqid = ?',
 		                    [ $reqid ] );
 	}
+
+	public function find_secret( $reqid ) {
+		$sth = $this->db->perform( 'SELECT '
+		                           . 'secret, created, pinged '
+		                           . 'FROM secrets '
+		                           . 'WHERE reqid = ?',
+		                           [ $reqid ] );
+		$row = $sth->fetch();
+		if ( ! $row ) {
+			throw new VaultDataException( "Secret $reqid not found" );
+		}
+
+
+		$app = new Secret( $reqid, $row[ 'secret' ] );
+		$app->created = new \DateTime( $row[ 'created' ] );
+		$app->ping_url = ( ! empty($row[ 'pinged' ]) ?
+		                   new \DateTime( $row[ 'pinged' ] ) : NULL );
+
+		return $app;
+	}
 }
