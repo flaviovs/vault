@@ -26,6 +26,12 @@ abstract class Vault_App {
 		}
 	}
 
+	protected function get_conf( $section, $key, $default = NULL ) {
+		return ( ! empty( $this->conf[ $section ])
+		         && array_key_exists($key, $this->conf[ $section ] ) ) ?
+			$this->conf[ $section ][ $key ] : $default;
+	}
+
 	protected function init_database() {
 		if ( empty( $this->conf[ 'db.default' ] ) ) {
 			throw new \RuntimeException('Database configuration missing');
