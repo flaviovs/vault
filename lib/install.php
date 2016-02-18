@@ -17,11 +17,7 @@ class Installer_App extends Console_App {
 
 		foreach ( SCHEMA as $sql ) {
 			$this->log->addInfo( "Executing: " . strtok( $sql, "\n" ));
-			try {
-				$this->db->exec( $sql );
-			} catch ( \PDOException $ex ) {
-				$this->log->addError( $ex->getMessage() . ": " . $sql );
-			}
+			$this->db->exec( $sql );
 		}
 	}
 }
