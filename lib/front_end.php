@@ -35,11 +35,11 @@ class Front_End_App extends Web_App {
 		$this->router->addGet( 'request.reqid.thank-you',
 		                       '/request/{reqid}/thank-you' );
 
-		$this->router->addGet( 'unlock.reqid.auth',
-		                       '/unlock/{reqid}/auth' );
+		$this->router->addGet( 'unlock.reqid.input',
+		                       '/unlock/{reqid}/input' );
 
-		$this->router->addPost( 'unlock.reqid.auth#submission',
-		                        '/unlock/{reqid}/auth' );
+		$this->router->addPost( 'unlock.reqid.input#submission',
+		                        '/unlock/{reqid}/input' );
 
 		$this->router->addGet( 'unlock.reqid.view',
 		                       '/unlock/{reqid}/view' );
@@ -151,7 +151,7 @@ class Front_End_App extends Web_App {
 		                     $this->views->get( 'input-thank-you' ));
 	}
 
-	protected function handle_unlock_auth( $reqid ) {
+	protected function handle_unlock_input( $reqid ) {
 
 		$request = $this->load_request( $reqid );
 
@@ -164,7 +164,7 @@ class Front_End_App extends Web_App {
 
 		$view->set( 'reqid', $reqid );
 		$view->set( 'action',
-		            $this->router->generate( 'unlock.reqid.auth#submission',
+		            $this->router->generate( 'unlock.reqid.input#submission',
 		                                       [
 			                                       'reqid' => $request->reqid,
 		                                       ] ) );
@@ -173,7 +173,7 @@ class Front_End_App extends Web_App {
 		$this->display_page( __( "Input the unlock key" ), $view );
 	}
 
-	protected function handle_unlock_auth_submission( $reqid ) {
+	protected function handle_unlock_input_submission( $reqid ) {
 		$request = $this->load_request( $reqid );
 
 		$mac = $this->request->post->get('m');
@@ -255,12 +255,12 @@ class Front_End_App extends Web_App {
 			$this->handle_request_input_thank_you( $route->params[ 'reqid' ] );
 			break;
 
-		case 'unlock.reqid.auth':
-			$this->handle_unlock_auth( $route->params[ 'reqid' ] );
+		case 'unlock.reqid.input':
+			$this->handle_unlock_input( $route->params[ 'reqid' ] );
 			break;
 
-		case 'unlock.reqid.auth#submission':
-			$this->handle_unlock_auth_submission( $route->params[ 'reqid' ] );
+		case 'unlock.reqid.input#submission':
+			$this->handle_unlock_input_submission( $route->params[ 'reqid' ] );
 			break;
 
 		case 'unlock.reqid.view':
