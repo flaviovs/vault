@@ -134,7 +134,7 @@ class Repository {
 		                    [ $request->reqid ] );
 	}
 
-	public function record_request_ping_back( $reqid ) {
+	public function record_unlock_ping_back( $reqid ) {
 		$this->db->perform( 'UPDATE secrets SET pinged = NOW() WHERE reqid = ?',
 		                    [ $reqid ] );
 	}

@@ -141,7 +141,7 @@ class Service {
 		}
 	}
 
-	protected function ping_back_new_request( Request $request, $unlock_key ) {
+	protected function ping_back_submission( Request $request, $unlock_key ) {
 		$app = $this->repo->find_app( $request->appid );
 		if ( ! $app->ping_url ) {
 			return;
@@ -155,10 +155,10 @@ class Service {
 		];
 
 		try {
-			$this->ping_back( $app, 'request', $payload );
+			$this->ping_back( $app, 'submission', $payload );
 
 			$this->log->addInfo( "Pinged $app->key@$app->ping_url for request $request->reqid" );
-			$this->repo->record_request_ping_back( $request->reqid );
+			$this->repo->record_unlock_ping_back( $request->reqid );
 		} catch ( VaultException $ex ) {
 			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage());
 			throw new $ex;
@@ -185,7 +185,7 @@ class Service {
 		$this->repo->clear_request_input_key( $request );
 		$this->repo->commit();
 
-		$this->ping_back_new_request( $request, $unlock_key );
+		$this->ping_back_submission( $request, $unlock_key );
 
 		return [
 			'unlock_key' => $unlock_key,
