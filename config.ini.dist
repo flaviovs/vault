@@ -25,11 +25,14 @@ password = vault
 from_address = do-not-reply@automattic.com
 from_name = Automattic Vault
 
-; Change debug to true to not send emails (just log them).
-debug = false
-
 
 [url]
 ; Base URLs only. No trailing slashes.
 input = https://vault.automattic.com
 unlock = https://vault.automattic.com
+
+
+[debug]
+; Enable mailer debug. Currently, if true the mailer will just
+; actually log emails, instead of sending them
+mailer = true
