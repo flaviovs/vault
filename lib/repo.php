@@ -165,4 +165,12 @@ class Repository {
 		                    . 'SET secret = NULL, mac = NULL WHERE reqid = ?',
 		                    [ $secret->reqid ] );
 	}
+
+	public function delete_answered_requests( \DateTime $before ) {
+		$this->db->perform( 'DELETE requests '
+		                    . 'FROM requests '
+		                    . 'JOIN secrets USING (reqid) '
+		                    . 'WHERE secrets.created < ?',
+		                    [ $before->format(\DateTime::ISO8601) ] );
+	}
 }

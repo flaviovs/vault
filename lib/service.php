@@ -204,6 +204,17 @@ class Service {
 		                        substr($secret->secret, 0, $iv_size) );
 	}
 
+	public function delete_answered_requests() {
+		$period = ( isset($this->conf['maintenance']['expire_answered_requests_after']) ?
+		            $this->conf['maintenance']['expire_answered_requests_after'] :
+		            '1 hour' );
+		$before = new \DateTime();
+		$before->sub( \DateInterval::createFromDateString( $period ) );
+
+		$this->repo->delete_answered_requests( $before );
+	}
+
 	public function maintenance() {
+		$this->delete_answered_requests();
 	}
 }
