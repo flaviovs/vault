@@ -203,4 +203,7 @@ class Service {
 		                        OPENSSL_RAW_DATA,
 		                        substr($secret->secret, 0, $iv_size) );
 	}
+
+	public function maintenance() {
+	}
 }

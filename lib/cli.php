@@ -66,6 +66,10 @@ class CLI_App extends Console_App {
 			$this->handle_app();
 			break;
 
+		case 'maintenance':
+			$this->service->maintenance();
+			break;
+
 		case 'request':
 			$this->handle_request();
 			break;
