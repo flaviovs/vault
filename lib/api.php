@@ -15,6 +15,12 @@ class REST_App extends Web_App {
 			[ 'message' => 'It was not possible to process the request.' ] );
 	}
 
+	protected function handle_not_found( $msg ) {
+		parent::handle_not_found( $msg );
+		$this->response->content->set(
+			[ 'message' => 'Unknown request.' ] );
+	}
+
 	protected function send_response_contents() {
 		echo json_encode($this->response->content->get());
 	}
