@@ -36,3 +36,7 @@ unlock = https://vault.automattic.com
 ; Enable mailer debug. Currently, if true the mailer will just
 ; actually log emails, instead of sending them
 mailer = true
+
+; Allow input of the same secret several times. Normally, the secret
+; can be input only once. Set this to true to remove this restriction.
+repeat_secret_input = true

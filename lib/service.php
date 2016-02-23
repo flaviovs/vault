@@ -180,9 +180,19 @@ class Service {
 		                                             $iv ) );
 		$secret->set_mac( $unlock_key );
 
+		$debug_repeat_secret_input = $this->conf->get( 'debug',
+		                                               'repeat_secret_input',
+		                                               FALSE );
+
 		$this->repo->begin();
+		if ( $debug_repeat_secret_input ) {
+			$this->log->addWarning('debug.repeat_secret_input is enabled');
+			$this->repo->delete_secret( $secret );
+		}
 		$this->repo->add_secret( $secret );
-		$this->repo->clear_request_input_key( $request );
+		if ( ! $debug_repeat_secret_input ) {
+			$this->repo->clear_request_input_key( $request );
+		}
 		$this->repo->commit();
 
 		$this->ping_back_submission( $request, $unlock_key );

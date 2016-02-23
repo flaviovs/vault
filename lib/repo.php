@@ -166,6 +166,11 @@ class Repository {
 		                    [ $secret->reqid ] );
 	}
 
+	public function delete_secret( Secret $secret ) {
+		$this->db->perform( 'DELETE FROM secrets WHERE reqid = ?',
+		                    [ $secret->reqid ] );
+	}
+
 	public function delete_answered_requests( \DateTime $before ) {
 		$this->db->perform( 'DELETE requests '
 		                    . 'FROM requests '
