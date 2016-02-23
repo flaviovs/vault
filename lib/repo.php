@@ -173,4 +173,10 @@ class Repository {
 		                    . 'WHERE secrets.created < ?',
 		                    [ $before->format(\DateTime::ISO8601) ] );
 	}
+
+	public function delete_unanswered_requests( \DateTime $before ) {
+		$this->db->perform( 'DELETE FROM requests '
+		                    . 'WHERE created < ?',
+		                    [ $before->format(\DateTime::ISO8601) ] );
+	}
 }

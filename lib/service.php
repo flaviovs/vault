@@ -214,7 +214,18 @@ class Service {
 		$this->repo->delete_answered_requests( $before );
 	}
 
+	public function delete_unanswered_requests() {
+		$period = ( isset($this->conf['maintenance']['expire_unanswered_requests_after']) ?
+		            $this->conf['maintenance']['expire_unanswered_requests_after'] :
+		            '1 day' );
+		$before = new \DateTime();
+		$before->sub( \DateInterval::createFromDateString( $period ) );
+
+		$this->repo->delete_unanswered_requests( $before );
+	}
+
 	public function maintenance() {
 		$this->delete_answered_requests();
+		$this->delete_unanswered_requests();
 	}
 }
