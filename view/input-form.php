@@ -15,9 +15,7 @@
   <input type="hidden" name="m" value="<?php echo htmlspecialchars($mac) ?>">
 
   <?php if ( $instructions ): ?>
-  <div id="instructions">
-	<?php echo $instructions ?>
-  </div>
+  <div id="instructions"><?php echo $instructions ?></div>
   <?php endif ?>
 
   <div class="form-group">
