@@ -3,7 +3,7 @@
 namespace Vault;
 
 abstract class Vault_App {
-
+	protected $name;
 	protected $log;
 	protected $conf;
 	protected $db;
@@ -14,6 +14,7 @@ abstract class Vault_App {
 	abstract protected function run();
 
 	public function __construct($name) {
+		$this->name = $name;
 		$this->log = new \Monolog\Logger($name);
 	}
 
