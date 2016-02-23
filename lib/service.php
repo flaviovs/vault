@@ -161,6 +161,7 @@ class Service {
 			$this->repo->record_request_ping_back( $request->reqid );
 		} catch ( VaultException $ex ) {
 			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage());
+			throw new $ex;
 		}
 	}
 
@@ -182,8 +183,9 @@ class Service {
 		$this->repo->begin();
 		$this->repo->add_secret( $secret );
 		$this->repo->clear_request_input_key( $request );
-		$this->ping_back_new_request( $request, $unlock_key );
 		$this->repo->commit();
+
+		$this->ping_back_new_request( $request, $unlock_key );
 
 		return [
 			'unlock_key' => $unlock_key,
