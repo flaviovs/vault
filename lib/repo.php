@@ -26,7 +26,7 @@ class Repository {
 
 	public function find_app( $appid ) {
 		$sth = $this->db->perform('SELECT '
-		                          . 'appkey, secret, name, ping_url '
+		                          . 'appkey, secret, vault_secret, name, ping_url '
 		                          . 'FROM apps '
 		                          . 'WHERE appid = ?',
 		                          [ $appid ]);
@@ -35,7 +35,8 @@ class Repository {
 			throw new VaultDataException("App $appid not found");
 		}
 
-		$app = new App($row[ 'appkey' ], $row[ 'secret' ], $row[ 'name' ]);
+		$app = new App($row[ 'appkey' ], $row[ 'secret' ],
+		               $row[ 'vault_secret' ], $row[ 'name' ]);
 		$app->appid = $appid;
 		$app->ping_url = $row[ 'ping_url' ];
 
@@ -44,7 +45,7 @@ class Repository {
 
 	public function find_app_by_key( $key ) {
 		$sth = $this->db->perform('SELECT '
-		                          . 'appid, secret, name, ping_url '
+		                          . 'appid, secret, vault_secret, name, ping_url '
 		                          . 'FROM apps '
 		                          . 'WHERE appkey = ?',
 		                          [ $key ]);
@@ -53,7 +54,8 @@ class Repository {
 			throw new VaultDataException("App '$key' not found");
 		}
 
-		$app = new App($key, $row['secret'], $row['name']);
+		$app = new App($key, $row[ 'secret' ],
+		               $row[ 'vault_secret' ], $row[ 'name' ]);
 		$app->appid = $row['appid'];
 		$app->ping_url = $row['ping_url'];
 
@@ -62,11 +64,12 @@ class Repository {
 
 	public function add_app(App $app) {
 		$sth = $this->db->perform( 'INSERT INTO apps '
-		                           . '(appkey, secret, name, ping_url) '
-		                           . 'VALUES (?, ?, ?, ?)',
+		                           . '(appkey, secret, vault_secret, name, ping_url) '
+		                           . 'VALUES (?, ?, ?, ?, ?)',
 		                           [
 			                           $app->key,
 			                           $app->secret,
+			                           $app->vault_secret,
 			                           $app->name,
 			                           $app->ping_url,
 		                           ] );

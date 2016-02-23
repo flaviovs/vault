@@ -38,7 +38,8 @@ class Service {
 
 		return [
 			'key' => $app->key,
-			'secret' => $app->secret,
+			'secret' => $secret,
+			'vault_secret' => $app->vault_secret,
 		];
 	}
 

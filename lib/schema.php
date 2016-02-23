@@ -10,6 +10,7 @@ const SCHEMA = [
 	appid INTEGER PRIMARY KEY AUTO_INCREMENT,
 	appkey VARCHAR(16) NOT NULL UNIQUE COLLATE utf8_bin,
 	secret TEXT NOT NULL COLLATE utf8_bin,
+	vault_secret TEXT COLLATE utf8_bin,
 	name VARCHAR(100) NOT NULL,
 	ping_url VARCHAR(200) UNIQUE
 )

@@ -6,12 +6,14 @@ class App {
 	public $appid;
 	public $key;
 	public $secret;
+	public $vault_secret;
 	public $name;
 	public $ping_url;
 
-	public function __construct( $key, $secret, $name ) {
+	public function __construct( $key, $secret, $vault_secret, $name ) {
 		$this->key = $key;
 		$this->secret = $secret;
+		$this->vault_secret = $vault_secret;
 		$this->name = $name;
 	}
 }
