@@ -109,15 +109,18 @@ class Service {
 
 	protected function ping_back( App $app, $subject, array $payload) {
 
-		if ( $this->log->isHandling(\Monolog\Logger::DEBUG) ) {
-			$this->log->addDebug( "Pinging $app->ping_url",
-			                      [ 'payload' => $payload ] );
-		}
-
 		$postdata = [
 			's' => $subject,
 			'p' => json_encode( $payload ),
 		];
+
+		if ( $this->log->isHandling(\Monolog\Logger::DEBUG) ) {
+			$this->log->addDebug( "Pinging $app->ping_url",
+			                      [
+				                      'payload' => $payload,
+				                      'postdata' => $postdata,
+			                      ] );
+		}
 
 		$postdata[ 'm' ] = hash_hmac( 'sha1',
 		                              $postdata[ 's' ] . ' ' . $postdata[ 'p' ],
