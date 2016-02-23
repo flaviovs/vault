@@ -2,6 +2,7 @@
 
 namespace Vault;
 
+class UnauthorizedException extends VaultException {}
 class NotFoundException extends VaultException {}
 
 abstract class Web_App extends Vault_App {
@@ -84,6 +85,12 @@ abstract class Web_App extends Vault_App {
 		$this->handle_request( $route );
 	}
 
+	protected function handle_unauthorized( $realm ) {
+		$this->response->status->set( '401', 'Unauthorized', '1.1' );
+		$this->response->headers->set( 'WWW-Authenticate',
+		                               'Basic realm="' . $realm . '"' );
+	}
+
 	protected function handle_not_found( $message ) {
 		$this->log->addNotice( "Not found ($message)" );
 		$this->response->status->set( '404', 'Not Found', '1.1' );
@@ -95,6 +102,9 @@ abstract class Web_App extends Vault_App {
 			$this->bootstrap();
 			$this->init_router();
 			$this->dispatch_request();
+		}
+		catch ( UnauthorizedException $ex ) {
+			$this->handle_unauthorized( $this->name );
 		}
 		catch ( NotFoundException $ex ) {
 			$this->handle_not_found( $ex->getMessage() );
