@@ -26,7 +26,9 @@ class Service {
 	}
 
 	public function add_app( $name, $ping_url) {
+		$secret = $this->generate_app_secret();
 		$app = new App( $this->generate_app_key(),
+		                password_hash( $secret, PASSWORD_DEFAULT ),
 		                $this->generate_app_secret(),
 		                $name );
 		if ( $ping_url && ! filter_var( $ping_url, FILTER_VALIDATE_URL ) ) {
