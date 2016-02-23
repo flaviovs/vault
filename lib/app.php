@@ -16,32 +16,24 @@ abstract class Vault_App {
 	public function __construct($name) {
 		$this->name = $name;
 		$this->log = new \Monolog\Logger($name);
+		$this->conf = new Config();
 	}
 
 	protected function load_config() {
-		$ini = VAULT_ROOT . '/config.ini';
-		if ( file_exists( $ini ) ) {
-			$this->conf = parse_ini_file( $ini, TRUE );
-		} else {
-			$this->conf = [];
-		}
-	}
-
-	protected function get_conf( $section, $key, $default = NULL ) {
-		return ( ! empty( $this->conf[ $section ])
-		         && array_key_exists($key, $this->conf[ $section ] ) ) ?
-			$this->conf[ $section ][ $key ] : $default;
+		$this->conf->load_file( VAULT_ROOT . '/config.ini' );
 	}
 
 	protected function init_database() {
-		if ( empty( $this->conf[ 'db.default' ] ) ) {
-			throw new \RuntimeException('Database configuration missing');
+
+		try {
+			$dsn = $this->conf->get( 'db.default', 'dsn' );
+			$user = $this->conf->get( 'db.default', 'user' );
+			$password = $this->conf->get( 'db.default', 'password' );
+		} catch ( ConfigException $ex ) {
+			throw new \RuntimeException( 'Database not properly configured' );
 		}
 
-		$conf = $this->conf[ 'db.default' ];
-		$this->db = new \Aura\Sql\ExtendedPdo( $conf[ 'dsn' ],
-											   $conf[ 'user' ],
-											   $conf[ 'password' ]);
+		$this->db = new \Aura\Sql\ExtendedPdo( $dsn, $user, $password );
 
 		// Initialize our repository abstraction.
 		$this->repo = new Repository($this->db);

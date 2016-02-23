@@ -204,8 +204,8 @@ class Front_End_App extends Web_App {
 
 		$this->session->setFlash( 'reqid', $request->reqid );
 		$this->session->setFlash( 'view_expire',
-		                          time() + $this->get_conf( 'general',
-		                                                    'view_time', 60) );
+		                          time() + $this->conf->get( 'general',
+		                                                     'view_time', 60) );
 		$this->session->setFlash( 'plaintext',
 		                          $this->service->unlock_secret( $secret,
 		                                                         $unlock_key ) );

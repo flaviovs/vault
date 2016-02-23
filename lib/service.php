@@ -9,7 +9,7 @@ class Service {
 	protected $repo;
 	protected $log;
 
-	public function __construct( array $conf,
+	public function __construct( Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log) {
 		$this->conf = $conf;
@@ -58,7 +58,7 @@ class Service {
 	protected function get_input_url( Request $request ) {
 		$input_hash = $this->get_request_mac( $request );
 
-		return $this->conf[ 'url' ][ 'input' ]
+		return $this->conf->get( 'url', 'input' )
 			. '/request/' . $request->reqid . '/input?'
 			. 'm=' . urlencode( base64_encode ( $input_hash ) );
 	}
@@ -66,7 +66,7 @@ class Service {
 	protected function get_unlock_url( Request $request, $unlock_key ) {
 		$mac = $this->get_request_mac( $request, $unlock_key );
 
-		return $this->conf[ 'url' ][ 'unlock' ]
+		return $this->conf->get( 'url', 'unlock' )
 			. '/unlock/' . $request->reqid . '/input?'
 			. 'm=' . urlencode( base64_encode ( $mac ) );
 	}
@@ -205,9 +205,9 @@ class Service {
 	}
 
 	public function delete_answered_requests() {
-		$period = ( isset($this->conf['maintenance']['expire_answered_requests_after']) ?
-		            $this->conf['maintenance']['expire_answered_requests_after'] :
-		            '1 hour' );
+		$period = $this->conf->get( 'maintenance',
+		                            'expire_answered_requests_after',
+		                            '1 hour' );
 		$before = new \DateTime();
 		$before->sub( \DateInterval::createFromDateString( $period ) );
 
@@ -215,9 +215,9 @@ class Service {
 	}
 
 	public function delete_unanswered_requests() {
-		$period = ( isset($this->conf['maintenance']['expire_unanswered_requests_after']) ?
-		            $this->conf['maintenance']['expire_unanswered_requests_after'] :
-		            '1 day' );
+		$period = $this->conf->get( 'maintenance',
+		                            'expire_unanswered_requests_after',
+		                            '1 day' );
 		$before = new \DateTime();
 		$before->sub( \DateInterval::createFromDateString( $period ) );
 
