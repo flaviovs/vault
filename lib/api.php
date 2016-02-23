@@ -42,11 +42,12 @@ class REST_App extends Web_App {
 	protected function handle_request_add() {
 		$this->check_auth();
 
-		return $this->service->register_request(
-			$this->auth_app->key,
-			$this->request->post->get( 'email' ),
-			$this->request->post->get( 'instructions' ),
-			$this->request->post->get( 'app_data' ) );
+		$this->response->content->set(
+			$this->service->register_request(
+				$this->auth_app->key,
+				$this->request->post->get( 'email' ),
+				$this->request->post->get( 'instructions' ),
+				$this->request->post->get( 'app_data' ) ) );
 	}
 
 	protected function handle_devel_info() {
