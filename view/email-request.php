@@ -5,6 +5,7 @@ you. Please, visit the URL below and submit the information.
 
   <?php echo $input_url ?>
 
+
 Thanks,
 -- 
 The Happiness Engineer team
