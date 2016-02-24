@@ -28,6 +28,9 @@ abstract class Web_App extends Vault_App {
 		$this->request = $web_factory->newRequest();
 		$this->response = $web_factory->newResponse();
 
+		$this->response->content->setType( 'text/html' );
+		$this->response->content->setCharset( 'utf-8' );
+
 		$router_factory = new \Aura\Router\RouterFactory();
 		$this->router = $router_factory->newInstance();
 	}
@@ -81,6 +84,13 @@ abstract class Web_App extends Vault_App {
 		$this->send_response_contents();
 	}
 
+	protected function prepare_response() {
+		$type = $this->response->content->getType();
+		$charset = $this->response->content->getCharset();
+		$this->response->headers->set( 'Content-Type',
+									   "$type; charset=\"$charset\"" );
+	}
+
 	protected function dispatch_request() {
 		$path = $this->request->url->get( PHP_URL_PATH );
 		$route = $this->router->match( $path, $this->request->server->get() );
@@ -120,6 +130,7 @@ abstract class Web_App extends Vault_App {
 			$this->handle_exception( $ex );
 		}
 
+		$this->prepare_response();
 		$this->send_response();
 
 		return $this->response->status->getCode();
