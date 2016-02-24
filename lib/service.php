@@ -161,7 +161,7 @@ class Service {
 			$this->repo->record_unlock_ping_back( $request->reqid );
 		} catch ( VaultException $ex ) {
 			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage());
-			throw new $ex;
+			throw $ex;
 		}
 	}
 
