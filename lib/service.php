@@ -88,7 +88,7 @@ class Service {
 		}
 	}
 
-	public function register_request($key, $email, $instructions, $app_data) {
+	public function register_request( $key, $email, $instructions, $app_data ) {
 		if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
 			throw new \InvalidArgumentException("Invalid e-mail '$email'");
 		}
