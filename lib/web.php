@@ -16,8 +16,14 @@ abstract class Web_App extends Vault_App {
 
 	public function __construct($name, array $globals = NULL ) {
 		parent::__construct($name);
-		if ( ! $globals )
+		if ( ! $globals ) {
+			// Workaround '_SERVER' not present in $GLOBALS, unless
+			// referenced before (see
+			// https://bugs.php.net/bug.php?id=65223).
+			$_SERVER;
+
 			$globals = $GLOBALS;
+		}
 		$web_factory = new \Aura\Web\WebFactory( $globals );
 		$this->request = $web_factory->newRequest();
 		$this->response = $web_factory->newResponse();
