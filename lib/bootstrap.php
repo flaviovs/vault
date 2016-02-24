@@ -19,4 +19,6 @@ function error_handler( $severity, $message, $file, $line ) {
 		throw new \ErrorException( $message, 0, $severity, $file, $line );
 }
 
+error_reporting( E_ALL );
+
 set_error_handler( __NAMESPACE__ . '\\error_handler' );
