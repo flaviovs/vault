@@ -51,7 +51,8 @@ abstract class Vault_App {
 	protected function init_service() {
 		$this->service = new Service( $this->conf,
 		                              $this->repo,
-		                              $this->log );
+		                              $this->log,
+		                              $this->views );
 	}
 
 	protected function bootstrap() {

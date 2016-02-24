@@ -8,13 +8,16 @@ class Service {
 	protected $conf;
 	protected $repo;
 	protected $log;
+	protected $views;
 
 	public function __construct( Config $conf,
 	                             Repository $repo,
-	                             \Monolog\Logger $log) {
+	                             \Monolog\Logger $log,
+	                             View_Registry $views) {
 		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;
+		$this->views = $views;
 	}
 
 	protected function generate_app_key() {
