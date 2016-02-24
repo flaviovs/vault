@@ -13,9 +13,16 @@ main {
 
 h1 {
 	text-align: center;
+}
+
+h1, h2 {
 	font-weight: normal;
 }
 
+label {
+	font-weight: bold;
+	display: block;
+}
 
 input[type="submit"] {
 	border: none;
@@ -24,6 +31,10 @@ input[type="submit"] {
 	margin: 0 auto;
 	font-size: 100%;
 	background-color: #d8d8d8;
+}
+
+.form-group {
+	margin-bottom: 1em;
 }
 
 #instructions {
@@ -42,4 +53,23 @@ textarea#secret {
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
+}
+
+#element-key.form-group label:after {
+	content: "*";
+	color: red;
+}
+
+#element-key.form-group input {
+	width: 100%;
+	padding: 5px;
+	font-size: 110%;
+	box-sizing: border-box;
+}
+
+
+#unlocked-secret {
+	background-color: #fee;
+	padding: 10px;
+	border-radius: 10px;
 }
