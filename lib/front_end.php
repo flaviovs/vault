@@ -106,7 +106,7 @@ class Front_End_App extends Web_App {
 		                        Request::INSTRUCTIONS_ALLOWED_TAGS ) );
 		$view->set( 'mac', $mac );
 
-		$this->display_page( __( "Input your credentials" ), $view );
+		$this->display_page( __( "We need your information" ), $view );
 	}
 
 	protected function handle_input_request_submission( $reqid ) {
