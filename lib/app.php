@@ -9,6 +9,7 @@ abstract class Vault_App {
 	protected $db;
 	protected $repo;
 	protected $service;
+	protected $views;
 
 	abstract protected function init_basic_logging();
 	abstract protected function run();
@@ -17,6 +18,7 @@ abstract class Vault_App {
 		$this->name = $name;
 		$this->log = new \Monolog\Logger($name);
 		$this->conf = new Config();
+		$this->views = new View_Registry();
 	}
 
 	protected function load_config() {

@@ -4,14 +4,12 @@ namespace Vault;
 
 class Front_End_App extends Web_App {
 
-	protected $views;
 	protected $session;
 	protected $script_config = [];
 	protected $script_files = [ '/script.js' ];
 
 	public function __construct($name, array $globals = NULL ) {
 		parent::__construct($name, $globals);
-		$this->views = new View_Registry();
 
 		// Initialize our session object.
 		$session_factory = new \Aura\Session\SessionFactory;
