@@ -75,13 +75,14 @@ class Service {
 	}
 
 	protected function email_request( Request $request ) {
-		$input_url = $this->get_input_url( $request );
-
 		$mail = new Mailer($this->conf, $this->log);
 
+		$body = $this->views->get( 'email-request' );
+		$body->set( 'input_url', $this->get_input_url( $request ) );
+
 		$mail->addAddress($request->email);
-		$mail->Subject = "## Input URL ##";
-		$mail->Body = "Input the secret here: $input_url";
+		$mail->Subject = "We need your information";
+		$mail->Body = (string) $body;
 
 		if ( ! $mail->send() ) {
 			$this->log->addError( "Failed to send e-mail for request $request->reqid: " . $mail->ErrorInfo );
