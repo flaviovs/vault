@@ -92,7 +92,10 @@ class REST_App extends Web_App {
 			[ 'message' => 'Unknown request.' ] );
 	}
 
-	protected function send_response_contents() {
-		echo json_encode($this->response->content->get());
+	protected function prepare_response() {
+		$json = json_encode( $this->response->content->get() );
+		$this->response->content->set( $json );
+		$this->response->headers->set( 'Content-Length', strlen( $json ) );
+		parent::prepare_response();
 	}
 }
