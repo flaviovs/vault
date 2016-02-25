@@ -44,6 +44,13 @@ class Front_End_App extends Web_App {
 		                       '/unlock/{reqid}/view' );
 	}
 
+	protected function check_form_token() {
+		$form_token = $this->request->post->get( 'form_token' );
+		if ( ! $this->root_session->getCsrfToken()->isValid( $form_token ) ) {
+			throw new \RuntimeException( 'Invalid form token. CSRF attempt?' );
+		}
+	}
+
 	protected function display_page( $title, $contents ) {
 		$view = $this->views->get('page');
 		$view->set('title', $title);
@@ -94,6 +101,8 @@ class Front_End_App extends Web_App {
 
 		$view = $this->views->get( 'input-form' );
 
+		$view->set( 'form_token',
+		            $this->root_session->getCsrfToken()->getValue() );
 		$view->set( 'reqid', $reqid );
 		$view->set( 'action',
 		            $this->router->generate( 'request.reqid.input#submission',
@@ -109,6 +118,8 @@ class Front_End_App extends Web_App {
 	}
 
 	protected function handle_input_request_submission( $reqid ) {
+		$this->check_form_token();
+
 		$request = $this->load_request( $reqid );
 
 		$mac = $this->request->post->get('m');
@@ -161,6 +172,8 @@ class Front_End_App extends Web_App {
 
 		$view = $this->views->get( 'unlock-form' );
 
+		$view->set( 'form_token',
+		            $this->root_session->getCsrfToken()->getValue() );
 		$view->set( 'reqid', $reqid );
 		$view->set( 'action',
 		            $this->router->generate( 'unlock.reqid.input#submission',
@@ -173,6 +186,8 @@ class Front_End_App extends Web_App {
 	}
 
 	protected function handle_unlock_input_submission( $reqid ) {
+		$this->check_form_token();
+
 		$request = $this->load_request( $reqid );
 
 		$mac = $this->request->post->get('m');
