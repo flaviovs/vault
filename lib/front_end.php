@@ -4,6 +4,7 @@ namespace Vault;
 
 class Front_End_App extends Web_App {
 
+	protected $root_session;
 	protected $session;
 	protected $script_config = [];
 	protected $script_files = [ '/script.js' ];
@@ -13,9 +14,9 @@ class Front_End_App extends Web_App {
 
 		// Initialize our session object.
 		$session_factory = new \Aura\Session\SessionFactory;
-		$session = $session_factory->newInstance(
+		$this->root_session = $session_factory->newInstance(
 			$this->request->cookies->get() );
-		$this->session = $session->getSegment( 'Vault' );
+		$this->session = $this->root_session->getSegment( __CLASS__ );
 	}
 
 	public function init_router() {
