@@ -257,6 +257,12 @@ class Front_End_App extends Web_App {
 		$this->display_page( __( 'Unlocked' ), $view );
 	}
 
+	protected function handle_exception( \Exception $ex ) {
+		parent::handle_exception( $ex );
+		$view = $this->views->get( 'exception' );
+		$this->display_page( __( 'Oops..'), $view );
+	}
+
 	protected function handle_request( \Aura\Router\Route $route ) {
 
 		switch ( $route->params['action'] ) {
