@@ -96,6 +96,7 @@ class REST_App extends Web_App {
 		$json = json_encode( $this->response->content->get() );
 		$this->response->content->set( $json );
 		$this->response->headers->set( 'Content-Length', strlen( $json ) );
+		$this->response->cache->disable();
 		parent::prepare_response();
 	}
 }
