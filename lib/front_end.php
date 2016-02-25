@@ -153,7 +153,7 @@ class Front_End_App extends Web_App {
 	}
 
 	protected function handle_request_input_thank_you( $reqid ) {
-		if ( $this->session->getFlash( 'reqid' ) != $reqid ) {
+		if ( $this->session->getFlash( 'reqid' ) !== $reqid ) {
 			throw new NotFoundException();
 		}
 
@@ -232,7 +232,7 @@ class Front_End_App extends Web_App {
 	}
 
 	protected function handle_unlock_view( $reqid ) {
-		if ( $this->session->getFlash( 'reqid' ) != $reqid ) {
+		if ( $this->session->getFlash( 'reqid' ) !== $reqid ) {
 			throw new NotFoundException();
 		}
 
