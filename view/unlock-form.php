@@ -7,7 +7,7 @@
 
   <div id="element-key" class="form-group">
 	<label for="key">Unlock key</label>
-	<input type="text" name="key" id="key" required>
+	<input type="text" name="key" id="key" required autocomplete="off">
 	<div class="help">It is in the same notification where you received this URL.</div>
   </div>
 
