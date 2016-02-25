@@ -37,6 +37,11 @@ input[type="submit"] {
 	margin-bottom: 1em;
 }
 
+.form-group .help {
+	font-size: 90%;
+	color: #555;
+}
+
 #instructions {
 	font-family: Inconsolata, "Lucida Console", Monaco, monospace;
 	border-radius: 10px;
