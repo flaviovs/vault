@@ -8,15 +8,15 @@ class CLI_App extends Console_App {
 		return 'COMMAND [COMMAND-ARGS]';
 	}
 
-	protected function print_result(array $result) {
+	protected function print_result( array $result ) {
 		echo json_encode( $result, JSON_PRETTY_PRINT );
 		echo "\n";
 	}
 
 	protected function handle_app_add() {
 		$name = $this->getopt->get( 3 );
-		if ( !$name ) {
-			throw new \InvalidArgumentException( "Missing app name" );
+		if ( ! $name ) {
+			throw new \InvalidArgumentException( 'Missing app name' );
 		}
 		$res = $this->service->add_app( $name, $this->getopt->get( 4 ) );
 
@@ -27,11 +27,11 @@ class CLI_App extends Console_App {
 		$app_command = $this->getopt->get( 2 );
 
 		switch ( $app_command ) {
-		case 'add':
-			$this->handle_app_add();
-			break;
-		default:
-			throw new \InvalidArgumentException("Unkown app command '$app_command'");
+			case 'add':
+				$this->handle_app_add();
+				break;
+			default:
+				throw new \InvalidArgumentException( "Unkown app command '$app_command'" );
 		}
 	}
 
@@ -39,13 +39,13 @@ class CLI_App extends Console_App {
 		$appkey = $this->getopt->get( 2 );
 		$email = $this->getopt->get( 3 );
 
-		if ( !( $appkey && $email ) ) {
-			throw new \InvalidArgumentException("Usage 'request APPKEY EMAIL'");
+		if ( ! ( $appkey && $email ) ) {
+			throw new \InvalidArgumentException( "Usage 'request APPKEY EMAIL'" );
 		}
 
-		$app_data = $this->getopt->get(4);
+		$app_data = $this->getopt->get( 4 );
 
-		$instructions = file_get_contents( "php://stdin" );
+		$instructions = file_get_contents( 'php://stdin' );
 
 		$res = $this->service->register_request( $appkey,
 		                                         $email,
@@ -59,23 +59,23 @@ class CLI_App extends Console_App {
 		$command = $this->getopt->get( 1 );
 
 		switch ( $command ) {
-		case '':
-			throw new \InvalidArgumentException("Invalid usage.");
+			case '':
+				throw new \InvalidArgumentException( 'Invalid usage.' );
 
-		case 'app':
-			$this->handle_app();
-			break;
+			case 'app':
+				$this->handle_app();
+				break;
 
-		case 'maintenance':
-			$this->service->maintenance();
-			break;
+			case 'maintenance':
+				$this->service->maintenance();
+				break;
 
-		case 'request':
-			$this->handle_request();
-			break;
+			case 'request':
+				$this->handle_request();
+				break;
 
-		default:
-			throw new \InvalidArgumentException("Unkown command '$command'");
+			default:
+				throw new \InvalidArgumentException( "Unkown command '$command'" );
 		}
 	}
 

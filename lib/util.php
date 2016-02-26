@@ -14,23 +14,25 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 	}
 
 	protected function get_level_id( $level_name ) {
-		return $level_name == 'EMERGENCY' ? '!' : $level_name[ 0 ];
+		return 'EMERGENCY' == $level_name ? '!' : $level_name[0];
 	}
 
 	public function write( array $record ) {
-		if ( !$this->sth ) {
+		if ( ! $this->sth ) {
 			$this->sth = $this->db->prepare( 'INSERT INTO log (created, loglevelid, message, appid) VALUES (NOW(), ?, ?, ?)' );
 		}
 
-		if ( isset($extra['app']) ) {
+		if ( isset( $extra['app'] ) ) {
 			$appid = $extra['app']->appid;
 		} else {
-			$appid = NULL;
+			$appid = null;
 		}
 
-		$this->sth->execute( [ $this->get_level_id( $record[ 'level_name' ] ),
-		                       $record[ 'message' ],
-		                       $appid ] );
+		$this->sth->execute( [
+			                     $this->get_level_id( $record['level_name'] ),
+			                     $record['message'],
+			                     $appid,
+		                     ] );
 	}
 }
 
@@ -39,22 +41,22 @@ class Mailer extends \PHPMailer {
 	protected $debug;
 	protected $log;
 
-	public function __construct(Config $conf, \Monolog\Logger $log) {
-		parent::__construct( TRUE ); // Tell PHPMailer that we want exceptions.
+	public function __construct( Config $conf, \Monolog\Logger $log ) {
+		parent::__construct( true ); // Tell PHPMailer that we want exceptions.
 
 		try {
 			$from_address = $conf->get( 'mailer', 'from_address' );
 		} catch ( ConfigException $ex ) {
-			throw new VaultException('Missing from_address mailer configuration');
+			throw new VaultException( 'Missing from_address mailer configuration' );
 		}
 
 		try {
 			$from_name = $conf->get( 'mailer', 'from_name' );
 		} catch ( ConfigException $ex ) {
-			throw new VaultException('Missing from_name mailer configuration');
+			throw new VaultException( 'Missing from_name mailer configuration' );
 		}
 
-		$this->debug = $conf->get( 'debug', 'mailer', FALSE );
+		$this->debug = $conf->get( 'debug', 'mailer', false );
 		if ( $this->debug ) {
 			$this->Mailer = 'debug';
 		}
@@ -64,14 +66,14 @@ class Mailer extends \PHPMailer {
 		$this->log = $log;
 	}
 
-	protected function debugSend($headers, $body) {
-		$this->log->addDebug('Omitting email to '
-		                     . implode( ',',
-		                                array_keys( $this->all_recipients ) ),
-		                     [
-			                     'headers' => $headers,
-			                     'body' => $body,
-		                     ]);
-		return TRUE;
+	protected function debugSend( $headers, $body ) {
+		$this->log->addDebug( 'Omitting email to '
+		                      . implode( ',',
+		                                 array_keys( $this->all_recipients ) ),
+		                      [
+			                      'headers' => $headers,
+			                      'body' => $body,
+		                      ] );
+		return true;
 	}
 }

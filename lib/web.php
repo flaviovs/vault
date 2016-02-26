@@ -14,8 +14,8 @@ abstract class Web_App extends Vault_App {
 	abstract protected function init_router();
 	abstract protected function handle_request( \Aura\Router\Route $route );
 
-	public function __construct($name, array $globals = NULL ) {
-		parent::__construct($name);
+	public function __construct( $name, array $globals = null ) {
+		parent::__construct( $name );
 		if ( ! $globals ) {
 			// Workaround '_SERVER' not present in $GLOBALS, unless
 			// referenced before (see
@@ -39,9 +39,9 @@ abstract class Web_App extends Vault_App {
 		$handler = new \Monolog\Handler\ErrorLogHandler();
 		$handler->setFormatter(
 			new \Monolog\Formatter\LineFormatter(
-				"[%level_name%] %channel%: %message% %context% %extra%\n"));
-		$this->log->setHandlers([$handler]);
-		$this->log->pushProcessor(new \Monolog\Processor\WebProcessor());
+				"[%level_name%] %channel%: %message% %context% %extra%\n" ) );
+		$this->log->setHandlers( [ $handler ] );
+		$this->log->pushProcessor( new \Monolog\Processor\WebProcessor() );
 	}
 
 	protected function handle_exception( \Exception $ex ) {
@@ -95,7 +95,7 @@ abstract class Web_App extends Vault_App {
 		$path = $this->request->url->get( PHP_URL_PATH );
 		$route = $this->router->match( $path, $this->request->server->get() );
 		if ( ! $route ) {
-			throw new NotFoundException($path);
+			throw new NotFoundException( $path );
 		}
 
 		$this->handle_request( $route );
@@ -113,20 +113,15 @@ abstract class Web_App extends Vault_App {
 	}
 
 	public function run() {
-		try
-		{
+		try {
 			$this->bootstrap();
 			$this->init_router();
 			$this->dispatch_request();
-		}
-		catch ( UnauthorizedException $ex ) {
+		} catch ( UnauthorizedException $ex ) {
 			$this->handle_unauthorized( $this->name );
-		}
-		catch ( NotFoundException $ex ) {
+		} catch ( NotFoundException $ex ) {
 			$this->handle_not_found( $ex->getMessage() );
-		}
-		catch ( \Exception $ex )
-		{
+		} catch ( \Exception $ex ) {
 			$this->handle_exception( $ex );
 		}
 

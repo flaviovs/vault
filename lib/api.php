@@ -6,13 +6,13 @@ class REST_App extends Web_App {
 
 	protected $auth_app;
 
-	public function __construct( $name, array $globals = NULL ) {
+	public function __construct( $name, array $globals = null ) {
 		parent::__construct( $name, $globals );
 		$this->response->content->setType( 'application/json' );
 	}
 
 	protected function init_router() {
-		if ( $this->conf->get( 'api', 'debug', FALSE ) ) {
+		if ( $this->conf->get( 'api', 'debug', false ) ) {
 			$this->router->addGet( 'devel.info', '/devel/info' );
 		}
 
@@ -28,13 +28,13 @@ class REST_App extends Web_App {
 		try {
 			$this->auth_app = $this->repo->find_app_by_key( $app_key );
 		} catch ( VaultDataException $ex ) {
-			$this->log->addNotice("No such app '$app_key'");
+			$this->log->addNotice( "No such app '$app_key'" );
 			throw new UnauthorizedException();
 		}
 
 		if ( ! password_verify( $this->request->client->getAuthPw(),
 		                        $this->auth_app->secret ) ) {
-			$this->log->addNotice("Authentication failed for '$app_key'");
+			$this->log->addNotice( "Authentication failed for '$app_key'" );
 			throw new UnauthorizedException();
 		}
 	}
@@ -51,9 +51,9 @@ class REST_App extends Web_App {
 	}
 
 	protected function handle_devel_info() {
-			$app = $this->check_auth();
+		$app = $this->check_auth();
 
-		$this->response->content->set($_SERVER);
+		$this->response->content->set( $_SERVER );
 	}
 
 	protected function handle_request( \Aura\Router\Route $route ) {
@@ -69,8 +69,8 @@ class REST_App extends Web_App {
 			break;
 
 		default:
-			throw new \RuntimeException( "Invalid action: "
-			                             . $route->params[ 'action' ] );
+			throw new \RuntimeException( 'Invalid action: '
+			                             . $route->params['action'] );
 		}
 	}
 

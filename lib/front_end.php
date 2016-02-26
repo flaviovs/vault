@@ -9,8 +9,8 @@ class Front_End_App extends Web_App {
 	protected $script_config = [];
 	protected $script_files = [ '/script.js' ];
 
-	public function __construct($name, array $globals = NULL ) {
-		parent::__construct($name, $globals);
+	public function __construct( $name, array $globals = null ) {
+		parent::__construct( $name, $globals );
 
 		// Initialize our session object.
 		$session_factory = new \Aura\Session\SessionFactory;
@@ -52,27 +52,26 @@ class Front_End_App extends Web_App {
 	}
 
 	protected function display_page( $title, $contents ) {
-		$view = $this->views->get('page');
-		$view->set('title', $title);
-		$view->set('contents', $contents);
+		$view = $this->views->get( 'page' );
+		$view->set( 'title', $title );
+		$view->set( 'contents', $contents );
 
-		// NB: script tags broken apart to avoid problems with
-		// code editors. Please, do not join them!
-		$scripts = "<sc" . "ript>var Vault = {'config': " . json_encode($this->script_config) . "};</scri" ."pt>\n";
+		// NB: script tags broken apart to avoid problems with code
+		// editors. Please, do not join them!
+		$scripts = '<sc' . "ript>var Vault = {'config': " . json_encode( $this->script_config ) . '};</' . "script>\n";
 
 		foreach ( $this->script_files as $url ) {
-			$scripts .= "<sc" . "ript src=\"$url\"></scri" ."pt>\n";
+			$scripts .= '<sc' . "ript src=\"$url\"></scri" . "pt>\n";
 		}
-		$view->set('scripts', $scripts);
+		$view->set( 'scripts', $scripts );
 
-		$this->response->content->set($view);
+		$this->response->content->set( $view );
 	}
 
 	protected function load_request( $reqid ) {
 		try {
 			$request = $this->repo->find_request( $reqid );
-		}
-		catch ( VaultDataException $ex ) {
+		} catch ( VaultDataException $ex ) {
 			throw new NotFoundException( $ex->getMessage() );
 		}
 		return $request;
@@ -82,7 +81,7 @@ class Front_End_App extends Web_App {
 
 		$request = $this->load_request( $reqid );
 
-		$mac = $this->request->query->get('m');
+		$mac = $this->request->query->get( 'm' );
 		if ( ! $mac ) {
 			throw new NotFoundException( 'No MAC' );
 		}
@@ -94,7 +93,7 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException( 'No input key' );
 		}
 
-		if ( ! hash_equals( base64_decode($mac),
+		if ( ! hash_equals( base64_decode( $mac ),
 		                    $this->service->get_request_mac( $request ) ) ) {
 			throw new NotFoundException( 'Invalid MAC' );
 		}
@@ -114,7 +113,7 @@ class Front_End_App extends Web_App {
 		                        Request::INSTRUCTIONS_ALLOWED_TAGS ) );
 		$view->set( 'mac', $mac );
 
-		$this->display_page( __( "We need your information" ), $view );
+		$this->display_page( __( 'We need your information' ), $view );
 	}
 
 	protected function handle_input_request_submission( $reqid ) {
@@ -122,7 +121,7 @@ class Front_End_App extends Web_App {
 
 		$request = $this->load_request( $reqid );
 
-		$mac = $this->request->post->get('m');
+		$mac = $this->request->post->get( 'm' );
 		if ( ! $mac ) {
 			throw new NotFoundException( 'No MAC' );
 		}
@@ -132,7 +131,7 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException( 'No input key' );
 		}
 
-		if ( ! hash_equals( base64_decode($mac),
+		if ( ! hash_equals( base64_decode( $mac ),
 		                    $this->service->get_request_mac( $request ) ) ) {
 			throw new NotFoundException( 'Invalid MAC' );
 		}
@@ -165,7 +164,7 @@ class Front_End_App extends Web_App {
 
 		$request = $this->load_request( $reqid );
 
-		$mac = $this->request->query->get('m');
+		$mac = $this->request->query->get( 'm' );
 		if ( ! $mac ) {
 			throw new NotFoundException( 'No MAC' );
 		}
@@ -182,7 +181,7 @@ class Front_End_App extends Web_App {
 		                                       ] ) );
 		$view->set( 'mac', $mac );
 
-		$this->display_page( __( "Input the unlock key" ), $view );
+		$this->display_page( __( 'Input the unlock key' ), $view );
 	}
 
 	protected function handle_unlock_input_submission( $reqid ) {
@@ -190,15 +189,14 @@ class Front_End_App extends Web_App {
 
 		$request = $this->load_request( $reqid );
 
-		$mac = $this->request->post->get('m');
+		$mac = $this->request->post->get( 'm' );
 		if ( ! $mac ) {
 			throw new NotFoundException( 'No MAC' );
 		}
 
-		$unlock_key = $this->request->post->get('key');
+		$unlock_key = $this->request->post->get( 'key' );
 
-		if ( ! hash_equals( base64_decode($mac),
-		                    $this->service->get_request_mac( $request, $unlock_key ) ) ) {
+		if ( ! hash_equals( base64_decode( $mac ), $this->service->get_request_mac( $request, $unlock_key ) ) ) {
 			throw new NotFoundException( 'Invalid URL MAC' );
 		}
 
@@ -248,7 +246,7 @@ class Front_End_App extends Web_App {
 		// over (which then will fatally return a 404).
 		$remaining_time++;
 		$this->response->headers->set( 'Refresh',
-		                               $remaining_time. "; URL=" . $this->request->url->get());
+		                               $remaining_time . '; URL=' . $this->request->url->get());
 		$this->script_config['refresh'] = $remaining_time;
 
 		$view = $this->views->get( 'unlock-view' );
@@ -260,7 +258,7 @@ class Front_End_App extends Web_App {
 	protected function handle_exception( \Exception $ex ) {
 		parent::handle_exception( $ex );
 		$view = $this->views->get( 'exception' );
-		$this->display_page( __( 'Oops..'), $view );
+		$this->display_page( __( 'Oops..' ), $view );
 	}
 
 	protected function handle_request( \Aura\Router\Route $route ) {
@@ -268,32 +266,32 @@ class Front_End_App extends Web_App {
 		switch ( $route->params['action'] ) {
 
 		case 'request.reqid.input':
-			$this->handle_input_request( $route->params[ 'reqid' ] );
+			$this->handle_input_request( $route->params['reqid'] );
 			break;
 
 		case 'request.reqid.input#submission':
-			$this->handle_input_request_submission( $route->params[ 'reqid' ] );
+			$this->handle_input_request_submission( $route->params['reqid'] );
 			break;
 
 		case 'request.reqid.thank-you':
-			$this->handle_request_input_thank_you( $route->params[ 'reqid' ] );
+			$this->handle_request_input_thank_you( $route->params['reqid'] );
 			break;
 
 		case 'unlock.reqid.input':
-			$this->handle_unlock_input( $route->params[ 'reqid' ] );
+			$this->handle_unlock_input( $route->params['reqid'] );
 			break;
 
 		case 'unlock.reqid.input#submission':
-			$this->handle_unlock_input_submission( $route->params[ 'reqid' ] );
+			$this->handle_unlock_input_submission( $route->params['reqid'] );
 			break;
 
 		case 'unlock.reqid.view':
-			$this->handle_unlock_view( $route->params[ 'reqid' ] );
+			$this->handle_unlock_view( $route->params['reqid'] );
 			break;
 
 		default:
-			throw new \RuntimeException( "Invalid action: "
-			                             . $route->params[ 'action' ] );
+			throw new \RuntimeException( 'Invalid action: '
+			                             . $route->params['action'] );
 		}
 	}
 

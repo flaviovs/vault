@@ -13,7 +13,7 @@ class Service {
 	public function __construct( Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log,
-	                             View_Registry $views) {
+	                             View_Registry $views ) {
 		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;
@@ -21,14 +21,14 @@ class Service {
 	}
 
 	protected function generate_app_key() {
-		return base64_encode(openssl_random_pseudo_bytes(12));
+		return base64_encode( openssl_random_pseudo_bytes( 12 ) );
 	}
 
 	protected function generate_app_secret() {
-		return base64_encode(openssl_random_pseudo_bytes(30));
+		return base64_encode( openssl_random_pseudo_bytes( 30 ) );
 	}
 
-	public function add_app( $name, $ping_url) {
+	public function add_app( $name, $ping_url ) {
 		$secret = $this->generate_app_secret();
 		$app = new App( $this->generate_app_key(),
 		                password_hash( $secret, PASSWORD_DEFAULT ),
@@ -38,8 +38,8 @@ class Service {
 			throw new VaultException( "Invalid Ping URL '$ping_url'" );
 		}
 		$app->ping_url = $ping_url;
-		$this->repo->add_app($app);
-		$this->log->addNotice("Added app $app->key ($name)");
+		$this->repo->add_app( $app );
+		$this->log->addNotice( "Added app $app->key ($name)" );
 
 		return [
 			'key' => $app->key,
@@ -48,14 +48,14 @@ class Service {
 		];
 	}
 
-	public function get_request_mac( Request $request, $key = NULL ) {
+	public function get_request_mac( Request $request, $key = null ) {
 		if ( ! $key ) {
 			$key = $request->input_key;
 		}
 		return hash_hmac( 'sha1',
 		                  $request->reqid . ' ' . $request->email,
 		                  $key,
-		                  TRUE );
+		                  true );
 	}
 
 	protected function get_input_url( Request $request ) {
@@ -63,7 +63,7 @@ class Service {
 
 		return $this->conf->get( 'url', 'input' )
 			. '/request/' . $request->reqid . '/input?'
-			. 'm=' . urlencode( base64_encode ( $input_hash ) );
+			. 'm=' . urlencode( base64_encode( $input_hash ) );
 	}
 
 	protected function get_unlock_url( Request $request, $unlock_key ) {
@@ -71,17 +71,17 @@ class Service {
 
 		return $this->conf->get( 'url', 'unlock' )
 			. '/unlock/' . $request->reqid . '/input?'
-			. 'm=' . urlencode( base64_encode ( $mac ) );
+			. 'm=' . urlencode( base64_encode( $mac ) );
 	}
 
 	protected function email_request( Request $request ) {
-		$mail = new Mailer($this->conf, $this->log);
+		$mail = new Mailer( $this->conf, $this->log );
 
 		$body = $this->views->get( 'email-request' );
 		$body->set( 'input_url', $this->get_input_url( $request ) );
 
-		$mail->addAddress($request->email);
-		$mail->Subject = "We need your information";
+		$mail->addAddress( $request->email );
+		$mail->Subject = 'We need your information';
 		$mail->Body = (string) $body;
 
 		if ( ! $mail->send() ) {
@@ -91,34 +91,34 @@ class Service {
 
 	public function register_request( $key, $email, $instructions, $app_data ) {
 		if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-			throw new \InvalidArgumentException("Invalid e-mail '$email'");
+			throw new \InvalidArgumentException( "Invalid e-mail '$email'" );
 		}
 
-		$app = $this->repo->find_app_by_key($key);
+		$app = $this->repo->find_app_by_key( $key );
 
-		$request = new Request($app->appid, $email);
+		$request = new Request( $app->appid, $email );
 		$request->instructions = $instructions;
 		$request->app_data = $app_data;
-		$request->input_key = base64_encode(openssl_random_pseudo_bytes(24));
+		$request->input_key = base64_encode( openssl_random_pseudo_bytes( 24 ) );
 
-		$this->repo->add_request($request);
-		$this->log->info("Added request $request->reqid for '$email' by $key");
+		$this->repo->add_request( $request );
+		$this->log->info( "Added request $request->reqid for '$email' by $key" );
 
-		$this->email_request($request);
+		$this->email_request( $request );
 
 		return [
 			'reqid' => $request->reqid,
 		];
 	}
 
-	protected function ping_back( App $app, $subject, array $payload) {
+	protected function ping_back( App $app, $subject, array $payload ) {
 
 		$postdata = [
 			's' => $subject,
 			'p' => json_encode( $payload ),
 		];
 
-		if ( $this->log->isHandling(\Monolog\Logger::DEBUG) ) {
+		if ( $this->log->isHandling( \Monolog\Logger::DEBUG ) ) {
 			$this->log->addDebug( "Pinging $app->ping_url",
 			                      [
 				                      'payload' => $payload,
@@ -126,17 +126,17 @@ class Service {
 			                      ] );
 		}
 
-		$postdata[ 'm' ] = hash_hmac( 'sha1',
-		                              $postdata[ 's' ] . ' ' . $postdata[ 'p' ],
-		                              $app->vault_secret,
-		                              TRUE );
+		$postdata['m'] = hash_hmac( 'sha1',
+		                            $postdata['s'] . ' ' . $postdata['p'],
+		                            $app->vault_secret,
+		                            true );
 
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $app->ping_url );
 		curl_setopt( $ch, CURLOPT_USERAGENT, 'Vault' );
 		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 20 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, 20 );
-		curl_setopt( $ch, CURLOPT_POST, TRUE );
+		curl_setopt( $ch, CURLOPT_POST, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postdata );
 
 		$res = curl_exec( $ch );
@@ -164,17 +164,17 @@ class Service {
 			$this->log->addInfo( "Pinged $app->key@$app->ping_url for request $request->reqid" );
 			$this->repo->record_unlock_ping_back( $request->reqid );
 		} catch ( VaultException $ex ) {
-			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage());
+			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage() );
 			throw $ex;
 		}
 	}
 
-	public function register_secret( Request $request , $plaintext ) {
+	public function register_secret( Request $request, $plaintext ) {
 
-		$unlock_key = base64_encode(openssl_random_pseudo_bytes(24));
+		$unlock_key = base64_encode( openssl_random_pseudo_bytes( 24 ) );
 
-		$iv_size = openssl_cipher_iv_length(Secret::CIPHER);
-		$iv = openssl_random_pseudo_bytes($iv_size);
+		$iv_size = openssl_cipher_iv_length( Secret::CIPHER );
+		$iv = openssl_random_pseudo_bytes( $iv_size );
 
 		$secret = new Secret( $request->reqid,
 		                      $iv . openssl_encrypt( $plaintext,
@@ -186,11 +186,11 @@ class Service {
 
 		$debug_repeat_secret_input = $this->conf->get( 'debug',
 		                                               'repeat_secret_input',
-		                                               FALSE );
+		                                               false );
 
 		$this->repo->begin();
 		if ( $debug_repeat_secret_input ) {
-			$this->log->addWarning('debug.repeat_secret_input is enabled');
+			$this->log->addWarning( 'debug.repeat_secret_input is enabled' );
 			$this->repo->delete_secret( $secret );
 		}
 		$this->repo->add_secret( $secret );
@@ -209,13 +209,13 @@ class Service {
 	public function unlock_secret( Secret $secret, $key ) {
 		$this->repo->record_unlock( $secret );
 
-		$iv_size = openssl_cipher_iv_length(Secret::CIPHER);
+		$iv_size = openssl_cipher_iv_length( Secret::CIPHER );
 
-		return openssl_decrypt( substr($secret->secret, $iv_size),
+		return openssl_decrypt( substr( $secret->secret, $iv_size ),
 		                        Secret::CIPHER,
 		                        $key,
 		                        OPENSSL_RAW_DATA,
-		                        substr($secret->secret, 0, $iv_size) );
+		                        substr( $secret->secret, 0, $iv_size ) );
 	}
 
 	public function delete_answered_requests() {

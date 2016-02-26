@@ -14,9 +14,9 @@ abstract class Vault_App {
 	abstract protected function init_basic_logging();
 	abstract protected function run();
 
-	public function __construct($name) {
+	public function __construct( $name ) {
 		$this->name = $name;
-		$this->log = new \Monolog\Logger($name);
+		$this->log = new \Monolog\Logger( $name );
 		$this->conf = new Config();
 		$this->views = new View_Registry();
 	}
@@ -38,14 +38,14 @@ abstract class Vault_App {
 		$this->db = new \Aura\Sql\ExtendedPdo( $dsn, $user, $password );
 
 		// Initialize our repository abstraction.
-		$this->repo = new Repository($this->db);
+		$this->repo = new Repository( $this->db );
 
 		$this->init_database_logging();
 	}
 
 	protected function init_database_logging() {
 		// Initialize database logging
-		$this->log->pushHandler(new DatabaseLoggingHandler($this->db));
+		$this->log->pushHandler( new DatabaseLoggingHandler( $this->db ) );
 	}
 
 	protected function init_service() {

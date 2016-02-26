@@ -29,7 +29,7 @@ class Request {
 
 	const INSTRUCTIONS_ALLOWED_TAGS = '<p><br><b><i><strong><em><ul><ol><li>';
 
-	public function __construct($appid, $email) {
+	public function __construct( $appid, $email ) {
 		$this->appid = $appid;
 		$this->email = $email;
 		$this->created = new \DateTime();
@@ -44,15 +44,14 @@ class Secret {
 
 	const CIPHER = 'aes-128-cbc';
 
-	public function __construct($reqid, $secret)
-	{
+	public function __construct( $reqid, $secret ) {
 		$this->reqid = $reqid;
 		$this->secret = $secret;
 		$this->created = new \DateTime();
 	}
 
-	protected function get_secret_mac($key) {
-		return hash_hmac( 'sha1', $this->secret, $key, TRUE );
+	protected function get_secret_mac( $key ) {
+		return hash_hmac( 'sha1', $this->secret, $key, true );
 	}
 
 	public function set_mac( $key ) {

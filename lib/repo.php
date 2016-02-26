@@ -25,44 +25,44 @@ class Repository {
 	}
 
 	public function find_app( $appid ) {
-		$sth = $this->db->perform('SELECT '
-		                          . 'appkey, secret, vault_secret, name, ping_url '
-		                          . 'FROM apps '
-		                          . 'WHERE appid = ?',
-		                          [ $appid ]);
+		$sth = $this->db->perform( 'SELECT '
+		                           . 'appkey, secret, vault_secret, name, ping_url '
+		                           . 'FROM apps '
+		                           . 'WHERE appid = ?',
+		                           [ $appid ] );
 		$row = $sth->fetch();
-		if (!$row) {
-			throw new VaultDataException("App $appid not found");
+		if ( ! $row ) {
+			throw new VaultDataException( "App $appid not found" );
 		}
 
-		$app = new App($row[ 'appkey' ], $row[ 'secret' ],
-		               $row[ 'vault_secret' ], $row[ 'name' ]);
+		$app = new App( $row['appkey'], $row['secret'],
+		                $row['vault_secret'], $row['name'] );
 		$app->appid = $appid;
-		$app->ping_url = $row[ 'ping_url' ];
+		$app->ping_url = $row['ping_url'];
 
 		return $app;
 	}
 
 	public function find_app_by_key( $key ) {
-		$sth = $this->db->perform('SELECT '
-		                          . 'appid, secret, vault_secret, name, ping_url '
-		                          . 'FROM apps '
-		                          . 'WHERE appkey = ?',
-		                          [ $key ]);
+		$sth = $this->db->perform( 'SELECT '
+		                           . 'appid, secret, vault_secret, name, ping_url '
+		                           . 'FROM apps '
+		                           . 'WHERE appkey = ?',
+		                           [ $key ] );
 		$row = $sth->fetch();
-		if (!$row) {
-			throw new VaultDataException("App '$key' not found");
+		if ( ! $row ) {
+			throw new VaultDataException( "App '$key' not found" );
 		}
 
-		$app = new App($key, $row[ 'secret' ],
-		               $row[ 'vault_secret' ], $row[ 'name' ]);
+		$app = new App($key, $row['secret'],
+		               $row['vault_secret'], $row['name']);
 		$app->appid = $row['appid'];
 		$app->ping_url = $row['ping_url'];
 
 		return $app;
 	}
 
-	public function add_app(App $app) {
+	public function add_app( App $app ) {
 		$sth = $this->db->perform( 'INSERT INTO apps '
 		                           . '(appkey, secret, vault_secret, name, ping_url) '
 		                           . 'VALUES (?, ?, ?, ?, ?)',
@@ -100,16 +100,16 @@ class Repository {
 		                           . 'WHERE reqid = ?',
 		                           [ $reqid ] );
 		$row = $sth->fetch();
-		if (!$row) {
-			throw new VaultDataException("Request $reqid not found");
+		if ( ! $row ) {
+			throw new VaultDataException( "Request $reqid not found" );
 		}
 
-		$request = new Request($row['appid'], $row['email']);
+		$request = new Request( $row['appid'], $row['email'] );
 		$request->reqid = $reqid;
 		$request->app_data = $row['app_data'];
 		$request->instructions = $row['instructions'];
 		$request->input_key = $row['input_key'];
-		$request->created = new \DateTime($row['created']);
+		$request->created = new \DateTime( $row['created'] );
 
 		return $request;
 	}
@@ -122,7 +122,7 @@ class Repository {
 			                    $secret->reqid,
 			                    $secret->secret,
 			                    $secret->mac,
-			                    $secret->created->format(\DateTime::ISO8601),
+			                    $secret->created->format( \DateTime::ISO8601 ),
 		                    ] );
 		return $secret;
 	}
@@ -150,12 +150,11 @@ class Repository {
 			throw new VaultDataException( "Secret $reqid not found" );
 		}
 
-
-		$app = new Secret( $reqid, $row[ 'secret' ] );
-		$app->mac = $row[ 'mac' ];
-		$app->created = new \DateTime( $row[ 'created' ] );
-		$app->ping_url = ( ! empty($row[ 'pinged' ]) ?
-		                   new \DateTime( $row[ 'pinged' ] ) : NULL );
+		$app = new Secret( $reqid, $row['secret'] );
+		$app->mac = $row['mac'];
+		$app->created = new \DateTime( $row['created'] );
+		$app->ping_url = ( ! empty( $row['pinged'] ) ?
+		                   new \DateTime( $row['pinged'] ) : null );
 
 		return $app;
 	}
@@ -176,12 +175,12 @@ class Repository {
 		                    . 'FROM requests '
 		                    . 'JOIN secrets USING (reqid) '
 		                    . 'WHERE secrets.created < ?',
-		                    [ $before->format(\DateTime::ISO8601) ] );
+		                    [ $before->format( \DateTime::ISO8601 ) ] );
 	}
 
 	public function delete_unanswered_requests( \DateTime $before ) {
 		$this->db->perform( 'DELETE FROM requests '
 		                    . 'WHERE created < ?',
-		                    [ $before->format(\DateTime::ISO8601) ] );
+		                    [ $before->format( \DateTime::ISO8601 ) ] );
 	}
 }
