@@ -176,32 +176,68 @@ Installation
 3. Edit config.ini and edit/review the settings.
 
 4. Run `php bin/install.php`. If everything goes well, your system is
-   ready to be used.
+ready to be used.
 
 
-Basic usage
+Web server setup
+================
+
+The engine requires two separate web addresses to provide service --
+one for the input/unlock front-end, and other for API access. The
+document root for these addresses are below, respectively:
+
+* www/ - input/unlock front-end
+
+* api/ - API
+
+The system was tested under Apache. It requires only standard PHP
+serving from the web software, so it may be straightforward to install
+it under another web software. A `.htaccess` file is provided under
+each of the directories above, that promptly configure the service to
+work under Apache, but which also may be used as a starting point to
+configure other web software.
+
+
+Maintenance
 ===========
 
-Adding apps
------------
+To properly expire secrets and requests a maintenance task must be run
+periodically. The following line can be used to configure cron(8) to
+run the maintenance task:
 
-The syntax is:
+    */5 * * * *   www-data  php ROOT/bin/vault.php maintenance
+
+Change *ROOT* to the root path where the system is installed.
+
+
+Adding apps
+===========
+
+Secret requests are tied to client apps, so you must have at least one
+client app for this system to be usable.
+
+To create an app, run the following command:
 
     $ php bin/vault.php app add APP-NAME [PING-URL]
 
 Where *APP-NAME* is a human-readable app name, and *PING-URL* is the
-optional ping url.
+optional ping URL.
 
 
 Generating request
-------------------
+==================
 
-The syntax is:
+You can generate a request on the command line on behalf of an
+app. The syntax is:
 
     $ php bin/vault.php request KEY EMAIL
 
 Where *KEY* is the app key, and *EMAIL* is the email address of the
-user we are requesting a secret from.
+user you want to request a secret from.
 
-Notice: the command will stop reading optional instructions from
+**Notice**: the command will stop reading optional instructions from
 STDIN. Type Ctrl-D on an empty line to proceed.
+
+**Notice**: Use of the command line tool *only* to generate requests
+as a debugging tool, or to check that the system is properly
+installed.
