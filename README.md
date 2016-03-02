@@ -152,7 +152,8 @@ then to other specialized tools.
 
 ## Expiration
 
-TBA
+Requests and secrets expire after a certain amount of time. The
+expiration time is defined in the configuration file.
 
 
 Requirements

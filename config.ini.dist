@@ -32,6 +32,24 @@ input = https://vault.automattic.com
 unlock = https://vault.automattic.com
 
 
+[maintenance]
+
+; This is the time a request is allowed to be lying around unseen
+; before it is deleted. In other words, after a user input a secret,
+; the engineer will have this amount of time to go to the unlock URL
+; to see it before it get deleted.
+; See http://php.net/manual/en/datetime.formats.relative.php for
+; accepted date formats.
+expire_answered_requests_after = 4 hours
+
+; This control the amount of time an engineer request that is still
+; waiting for the user to input the secret will be kept. From a
+; security POV, it is not a big deal to have unanswered requests
+; floating around, but expiring this is a good idea to avoid confusion
+; with subsequent requests sent to the same user.
+expire_unanswered_requests_after = 1 day
+
+
 [debug]
 ; Enable mailer debug. Currently, if true the mailer will just
 ; actually log emails, instead of sending them
