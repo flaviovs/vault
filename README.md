@@ -223,6 +223,9 @@ To create an app, run the following command:
 Where *APP-NAME* is a human-readable app name, and *PING-URL* is the
 optional ping URL.
 
+This command will output API *key*, *secret* and *Vault secret*, which
+should be used by the client app to talk with this Vault.
+
 
 Generating request
 ==================
