@@ -67,3 +67,13 @@ run the maintenance task:
     */5 * * * *   www-data  php ROOT/bin/vault.php maintenance
 
 Change *ROOT* to the root path where the system is installed.
+
+
+Documentation
+-------------
+
+More documentation is available in the `doc` directory:
+
+* [System architecture](doc/architecture.md)
+
+* [The command line interface](doc/cli.md)
