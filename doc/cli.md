@@ -1,5 +1,5 @@
-The Vault command line tool
-===========================
+The Vault command line interface
+================================
 
 The Vault command line tool `vault.php` is available in the `bin`
 directory. It can be used to perform basic engine tasks, and for
