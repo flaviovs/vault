@@ -145,3 +145,14 @@ Expiration
 Requests and secrets expire after a certain amount of time. The
 expiration time is defined in the configuration file.
 
+
+Some useful diagrams
+--------------------
+
+## System architecture
+
+![System architecture](architecture.png)
+
+## Overall data flow
+
+![Overall data flow](data-flow.png)
