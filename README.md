@@ -16,7 +16,7 @@ be used to add other client apps, and generate secret requests.
 
 
 Requirements
-============
+------------
 
 * PHP >= 5.6
 
@@ -26,7 +26,7 @@ Requirements
 
 
 Installation
-============
+------------
 
 1. `composer install`
 
@@ -39,7 +39,7 @@ ready to be used.
 
 
 Web server setup
-================
+----------------
 
 The engine requires two separate web addresses to provide service --
 one for the input/unlock front-end, and other for API access. The
@@ -58,7 +58,7 @@ configure other web software.
 
 
 Maintenance
-===========
+-----------
 
 To properly expire secrets and requests a maintenance task must be run
 periodically. The following line can be used to configure cron(8) to
