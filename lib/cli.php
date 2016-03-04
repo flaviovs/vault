@@ -18,7 +18,13 @@ class CLI_App extends Console_App {
 		if ( ! $name ) {
 			throw new \InvalidArgumentException( 'Missing app name' );
 		}
-		$res = $this->service->add_app( $name, $this->getopt->get( 4 ) );
+
+		$ping_url = $this->getopt->get( 4 );
+		if ( ! $ping_url ) {
+			throw new \InvalidArgumentException( 'Missing ping URL' );
+		}
+
+		$res = $this->service->add_app( $name, $ping_url );
 
 		$this->print_result( $res );
 	}

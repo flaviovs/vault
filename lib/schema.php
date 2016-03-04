@@ -12,7 +12,7 @@ const SCHEMA = [
 	secret TEXT NOT NULL COLLATE utf8_bin,
 	vault_secret TEXT COLLATE utf8_bin,
 	name VARCHAR(100) NOT NULL,
-	ping_url VARCHAR(200) UNIQUE
+	ping_url VARCHAR(200) NOT NULL UNIQUE
 )
 ',
 
