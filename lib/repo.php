@@ -122,7 +122,7 @@ class Repository {
 			                    $secret->reqid,
 			                    $secret->secret,
 			                    $secret->mac,
-			                    $secret->created->format( \DateTime::ISO8601 ),
+			                    $secret->created->format( 'Y-m-d H:i:s' ),
 		                    ] );
 		return $secret;
 	}
@@ -175,12 +175,12 @@ class Repository {
 		                    . 'FROM requests '
 		                    . 'JOIN secrets USING (reqid) '
 		                    . 'WHERE secrets.created < ?',
-		                    [ $before->format( \DateTime::ISO8601 ) ] );
+		                    [ $before->format( 'Y-m-d H:i:s' ) ] );
 	}
 
 	public function delete_unanswered_requests( \DateTime $before ) {
 		$this->db->perform( 'DELETE FROM requests '
 		                    . 'WHERE created < ?',
-		                    [ $before->format( \DateTime::ISO8601 ) ] );
+		                    [ $before->format( 'Y-m-d H:i:s' ) ] );
 	}
 }
