@@ -1,6 +1,6 @@
 <p>You have unlocked the information:</p>
 
-<pre id="unlocked-secret"><?php print $plaintext ?></pre>
+<pre id="unlocked-secret"><?php echo $plaintext ?></pre>
 
 <aside>
 <h2>Notice</h2>
