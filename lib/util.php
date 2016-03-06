@@ -88,4 +88,8 @@ class Esc {
 	static public function attr( $string ) {
 		return htmlspecialchars( $string, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	}
+
+	static public function instructions( $string ) {
+		return strip_tags( $string, Request::INSTRUCTIONS_ALLOWED_TAGS );
+	}
 }
