@@ -65,7 +65,7 @@ const SCHEMA = [
 	created DATETIME NOT NULL,
 	loglevelid CHAR(1) COLLATE utf8_bin NOT NULL,
 	message TEXT NOT NULL,
-	appid INTEGER NOT NULL,
+	appid INTEGER,
 
 	CONSTRAINT log_loglevelid
 		FOREIGN KEY log_loglevelid (loglevelid)
