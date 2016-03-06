@@ -18,13 +18,15 @@ const SCHEMA = [
 
 	'CREATE TABLE requests (
 	reqid INTEGER PRIMARY KEY AUTO_INCREMENT,
-	appid INTEGER NOT NULL
-		REFERENCES app,
+	appid INTEGER NOT NULL,
 	app_data TEXT,
 	email VARCHAR(100) NOT NULL,
 	instructions TEXT,
 	input_key TEXT COLLATE utf8_bin,
-	created DATETIME NOT NULL
+	created DATETIME NOT NULL,
+
+	CONSTRAINT requests_appid
+		FOREIGN KEY requests_appid (appid) REFERENCES apps (appid)
 )
 ',
 
@@ -42,7 +44,7 @@ const SCHEMA = [
 ',
 
 	'CREATE TABLE log_level (
-	loglevelid CHAR(1) PRIMARY KEY,
+	loglevelid CHAR(1) COLLATE utf8_bin PRIMARY KEY,
 	name VARCHAR(10) NOT NULL UNIQUE
 )',
 
@@ -61,9 +63,15 @@ const SCHEMA = [
 	'CREATE TABLE log (
 	logid INTEGER PRIMARY KEY AUTO_INCREMENT,
 	created DATETIME NOT NULL,
-	loglevelid CHAR(1) NOT NULL REFERENCES log_level,
+	loglevelid CHAR(1) COLLATE utf8_bin NOT NULL,
 	message TEXT NOT NULL,
-	appid INTEGER REFERENCES apps
+	appid INTEGER NOT NULL,
+
+	CONSTRAINT log_loglevelid
+		FOREIGN KEY log_loglevelid (loglevelid)
+			REFERENCES log_level (loglevelid),
+	CONSTRAINT log_appid
+		FOREIGN KEY log_appid (appid) REFERENCES apps (appid)
 )
 ',
 
