@@ -250,7 +250,7 @@ class Front_End_App extends Web_App {
 		$this->script_config['refresh'] = $remaining_time;
 
 		$view = $this->views->get( 'unlock-view' );
-		$view->set( 'plaintext', htmlspecialchars( $plaintext ) );
+		$view->set( 'plaintext', Esc::html( $plaintext ) );
 
 		$this->display_page( __( 'Unlocked' ), $view );
 	}
