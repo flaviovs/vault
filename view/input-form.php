@@ -17,7 +17,7 @@ use Vault\Esc;
   <input type="hidden" name="m" value="<?php echo Esc::attr( $mac ) ?>">
 
   <?php if ( $instructions ): ?>
-  <div id="instructions"><?php echo $instructions ?></div>
+  <div id="instructions"><?php echo Esc::instructions( $instructions ) ?></div>
   <?php endif ?>
 
   <div class="form-group">

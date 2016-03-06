@@ -108,9 +108,7 @@ class Front_End_App extends Web_App {
 		                                       [
 			                                       'reqid' => $request->reqid,
 		                                       ] ) );
-		$view->set( 'instructions',
-		            strip_tags( $request->instructions,
-		                        Request::INSTRUCTIONS_ALLOWED_TAGS ) );
+		$view->set( 'instructions', $request->instructions );
 		$view->set( 'mac', $mac );
 
 		$this->display_page( __( 'We need your information' ), $view );
