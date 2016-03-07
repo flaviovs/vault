@@ -35,7 +35,6 @@ const SCHEMA = [
 	secret BLOB,
 	mac BLOB,
 	created DATETIME NOT NULL,
-	pinged DATETIME,
 
 	CONSTRAINT secrets_reqid
 		FOREIGN KEY secrets_reqid (reqid) REFERENCES requests (reqid)

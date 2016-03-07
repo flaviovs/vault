@@ -134,14 +134,9 @@ class Repository {
 		                    [ $request->reqid ] );
 	}
 
-	public function record_unlock_ping_back( $reqid ) {
-		$this->db->perform( 'UPDATE secrets SET pinged = NOW() WHERE reqid = ?',
-		                    [ $reqid ] );
-	}
-
 	public function find_secret( $reqid ) {
 		$sth = $this->db->perform( 'SELECT '
-		                           . 'secret, mac, created, pinged '
+		                           . 'secret, mac, created '
 		                           . 'FROM secrets '
 		                           . 'WHERE reqid = ?',
 		                           [ $reqid ] );
@@ -153,8 +148,6 @@ class Repository {
 		$app = new Secret( $reqid, $row['secret'] );
 		$app->mac = $row['mac'];
 		$app->created = new \DateTime( $row['created'] );
-		$app->ping_url = ( ! empty( $row['pinged'] ) ?
-		                   new \DateTime( $row['pinged'] ) : null );
 
 		return $app;
 	}
