@@ -27,7 +27,7 @@ class Repository {
 	public function find_app( $appid ) {
 		$sth = $this->db->perform( 'SELECT '
 		                           . 'appkey, secret, vault_secret, name, ping_url '
-		                           . 'FROM apps '
+		                           . 'FROM vault_apps '
 		                           . 'WHERE appid = ?',
 		                           [ $appid ] );
 		$row = $sth->fetch();
@@ -46,7 +46,7 @@ class Repository {
 	public function find_app_by_key( $key ) {
 		$sth = $this->db->perform( 'SELECT '
 		                           . 'appid, secret, vault_secret, name, ping_url '
-		                           . 'FROM apps '
+		                           . 'FROM vault_apps '
 		                           . 'WHERE appkey = ?',
 		                           [ $key ] );
 		$row = $sth->fetch();
@@ -63,7 +63,7 @@ class Repository {
 	}
 
 	public function add_app( App $app ) {
-		$sth = $this->db->perform( 'INSERT INTO apps '
+		$sth = $this->db->perform( 'INSERT INTO vault_apps '
 		                           . '(appkey, secret, vault_secret, name, ping_url) '
 		                           . 'VALUES (?, ?, ?, ?, ?)',
 		                           [
@@ -77,7 +77,7 @@ class Repository {
 	}
 
 	public function add_request( Request $request ) {
-		$sth = $this->db->perform( 'INSERT INTO requests '
+		$sth = $this->db->perform( 'INSERT INTO vault_requests '
 		                           . '(appid, app_data, email, instructions, '
 		                           . 'input_key, created) '
 		                           . 'VALUES (?, ?, ?, ?, ?, NOW())',
@@ -96,7 +96,7 @@ class Repository {
 	public function find_request( $reqid ) {
 		$sth = $this->db->perform( 'SELECT appid, app_data, email, '
 		                           . 'instructions, input_key, created '
-		                           . 'FROM requests '
+		                           . 'FROM vault_requests '
 		                           . 'WHERE reqid = ?',
 		                           [ $reqid ] );
 		$row = $sth->fetch();
@@ -115,7 +115,7 @@ class Repository {
 	}
 
 	public function add_secret( Secret $secret ) {
-		$this->db->perform( 'INSERT into secrets '
+		$this->db->perform( 'INSERT into vault_secrets '
 		                    . '(reqid, secret, mac, created) '
 		                    . 'VALUES (?, ?, ?, ?)',
 		                    [
@@ -128,7 +128,7 @@ class Repository {
 	}
 
 	public function clear_request_input_key( Request $request ) {
-		$this->db->perform( 'UPDATE requests '
+		$this->db->perform( 'UPDATE vault_requests '
 		                    . 'SET input_key = NULL '
 		                    . 'WHERE reqid = ?',
 		                    [ $request->reqid ] );
@@ -137,7 +137,7 @@ class Repository {
 	public function find_secret( $reqid ) {
 		$sth = $this->db->perform( 'SELECT '
 		                           . 'secret, mac, created '
-		                           . 'FROM secrets '
+		                           . 'FROM vault_secrets '
 		                           . 'WHERE reqid = ?',
 		                           [ $reqid ] );
 		$row = $sth->fetch();
@@ -153,26 +153,26 @@ class Repository {
 	}
 
 	public function record_unlock( Secret $secret ) {
-		$this->db->perform( 'UPDATE secrets '
+		$this->db->perform( 'UPDATE vault_secrets '
 		                    . 'SET secret = NULL, mac = NULL WHERE reqid = ?',
 		                    [ $secret->reqid ] );
 	}
 
 	public function delete_secret( Secret $secret ) {
-		$this->db->perform( 'DELETE FROM secrets WHERE reqid = ?',
+		$this->db->perform( 'DELETE FROM vault_secrets WHERE reqid = ?',
 		                    [ $secret->reqid ] );
 	}
 
 	public function delete_answered_requests( \DateTime $before ) {
-		$this->db->perform( 'DELETE requests '
-		                    . 'FROM requests '
-		                    . 'JOIN secrets USING (reqid) '
-		                    . 'WHERE secrets.created < ?',
+		$this->db->perform( 'DELETE vault_requests '
+		                    . 'FROM vault_requests '
+		                    . 'JOIN vault_secrets USING (reqid) '
+		                    . 'WHERE vault_secrets.created < ?',
 		                    [ $before->format( 'Y-m-d H:i:s' ) ] );
 	}
 
 	public function delete_unanswered_requests( \DateTime $before ) {
-		$this->db->perform( 'DELETE FROM requests '
+		$this->db->perform( 'DELETE FROM vault_requests '
 		                    . 'WHERE created < ?',
 		                    [ $before->format( 'Y-m-d H:i:s' ) ] );
 	}
