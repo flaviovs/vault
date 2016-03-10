@@ -15,7 +15,12 @@ class Installer_App extends Console_App {
 
 		$this->bootstrap();
 
-		foreach ( SCHEMA as $sql ) {
+		foreach ( SCHEMA_INIT as $sql ) {
+			$this->log->addInfo( 'Executing: ' . strtok( $sql, "\n" ) );
+			$this->db->exec( $sql );
+		}
+
+		foreach ( SCHEMA_CREATE as $sql ) {
 			$this->log->addInfo( 'Executing: ' . strtok( $sql, "\n" ) );
 			$this->db->exec( $sql );
 		}

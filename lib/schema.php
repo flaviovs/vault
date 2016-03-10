@@ -2,10 +2,12 @@
 
 namespace Vault;
 
-const SCHEMA = [
+const SCHEMA_INIT = [
 	'ALTER DATABASE DEFAULT CHARACTER SET = utf8',
 	'SET default_storage_engine=InnoDB',
+];
 
+const SCHEMA_CREATE = [
 	'CREATE TABLE vault_apps (
 	vault_app_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	appkey VARCHAR(16) NOT NULL UNIQUE COLLATE utf8_bin,
