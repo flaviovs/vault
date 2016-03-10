@@ -70,7 +70,8 @@ class Service {
 		$mac = $this->get_request_mac( $request, $unlock_key );
 
 		return $this->conf->get( 'url', 'unlock' )
-			. '/unlock/' . $request->reqid . '/input?'
+			. '/unlock/' . $request->reqid . '/unlock?'
+			. 'k=' . urlencode( base64_encode( $unlock_key ) ) . '&'
 			. 'm=' . urlencode( base64_encode( $mac ) );
 	}
 

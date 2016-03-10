@@ -34,11 +34,8 @@ class Front_End_App extends Web_App {
 		$this->router->addGet( 'request.reqid.thank-you',
 		                       '/request/{reqid}/thank-you' );
 
-		$this->router->addGet( 'unlock.reqid.input',
-		                       '/unlock/{reqid}/input' );
-
-		$this->router->addPost( 'unlock.reqid.input#submission',
-		                        '/unlock/{reqid}/input' );
+		$this->router->addGet( 'unlock.reqid.unlock',
+		                       '/unlock/{reqid}/unlock' );
 
 		$this->router->addGet( 'unlock.reqid.view',
 		                       '/unlock/{reqid}/view' );
@@ -158,8 +155,7 @@ class Front_End_App extends Web_App {
 		                     $this->views->get( 'input-thank-you' ));
 	}
 
-	protected function handle_unlock_input( $reqid ) {
-
+	protected function handle_unlock_unlock( $reqid ) {
 		$request = $this->load_request( $reqid );
 
 		$mac = $this->request->query->get( 'm' );
@@ -167,32 +163,7 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException( 'No MAC' );
 		}
 
-		$view = $this->views->get( 'unlock-form' );
-
-		$view->set( 'form_token',
-		            $this->root_session->getCsrfToken()->getValue() );
-		$view->set( 'reqid', $reqid );
-		$view->set( 'action',
-		            $this->router->generate( 'unlock.reqid.input#submission',
-		                                       [
-			                                       'reqid' => $request->reqid,
-		                                       ] ) );
-		$view->set( 'mac', $mac );
-
-		$this->display_page( __( 'Input the unlock key' ), $view );
-	}
-
-	protected function handle_unlock_input_submission( $reqid ) {
-		$this->check_form_token();
-
-		$request = $this->load_request( $reqid );
-
-		$mac = $this->request->post->get( 'm' );
-		if ( ! $mac ) {
-			throw new NotFoundException( 'No MAC' );
-		}
-
-		$unlock_key = $this->request->post->get( 'key' );
+		$unlock_key = base64_decode( $this->request->query->get( 'k' ) );
 
 		if ( ! hash_equals( base64_decode( $mac ), $this->service->get_request_mac( $request, $unlock_key ) ) ) {
 			throw new NotFoundException( 'Invalid URL MAC' );
@@ -275,12 +246,8 @@ class Front_End_App extends Web_App {
 			$this->handle_request_input_thank_you( $route->params['reqid'] );
 			break;
 
-		case 'unlock.reqid.input':
-			$this->handle_unlock_input( $route->params['reqid'] );
-			break;
-
-		case 'unlock.reqid.input#submission':
-			$this->handle_unlock_input_submission( $route->params['reqid'] );
+		case 'unlock.reqid.unlock':
+			$this->handle_unlock_unlock( $route->params['reqid'] );
 			break;
 
 		case 'unlock.reqid.view':
