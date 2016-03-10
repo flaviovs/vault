@@ -7,7 +7,13 @@ const SCHEMA_INIT = [
 	'SET default_storage_engine=InnoDB',
 ];
 
-const SCHEMA_CREATE = [
+const SCHEMA_UPDATES = [
+	'CREATE TABLE vault_schema_versions (
+		version INTEGER PRIMARY KEY,
+		updated DATETIME NOT NULL
+)
+',
+
 	'CREATE TABLE vault_apps (
 	vault_app_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	appkey VARCHAR(16) NOT NULL UNIQUE COLLATE utf8_bin,
