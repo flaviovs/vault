@@ -64,7 +64,7 @@ abstract class Console_App extends Vault_App {
 						         return $ex->getMessage();
 					         }, $this->getopt->getErrors() ) )
 			);
-		};
+		}
 		return ! $has_errors;
 	}
 
