@@ -19,7 +19,7 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 
 	public function write( array $record ) {
 		if ( ! $this->sth ) {
-			$this->sth = $this->db->prepare( 'INSERT INTO vault_log (created, loglevelid, message, appid) VALUES (NOW(), ?, ?, ?)' );
+			$this->sth = $this->db->prepare( 'INSERT INTO vault_log (created, vault_log_level_id, message, vault_app_id) VALUES (NOW(), ?, ?, ?)' );
 		}
 
 		if ( isset( $extra['app'] ) ) {
