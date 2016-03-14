@@ -234,29 +234,29 @@ class Front_End_App extends Web_App {
 
 		switch ( $route->params['action'] ) {
 
-		case 'request.reqid.input':
-			$this->handle_input_request( $route->params['reqid'] );
-			break;
+			case 'request.reqid.input':
+				$this->handle_input_request( $route->params['reqid'] );
+				break;
 
-		case 'request.reqid.input#submission':
-			$this->handle_input_request_submission( $route->params['reqid'] );
-			break;
+			case 'request.reqid.input#submission':
+				$this->handle_input_request_submission( $route->params['reqid'] );
+				break;
 
-		case 'request.reqid.thank-you':
-			$this->handle_request_input_thank_you( $route->params['reqid'] );
-			break;
+			case 'request.reqid.thank-you':
+				$this->handle_request_input_thank_you( $route->params['reqid'] );
+				break;
 
-		case 'unlock.reqid.unlock':
-			$this->handle_unlock_unlock( $route->params['reqid'] );
-			break;
+			case 'unlock.reqid.unlock':
+				$this->handle_unlock_unlock( $route->params['reqid'] );
+				break;
 
-		case 'unlock.reqid.view':
-			$this->handle_unlock_view( $route->params['reqid'] );
-			break;
+			case 'unlock.reqid.view':
+				$this->handle_unlock_view( $route->params['reqid'] );
+				break;
 
-		default:
-			throw new \RuntimeException( 'Invalid action: '
-			                             . $route->params['action'] );
+			default:
+				throw new \RuntimeException( 'Invalid action: '
+				                             . $route->params['action'] );
 		}
 	}
 

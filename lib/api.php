@@ -60,17 +60,17 @@ class REST_App extends Web_App {
 
 		switch ( $route->params['action'] ) {
 
-		case 'request':
-			$this->handle_request_add();
-			break;
+			case 'request':
+				$this->handle_request_add();
+				break;
 
-		case 'devel.info':
-			$this->handle_devel_info();
-			break;
+			case 'devel.info':
+				$this->handle_devel_info();
+				break;
 
-		default:
-			throw new \RuntimeException( 'Invalid action: '
-			                             . $route->params['action'] );
+			default:
+				throw new \RuntimeException( 'Invalid action: '
+				                             . $route->params['action'] );
 		}
 	}
 

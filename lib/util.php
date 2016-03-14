@@ -58,7 +58,9 @@ class Mailer extends \PHPMailer {
 
 		$this->debug = $conf->get( 'debug', 'mailer', false );
 		if ( $this->debug ) {
+			// @codingStandardsIgnoreStart
 			$this->Mailer = 'debug';
+			// @codingStandardsIgnoreEnd
 		}
 
 		$this->setFrom( $from_address, $from_name );

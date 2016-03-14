@@ -25,7 +25,7 @@ class Installer_App extends Console_App {
 			$this->stdio->errln( '<<bold>>' );
 			fwrite( STDERR, preg_replace( '/^/m', "\t", $sql ) );
 			$this->stdio->errln( '<<reset>>' );
-			fwrite( STDERR, "\n" . $ex->getMessage() . "\n");
+			fwrite( STDERR, "\n" . $ex->getMessage() . "\n" );
 			return false;
 		}
 		return true;
@@ -59,13 +59,13 @@ class Installer_App extends Console_App {
 		$version = $this->get_schema_version();
 		$updates = count( SCHEMA_UPDATES );
 
-		if ( $version == $updates-1 ) {
-			$this->stdio->outln('<<bold>>Your database is up-to-date.<<reset>>' );
+		if ( ( $updates - 1 ) == $version ) {
+			$this->stdio->outln( '<<bold>>Your database is up-to-date.<<reset>>' );
 			return true;
-		} elseif ( $version == -1 ) {
-			$this->stdio->outln('<<bold>>Creating the database.<<reset>>' );
+		} elseif ( -1 == $version ) {
+			$this->stdio->outln( '<<bold>>Creating the database.<<reset>>' );
 		} else {
-			$this->stdio->outln('<<bold>>Updating the database.<<reset>>' );
+			$this->stdio->outln( '<<bold>>Updating the database.<<reset>>' );
 		}
 
 		for ( $i = $version + 1; $i < $updates; $i++ ) {

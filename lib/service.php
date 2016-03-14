@@ -82,11 +82,17 @@ class Service {
 		$body->set( 'input_url', $this->get_input_url( $request ) );
 
 		$mail->addAddress( $request->email );
+
+		// Ignore camel-case properties in $mail
+		// @codingStandardsIgnoreStart
 		$mail->Subject = 'We need your information';
 		$mail->Body = (string) $body;
+		// @codingStandardsIgnoreEnd
 
 		if ( ! $mail->send() ) {
+			// @codingStandardsIgnoreStart
 			$this->log->addError( "Failed to send e-mail for request $request->reqid: " . $mail->ErrorInfo );
+			// @codingStandardsIgnoreEnd
 		}
 	}
 
@@ -164,7 +170,7 @@ class Service {
 
 			$this->log->addInfo( "Pinged $app->key@$app->ping_url for request $request->reqid" );
 		} catch ( VaultException $ex ) {
-			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " .  $ex->getMessage() );
+			$this->log->addNotice( "Failed to ping back $app->key@$app->ping_url for request $request->reqid: " . $ex->getMessage() );
 			throw $ex;
 		}
 	}

@@ -45,7 +45,8 @@ abstract class Console_App extends Vault_App {
 		$this->stdio->outln();
 		$this->stdio->outln( 'OPTIONS may be:' );
 		foreach ( $this->get_options() as $option => $help ) {
-			$opts = array_map( function ( $opt ) {
+			$opts = array_map(
+				function ( $opt ) {
 					return ( strlen( $opt ) == 1 ?
 					         "-$opt" : "--$opt" );
 				}, explode( ',', $option ) );
@@ -60,9 +61,9 @@ abstract class Console_App extends Vault_App {
 		if ( $has_errors ) {
 			throw new \InvalidArgumentException(
 				implode( "\n",
-				         array_map(function ( $ex ) {
-						         return $ex->getMessage();
-					         }, $this->getopt->getErrors() ) )
+				         array_map( function ( $ex ) {
+						                return $ex->getMessage();
+					     }, $this->getopt->getErrors() ) )
 			);
 		}
 		return ! $has_errors;
