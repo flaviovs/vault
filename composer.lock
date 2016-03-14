@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6bf70b201613983ea27fa47668324880",
-    "content-hash": "475d66eecf040fb22fb4cbc9ff118ba5",
+    "hash": "7b6f08863a52e90cc809a0388afd99bf",
+    "content-hash": "8af21b7e532be5a960865b85cfc4d31f",
     "packages": [
         {
             "name": "aura/cli",
@@ -293,6 +293,46 @@
                 "response"
             ],
             "time": "2015-03-27 18:59:27"
+        },
+        {
+            "name": "flaviovs/uview",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/flaviovs/uview.git",
+                "reference": "853f6b877e9b8afe8f7f82453cf9a835d7213c92"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/flaviovs/uview/zipball/853f6b877e9b8afe8f7f82453cf9a835d7213c92",
+                "reference": "853f6b877e9b8afe8f7f82453cf9a835d7213c92",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "havramar/phpunit-tmp-dir": "dev-master",
+                "phpunit/phpunit": ">=4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Flávio Veloso",
+                    "email": "flaviovs@magnux.com"
+                }
+            ],
+            "description": "Micro view templating system for PHP",
+            "time": "2016-02-18 21:00:13"
         },
         {
             "name": "monolog/monolog",

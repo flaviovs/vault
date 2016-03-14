@@ -13,7 +13,7 @@ class Service {
 	public function __construct( Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log,
-	                             View_Registry $views ) {
+	                             \UView\Registry $views ) {
 		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;

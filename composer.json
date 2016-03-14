@@ -22,6 +22,7 @@
         "monolog/monolog": "^1.17",
         "aura/cli": "^2.1",
         "phpmailer/phpmailer": "^5.2",
-        "aura/session": "^2.0"
+        "aura/session": "^2.0",
+        "flaviovs/uview": "^1.0"
     }
 }

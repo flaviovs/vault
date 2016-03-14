@@ -18,7 +18,7 @@ abstract class Vault_App {
 		$this->name = $name;
 		$this->log = new \Monolog\Logger( $name );
 		$this->conf = new Config();
-		$this->views = new View_Registry();
+		$this->views = new \UView\Registry( VAULT_ROOT . "/view" );
 	}
 
 	protected function load_config() {
