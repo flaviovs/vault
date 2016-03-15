@@ -58,3 +58,8 @@ mailer = false
 ; Allow input of the same secret several times. Normally, the secret
 ; can be input only once. Set this to true to remove this restriction.
 repeat_secret_input = false
+
+; If enabled, enables the "devel/info" route in the API endpoint,
+; which will show information about the request. To access this route
+; the app must properly authenticate itself first.
+api = false
