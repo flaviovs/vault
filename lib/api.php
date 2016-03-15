@@ -12,7 +12,7 @@ class REST_App extends Web_App {
 	}
 
 	protected function init_router() {
-		if ( $this->conf->get( 'api', 'debug', false ) ) {
+		if ( $this->conf->get( 'debug', 'api', false ) ) {
 			$this->router->addGet( 'devel.info', '/devel/info' );
 		}
 
