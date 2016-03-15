@@ -11,18 +11,34 @@ abstract class Vault_App {
 	protected $service;
 	protected $views;
 
+	const DEFAULT_CONFIG = [
+		'maintenance' => [
+			'expire_answered_requests_after' => '1 hour',
+			'expire_unanswered_requests_after' => '1 day',
+		],
+		'debug' => [
+			'api' => FALSE,
+			'mailer' => FALSE,
+			'repeat_secret_input' => FALSE,
+		],
+	];
+
 	abstract protected function init_basic_logging();
 	abstract protected function run();
 
 	public function __construct( $name ) {
 		$this->name = $name;
 		$this->log = new \Monolog\Logger( $name );
-		$this->conf = new Config();
+
+		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
+		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/config.ini' ) );
+
 		$this->views = new \UView\Registry( VAULT_ROOT . "/view" );
+
 	}
 
 	protected function load_config() {
-		$this->conf->load_file( VAULT_ROOT . '/config.ini' );
+		$this->conf->reload();
 	}
 
 	protected function init_database() {

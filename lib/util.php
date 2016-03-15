@@ -41,22 +41,22 @@ class Mailer extends \PHPMailer {
 	protected $debug;
 	protected $log;
 
-	public function __construct( Config $conf, \Monolog\Logger $log ) {
+	public function __construct( \UConfig\Config $conf, \Monolog\Logger $log ) {
 		parent::__construct( true ); // Tell PHPMailer that we want exceptions.
 
 		try {
 			$from_address = $conf->get( 'mailer', 'from_address' );
-		} catch ( ConfigException $ex ) {
+		} catch ( \UConfig\Exception $ex ) {
 			throw new VaultException( 'Missing from_address mailer configuration' );
 		}
 
 		try {
 			$from_name = $conf->get( 'mailer', 'from_name' );
-		} catch ( ConfigException $ex ) {
+		} catch ( \UConfig\Exception $ex ) {
 			throw new VaultException( 'Missing from_name mailer configuration' );
 		}
 
-		$this->debug = $conf->get( 'debug', 'mailer', false );
+		$this->debug = $conf->get( 'debug', 'mailer' );
 		if ( $this->debug ) {
 			// @codingStandardsIgnoreStart
 			$this->Mailer = 'debug';

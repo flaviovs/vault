@@ -10,7 +10,7 @@ class Service {
 	protected $log;
 	protected $views;
 
-	public function __construct( Config $conf,
+	public function __construct( \UConfig\Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log,
 	                             \UView\Registry $views ) {
@@ -191,8 +191,7 @@ class Service {
 		$secret->set_mac( $unlock_key );
 
 		$debug_repeat_secret_input = $this->conf->get( 'debug',
-		                                               'repeat_secret_input',
-		                                               false );
+		                                               'repeat_secret_input' );
 
 		$this->repo->begin();
 		if ( $debug_repeat_secret_input ) {
@@ -226,8 +225,7 @@ class Service {
 
 	public function delete_answered_requests() {
 		$period = $this->conf->get( 'maintenance',
-		                            'expire_answered_requests_after',
-		                            '1 hour' );
+		                            'expire_answered_requests_after' );
 		$before = new \DateTime();
 		$before->sub( \DateInterval::createFromDateString( $period ) );
 
@@ -236,8 +234,7 @@ class Service {
 
 	public function delete_unanswered_requests() {
 		$period = $this->conf->get( 'maintenance',
-		                            'expire_unanswered_requests_after',
-		                            '1 day' );
+		                            'expire_unanswered_requests_after' );
 		$before = new \DateTime();
 		$before->sub( \DateInterval::createFromDateString( $period ) );
 

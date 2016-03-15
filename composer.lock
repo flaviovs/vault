@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7b6f08863a52e90cc809a0388afd99bf",
-    "content-hash": "8af21b7e532be5a960865b85cfc4d31f",
+    "hash": "b6048a45105d17cd9fae582996d9ef3a",
+    "content-hash": "806fe142cd05c1bd24460717562d5d34",
     "packages": [
         {
             "name": "aura/cli",
@@ -293,6 +293,43 @@
                 "response"
             ],
             "time": "2015-03-27 18:59:27"
+        },
+        {
+            "name": "flaviovs/uconfig",
+            "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/flaviovs/uconfig.git",
+                "reference": "9b44acbf6110cefdb95745fc7d2f040c63277ecb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/flaviovs/uconfig/zipball/9b44acbf6110cefdb95745fc7d2f040c63277ecb",
+                "reference": "9b44acbf6110cefdb95745fc7d2f040c63277ecb",
+                "shasum": ""
+            },
+            "require-dev": {
+                "havramar/phpunit-tmp-dir": "dev-master",
+                "phpunit/phpunit": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Flávio Veloso",
+                    "email": "flaviovs@magnux.com"
+                }
+            ],
+            "description": "A micro, no frills, configuration interface for PHP",
+            "time": "2016-03-15 22:28:23"
         },
         {
             "name": "flaviovs/uview",
