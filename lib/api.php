@@ -51,7 +51,7 @@ class REST_App extends Web_App {
 	}
 
 	protected function handle_devel_info() {
-		$app = $this->check_auth();
+		$this->check_auth();
 
 		$this->response->content->set( $_SERVER );
 	}
