@@ -95,3 +95,76 @@ class Esc {
 		return strip_tags( $string, Request::INSTRUCTIONS_ALLOWED_TAGS );
 	}
 }
+
+
+class Message_Area {
+	const INFO = 0;
+	const ERROR = 1;
+
+	protected $messages = [
+		Message_Area::INFO => [],
+		Message_Area::ERROR => [],
+	];
+
+	public function add_message( $level, $msg ) {
+		$this->messages[ $level ][] = $msg;
+	}
+
+	public function get_message_list( $level ) {
+		switch ( count( $this->messages[ $level ] ) ) {
+			case 0:
+				return '';
+
+			case 1:
+				return $this->messages[ $level ][0];
+		}
+
+		$list = "<ul>\n";
+		foreach ( $this->messages[ $level ] as $msg ) {
+			$list .= "<li>$msg</li>\n";
+		}
+		$list .= "</ul>\n";
+
+		return $list;
+	}
+
+	public function __toString() {
+		$info = $this->get_message_list( static::INFO );
+		$error = $this->get_message_list( static::ERROR );
+
+		$out = '';
+
+		if ( $info ) {
+			$out .= '<div class="info">' . $info . "</div>\n";
+		}
+
+		if ( $error ) {
+			$out .= '<div class="error">' . $error . "</div>\n";
+		}
+
+		return $out;
+	}
+}
+
+
+class Valid {
+	static public function email( $email ) {
+		return filter_var( $email, FILTER_VALIDATE_EMAIL );
+	}
+}
+
+
+/*
+ * Client only class below
+ */
+class User {
+	public $ID;
+	public $email;
+	public $name;
+
+	public function __construct( $id, $email, $name ) {
+		$this->ID = $id;
+		$this->email = $email;
+		$this->name = $name;
+	}
+}

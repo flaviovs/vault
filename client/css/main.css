@@ -1,0 +1,139 @@
+@import url("//fonts.googleapis.com/css?family=Source+Sans+Pro|Inconsolata");
+
+body {
+	font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: #444;
+	background-color: #eef;
+}
+
+main {
+	max-width: 640px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 20px;
+}
+
+h1 {
+	text-align: center;
+	font-weight: normal;
+	margin-top: 0;
+}
+
+label {
+	font-weight: bold;
+	display: block;
+}
+
+input.input-text, textarea {
+	padding: 5px;
+	font-size: 110%;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#element-req-email label:after,
+#element-user-email label:after {
+	content: '*';
+	color: #f00;
+}
+
+.form-group {
+	margin-bottom: 1em;
+}
+
+.form-group .help {
+	font-size: 90%;
+	color: #555;
+}
+
+.form-group.error input {
+	border: 1px solid red;
+}
+
+.form-group .error {
+	color: red;
+	margin-left: 1em;
+}
+
+input[type="submit"] {
+	border: none;
+	padding: 15px;
+	display: block;
+	margin: 0 auto;
+	font-size: 100%;
+	background-color: #d8d8d8;
+}
+
+#instructions {
+	font-family: Inconsolata, "Lucida Console", Monaco, monospace;
+	border-radius: 10px;
+	padding: 10px;
+	white-space: pre;
+	background-color: #fee;
+	margin-bottom: 1em;
+}
+
+textarea#secret {
+	padding: 10px;
+	font-size: 100%;
+	margin-bottom: 2em;
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table tr {
+	border-bottom: 1px solid #ccc;
+}
+
+aside#messages {
+	margin-bottom: 1em;
+}
+
+#messages > div {
+	padding: 10px 15px;
+}
+
+#messages .info {
+	border-left: 10px solid #0a0;
+}
+
+#messages .error {
+	background-color: #fff8f8;
+	border-left: 10px solid #f00;
+}
+
+header {
+	text-align: right;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+}
+
+header #welcome {
+	display: inline;
+}
+
+header nav {
+	display: inline;
+	border-left: 1px solid #ccc;
+	padding-left: 10px;
+	margin-left: 10px;
+}
+
+
+#login-button {
+	width: 231px;
+	display: block;
+	margin: 0 auto;
+}
+
+#confirm-input {
+	margin-bottom: 1em;
+}
