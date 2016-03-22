@@ -56,7 +56,12 @@ class Mailer extends \PHPMailer {
 			throw new VaultException( 'Missing from_name mailer configuration' );
 		}
 
-		$this->debug = $conf->get( 'debug', 'mailer' );
+		try {
+			$this->debug = $conf->get( 'debug', 'mailer' );
+		} catch ( \UConfig\Exception $ex ) {
+			$this->debug = FALSE;
+		}
+
 		if ( $this->debug ) {
 			// @codingStandardsIgnoreStart
 			$this->Mailer = 'debug';
