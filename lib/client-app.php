@@ -69,6 +69,7 @@ class ClientApp {
 	protected function init_router() {
 		$this->router->addGet( 'request', '/' );
 		$this->router->addPost( 'request#submission', '/' );
+		$this->router->addGet( 'request.done', '/done' );
 		$this->router->addGet( 'confirm', '/confirm' );
 		$this->router->addPost( 'confirm#submission', '/confirm' );
 		$this->router->addGet( 'logout', '/logout' );
@@ -298,7 +299,7 @@ class ClientApp {
 		$this->flash_info( __( '<p>The request has been sent.</p><p>You will receive an e-mail when the user submits the requested information.</p><p><strong>Notice</strong>: check your junk/spam folder for e-mails from <i>Vault</i>. You may want to add the notification address to your spam/junk configuration, so that future e-mails go straight to your inbox. <b>Remember to also warn the user about this.</b></p>' ) );
 
 		$this->response->redirect->afterPost(
-			$this->router->generate( 'request' ) );
+			$this->router->generate( 'request.done' ) );
 	}
 
 	protected function handle_ping_submission( array $args ) {
@@ -373,6 +374,11 @@ class ClientApp {
 
 			case 'request#submission':
 				$this->handle_request_form_submission();
+				break;
+
+			case 'request.done':
+				$this->display_page( __('Done'),
+				                     $this->views->get( 'request-done' ) );
 				break;
 
 			case 'confirm':
