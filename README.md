@@ -30,9 +30,9 @@ Installation
 
 1. `composer install`
 
-2. `cp config.ini.dist config.ini`
+2. `cp vault.ini.dist vault.ini`
 
-3. Edit config.ini and edit/review the settings.
+3. Edit `vault.ini` and edit/review the settings.
 
 4. Run `php bin/install.php`. If everything goes well, your system is
 ready to be used.

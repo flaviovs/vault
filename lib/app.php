@@ -30,7 +30,7 @@ abstract class Vault_App {
 		$this->log = new \Monolog\Logger( $name );
 
 		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
-		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/config.ini' ) );
+		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/vault.ini' ) );
 
 		$this->views = new \UView\Registry( VAULT_ROOT . "/view" );
 
