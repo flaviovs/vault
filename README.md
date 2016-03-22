@@ -77,3 +77,5 @@ More documentation is available in the `doc` directory:
 * [System architecture](doc/architecture.md)
 
 * [The command line interface](doc/cli.md)
+
+* [The Vault client](doc/client.md)
