@@ -295,7 +295,7 @@ class ClientApp {
 		$res = $client->add_request( $user_email, $instructions,
 		                             $this->user->email );
 
-		$this->flash_info( __( '<p>The request was sent.</p><p>You will receive an e-mail when the user submits the information requested.</p>' ) );
+		$this->flash_info( __( '<p>The request has been sent.</p><p>You will receive an e-mail when the user submits the requested information.</p><p><strong>Notice</strong>: check your junk/spam folder for e-mails from <i>Vault</i>. You may want to add the notification address to your spam/junk configuration, so that future e-mails go straight to your inbox. <b>Remember to also warn the user about this.</b></p>' ) );
 
 		$this->response->redirect->afterPost(
 			$this->router->generate( 'request' ) );
