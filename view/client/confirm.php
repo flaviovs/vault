@@ -15,7 +15,7 @@ use Vault\Esc;
 	<th colspan="2">Additional instructions</th>
   </tr>
   <tr>
-	<td colspan="2"><pre><?php echo Esc::instructions( $instructions ) ?></pre></td>
+	<td colspan="2"><pre class="instructions"><?php echo Esc::instructions( $instructions ) ?></pre></td>
   </tr>
 </table>
 
