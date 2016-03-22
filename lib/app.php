@@ -18,7 +18,6 @@ abstract class Vault_App {
 		],
 		'debug' => [
 			'api' => FALSE,
-			'mailer' => FALSE,
 			'repeat_secret_input' => FALSE,
 		],
 	];
