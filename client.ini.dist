@@ -16,5 +16,6 @@ authenticate_url = "https://public-api.wordpress.com/oauth2/authenticate"
 from_address = unconfigured@example.com
 from_name = Vault
 
+[debug]
 ; Change to true to not send emails (just log them)
-debug = false
+mailer = false
