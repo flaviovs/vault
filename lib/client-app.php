@@ -5,6 +5,8 @@ namespace Vault;
 class ForbiddenException extends \Exception {}
 
 class ClientApp {
+	const DEFAULT_CONFIG = [];
+
 	protected $request;
 	protected $response;
 	protected $router;
@@ -32,7 +34,8 @@ class ClientApp {
 		$router_factory = new \Aura\Router\RouterFactory();
 		$this->router = $router_factory->newInstance();
 
-		$this->conf = [];
+		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
+		$this->conf->addHandler( new \UConfig\INIFileHandler( __DIR__ . '/../client.ini' ) );
 
 		$session_factory = new \Aura\Session\SessionFactory;
 		$this->root_session = $session_factory->newInstance(
@@ -47,12 +50,6 @@ class ClientApp {
 
 	}
 
-	protected function get_conf( $section, $key, $default = null ) {
-		return ( ! empty( $this->conf[ $section ] )
-		         && array_key_exists( $key, $this->conf[ $section ] ) ) ?
-			$this->conf[ $section ][ $key ] : $default;
-	}
-
 	protected function init_logging() {
 		$handler = new \Monolog\Handler\ErrorLogHandler();
 		$handler->setFormatter(
@@ -60,10 +57,6 @@ class ClientApp {
 				"[%level_name%] %channel%: %message% %context% %extra%\n" ) );
 		$this->log->setHandlers( [ $handler ] );
 		$this->log->pushProcessor( new \Monolog\Processor\WebProcessor() );
-	}
-
-	protected function load_config() {
-		$this->conf = parse_ini_file( __DIR__ . '/../client.ini', true );
 	}
 
 	protected function handle_exception( \Exception $ex ) {
@@ -124,18 +117,22 @@ class ClientApp {
 	}
 
 	protected function new_client() {
-		$url = $this->get_conf( 'api', 'url' );
-		$key = $this->get_conf( 'api', 'key' );
-		$secret = $this->get_conf( 'api', 'secret' );
+		try {
+			$url = $this->conf->get( 'api', 'url' );
+		} catch ( \UConfig\Exception $ex ) {
+			throw new \RuntimeException( 'No API URL in client.ini' );
+		}
 
-		if ( ! $url ) {
-			throw new \RuntimeException( 'No API URL in config.ini' );
+		try {
+			$key = $this->conf->get( 'api', 'key' );
+		} catch ( \UConfig\Exception $ex ) {
+			throw new \RuntimeException( 'No API key in client.ini' );
 		}
-		if ( ! $key ) {
-			throw new \RuntimeException( 'No API key in config.ini' );
-		}
-		if ( ! $secret ) {
-			throw new \RuntimeException( 'No API secret in config.ini' );
+
+		try {
+			$secret = $this->conf->get( 'api', 'secret' );
+		} catch ( \UConfig\Exception $ex ) {
+			throw new \RuntimeException( 'No API secret in client.ini' );
 		}
 
 		return new VaultClient( $url, $key, $secret );
@@ -153,16 +150,16 @@ class ClientApp {
 		$wpcc_state = base64_encode( openssl_random_pseudo_bytes( 16 ) );
 		$this->session->setFlash( 'wpcc_state', $wpcc_state );
 
-		$url_to = $this->get_conf( 'oauth', 'authenticate_url' )
+		$url_to = $this->conf->get( 'oauth', 'authenticate_url' )
 			. '?'
 			. http_build_query(
 				[
 					'response_type' => 'code',
-					'client_id' => $this->get_conf( 'oauth',
-					                                'client_id' ),
+					'client_id' => $this->conf->get( 'oauth',
+					                                 'client_id' ),
 					'state' => $wpcc_state,
-					'redirect_uri' => $this->get_conf( 'oauth',
-					                                   'redirect_url' ),
+					'redirect_uri' => $this->conf->get( 'oauth',
+					                                    'redirect_url' ),
 				] );
 
 		$this->display_page( __( 'Vault log in' ),
@@ -193,14 +190,14 @@ class ClientApp {
 		}
 
 		$postfields = [
-			'client_id' => $this->get_conf( 'oauth', 'client_id' ),
-			'redirect_uri' => $this->get_conf( 'oauth', 'redirect_url' ),
-			'client_secret' => $this->get_conf( 'oauth', 'client_secret' ),
+			'client_id' => $this->conf->get( 'oauth', 'client_id' ),
+			'redirect_uri' => $this->conf->get( 'oauth', 'redirect_url' ),
+			'client_secret' => $this->conf->get( 'oauth', 'client_secret' ),
 			'code' => $code,
 			'grant_type' => 'authorization_code',
 		];
 
-		$ch = curl_init( $this->get_conf( 'oauth', 'request_token_url' ) );
+		$ch = curl_init( $this->conf->get( 'oauth', 'request_token_url' ) );
 		curl_setopt( $ch, CURLOPT_POST, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postfields );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
@@ -328,7 +325,7 @@ class ClientApp {
 		$mac = $this->request->post->get( 'm' );
 
 		$known_mac = hash_hmac( 'sha1',  "$subject $payload",
-		                        $this->get_conf( 'api', 'vault_secret' ),
+		                        $this->conf->get( 'api', 'vault_secret' ),
 		                        true );
 		if ( ! hash_equals( $known_mac, $mac ) ) {
 			throw new NotFoundException( 'Could not authenticate ping' );
@@ -449,7 +446,6 @@ class ClientApp {
 	public function run() {
 		try {
 			$this->init_logging();
-			$this->load_config();
 			$this->init_router();
 			$this->handle_request();
 		} catch ( NotFoundException $ex ) {
