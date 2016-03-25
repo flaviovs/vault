@@ -62,8 +62,7 @@ class ClientApp {
 	protected function handle_exception( \Exception $ex ) {
 		$this->response->status->setCode( 500 );
 		$this->log->addError( $ex->getMessage(), [ 'exception' => $ex ] );
-		$view = $this->views->get( 'exception' );
-		$this->display_page( __( 'Oops..' ), $view );
+		$this->display_page( __( 'Oops..' ), $this->views->get( 'exception' ) );
 	}
 
 	protected function init_router() {

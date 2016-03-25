@@ -226,8 +226,7 @@ class Front_End_App extends Web_App {
 
 	protected function handle_exception( \Exception $ex ) {
 		parent::handle_exception( $ex );
-		$view = $this->views->get( 'exception' );
-		$this->display_page( __( 'Oops..' ), $view );
+		$this->display_page( __( 'Oops..' ), $this->views->get( 'exception' ) );
 	}
 
 	protected function handle_request( \Aura\Router\Route $route ) {
