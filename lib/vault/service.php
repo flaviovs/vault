@@ -144,6 +144,7 @@ class Service {
 		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 20 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, 20 );
 		curl_setopt( $ch, CURLOPT_POST, true );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postdata );
 
 		$res = curl_exec( $ch );
