@@ -147,8 +147,13 @@ class Service {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postdata );
 
 		$res = curl_exec( $ch );
-		if ( ! ( $res && curl_getinfo( $ch, CURLINFO_HTTP_CODE ) == 200 ) ) {
+		if ( false === $res ) {
 			throw new VaultException( curl_error( $ch ) );
+		} else {
+			$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+			if ( 200 !== $code ) {
+				throw new VaultException( "$app->ping_url returned HTTP $code" );
+			}
 		}
 	}
 
