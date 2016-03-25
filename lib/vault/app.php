@@ -32,7 +32,7 @@ abstract class Vault_App {
 		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
 		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/vault.ini' ) );
 
-		$this->views = new \UView\Registry( VAULT_ROOT . "/view" );
+		$this->views = new \UView\Registry( VAULT_ROOT . '/view/vault' );
 
 	}
 

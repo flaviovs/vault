@@ -35,7 +35,7 @@ class ClientApp {
 		$this->router = $router_factory->newInstance();
 
 		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
-		$this->conf->addHandler( new \UConfig\INIFileHandler( __DIR__ . '/../client.ini' ) );
+		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/client.ini' ) );
 
 		$session_factory = new \Aura\Session\SessionFactory;
 		$this->root_session = $session_factory->newInstance(
@@ -44,7 +44,7 @@ class ClientApp {
 
 		$this->log = new \Monolog\Logger( $name );
 
-		$this->views = new \UView\Registry( __DIR__ . '/../view/client' );
+		$this->views = new \UView\Registry( VAULT_ROOT . '/view/client' );
 
 		$this->messages = new Message_Area();
 

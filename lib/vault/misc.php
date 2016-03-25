@@ -157,19 +157,3 @@ class Valid {
 		return filter_var( $email, FILTER_VALIDATE_EMAIL );
 	}
 }
-
-
-/*
- * Client only class below
- */
-class User {
-	public $ID;
-	public $email;
-	public $name;
-
-	public function __construct( $id, $email, $name ) {
-		$this->ID = $id;
-		$this->email = $email;
-		$this->name = $name;
-	}
-}
