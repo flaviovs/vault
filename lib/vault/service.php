@@ -208,9 +208,10 @@ class Service {
 		if ( ! $debug_repeat_secret_input ) {
 			$this->repo->clear_request_input_key( $request );
 		}
-		$this->repo->commit();
 
 		$this->ping_back_submission( $request, $unlock_key );
+
+		$this->repo->commit();
 
 		return [
 			'unlock_key' => $unlock_key,
