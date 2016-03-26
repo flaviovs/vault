@@ -36,12 +36,30 @@ abstract class Web_App extends Vault_App {
 	}
 
 	protected function init_basic_logging() {
-		$handler = new \Monolog\Handler\ErrorLogHandler();
-		$handler->setFormatter(
+
+		$general_level = $this->conf->get( 'logging', 'general_level' );
+		$audit_level = $this->conf->get( 'logging', 'audit_level' );
+
+		// Setup general handler
+		$general_handler = new \Monolog\Handler\ErrorLogHandler(
+			\Monolog\Handler\ErrorLogHandler::OPERATING_SYSTEM,
+			$general_level );
+		$general_handler->setFormatter(
 			new \Monolog\Formatter\LineFormatter(
 				"[%level_name%] %channel%: %message% %context% %extra%\n" ) );
-		$this->log->setHandlers( [ $handler ] );
-		$this->audit->setHandlers( [ $handler ] );
+		$this->log->setHandlers( [ $general_handler ] );
+
+		// Setup audit handler
+		if ( $audit_level == $general_level ) {
+			// Same level -- we can safely reuse the general handler
+			// for audit
+			$audit_handler = $general_handler;
+		} else {
+			$audit_handler = new \Monolog\Handler\StreamHandler( 'php://stderr',
+			                                                     $audit_level );
+			$audit_handler->setFormatter( $general_handler->getFormatter() );
+		}
+		$this->audit->setHandlers( [ $audit_handler ] );
 
 		$web_processor = new \Monolog\Processor\WebProcessor();
 		$this->log->pushProcessor( $web_processor );

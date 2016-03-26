@@ -32,6 +32,20 @@ input = https://vault.automattic.com
 unlock = https://vault.automattic.com
 
 
+[logging]
+
+; Specify logging levels for the general and audit logs,
+; respectively. You can use either the log level name or number. See
+; https://github.com/Seldaek/monolog/blob/master/doc/01-usage.md#log-levels
+; for a list of supported values.
+;
+; NOTICE: Setting 'audit_level' to any level above 'notice' is not
+; recommended, because the engine will log important audit information
+; at this level.
+general_level = info
+audit_level = notice
+
+
 [maintenance]
 
 ; This is the time a request is allowed to be lying around unseen

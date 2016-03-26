@@ -17,12 +17,24 @@ abstract class Console_App extends Vault_App {
 	}
 
 	protected function init_basic_logging() {
-		$handler = new \Monolog\Handler\StreamHandler( 'php://stderr' );
-		$handler->setFormatter(
+		$general_level = $this->conf->get( 'logging', 'general_level' );
+		$audit_level = $this->conf->get( 'logging', 'audit_level' );
+
+		$general_handler = new \Monolog\Handler\StreamHandler( 'php://stderr',
+		                                                       $general_level );
+		$general_handler->setFormatter(
 			new \Monolog\Formatter\LineFormatter(
 				"%channel%: %level_name%: %message% %context% %extra%\n" ) );
-		$this->log->setHandlers( [ $handler ] );
-		$this->audit->setHandlers( [ $handler ] );
+		$this->log->setHandlers( [ $general_handler ] );
+
+		if ( $audit_level == $general_level ) {
+			$audit_handler = $general_handler;
+		} else {
+			$audit_handler = new \Monolog\Handler\StreamHandler( 'php://stderr',
+			                                                     $audit_level );
+			$audit_handler->setFormatter( $general_handler->getFormatter() );
+		}
+		$this->audit->setHandlers( [ $audit_handler ] );
 	}
 
 	protected function get_options() {

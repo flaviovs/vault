@@ -17,6 +17,10 @@ abstract class Vault_App {
 			'expire_answered_requests_after' => '1 hour',
 			'expire_unanswered_requests_after' => '1 day',
 		],
+		'logging' => [
+			'general_level' => 'info',
+			'audit_level' => 'notice',
+		],
 		'debug' => [
 			'api' => FALSE,
 			'repeat_secret_input' => FALSE,
@@ -62,7 +66,8 @@ abstract class Vault_App {
 
 	protected function init_database_logging() {
 		// Initialize database audit logging
-		$this->audit->pushHandler( new DatabaseLoggingHandler( $this->db ) );
+		$this->audit->pushHandler( new DatabaseLoggingHandler( $this->db,
+		                                                       $this->conf->get( 'logging', 'audit_level' ) ) );
 	}
 
 	protected function init_service() {
