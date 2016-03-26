@@ -17,6 +17,7 @@ class REST_App extends Web_App {
 		}
 
 		$this->router->addPost( 'request', '/request' );
+		$this->router->addPost( 'unlock', '/unlock' );
 	}
 
 	protected function check_auth() {
@@ -50,6 +51,26 @@ class REST_App extends Web_App {
 				$this->request->post->get( 'app_data' ) ) );
 	}
 
+	protected function handle_unlock() {
+		$this->check_auth();
+
+		$reqid = $this->request->post->get( 'reqid' );
+		$key = base64_decode( $this->request->post->get( 'key' ) );
+
+		error_log("[$reqid] [$key]");
+
+		$secret = $this->repo->find_secret( $reqid );
+
+		if ( ! $secret->is_mac_valid( $key ) ) {
+			throw new \InvalidArgumentException( 'Invalid secret/key' );
+		}
+
+		$this->response->content->set(
+			[
+				'secret' => $this->service->unlock_secret( $secret, $key ),
+			] );
+	}
+
 	protected function handle_devel_info() {
 		$this->check_auth();
 
@@ -62,6 +83,10 @@ class REST_App extends Web_App {
 
 			case 'request':
 				$this->handle_request_add();
+				break;
+
+			case 'unlock':
+				$this->handle_unlock();
 				break;
 
 			case 'devel.info':
