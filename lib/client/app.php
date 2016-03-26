@@ -308,7 +308,9 @@ class ClientApp {
 		$body->set( 'unlock_url', $args['unlock_url'] );
 		$body->set( 'unlock_key', $args['unlock_key'] );
 
-		$mailer = new Mailer( $this->conf, $this->log );
+		$mailer_factory = new Mailer_Factory( $this->conf, $this->log );
+
+		$mailer = $mailer_factory->new_mailer();
 		$mailer->addAddress( $args['app_data'] );
 		// @codingStandardsIgnoreStart
 		$mailer->Subject = 'The information you requested is now available';

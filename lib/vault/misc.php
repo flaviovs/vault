@@ -86,6 +86,21 @@ class Mailer extends \PHPMailer {
 }
 
 
+class Mailer_Factory {
+	protected $conf;
+	protected $log;
+
+	public function __construct( \UConfig\Config $conf, \Monolog\Logger $log ) {
+		$this->conf = $conf;
+		$this->log = $log;
+	}
+
+	public function new_mailer() {
+		return new Mailer( $this->conf, $this->log );
+	}
+}
+
+
 class Esc {
 
 	static public function html( $string, $quote_style = ENT_NOQUOTES ) {

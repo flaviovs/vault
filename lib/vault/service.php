@@ -9,15 +9,18 @@ class Service {
 	protected $repo;
 	protected $log;
 	protected $views;
+	protected $mailer_factory;
 
 	public function __construct( \UConfig\Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log,
-	                             \UView\Registry $views ) {
+	                             \UView\Registry $views,
+	                             Mailer_Factory $mailer_factory ) {
 		$this->conf = $conf;
 		$this->repo = $repo;
 		$this->log = $log;
 		$this->views = $views;
+		$this->mailer_factory = $mailer_factory;
 	}
 
 	protected function generate_app_key() {
@@ -76,7 +79,7 @@ class Service {
 	}
 
 	protected function email_request( Request $request ) {
-		$mail = new Mailer( $this->conf, $this->log );
+		$mail = $this->mailer_factory->new_mailer();
 
 		$body = $this->views->get( 'email-request' );
 		$body->set( 'input_url', $this->get_input_url( $request ) );

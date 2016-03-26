@@ -74,7 +74,9 @@ abstract class Vault_App {
 		$this->service = new Service( $this->conf,
 		                              $this->repo,
 		                              $this->audit,
-		                              $this->views );
+		                              $this->views,
+		                              new Mailer_Factory( $this->conf,
+		                                                  $this->log ) );
 	}
 
 	protected function bootstrap() {
