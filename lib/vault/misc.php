@@ -22,8 +22,8 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 			$this->sth = $this->db->prepare( 'INSERT INTO vault_log (created, vault_log_level_id, message, vault_app_id) VALUES (NOW(), ?, ?, ?)' );
 		}
 
-		if ( isset( $extra['app'] ) ) {
-			$appid = $extra['app']->appid;
+		if ( isset( $record['context']['app'] ) ) {
+			$appid = $record['context']['app']->appid;
 		} else {
 			$appid = null;
 		}
