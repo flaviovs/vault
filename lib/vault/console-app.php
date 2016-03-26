@@ -22,6 +22,7 @@ abstract class Console_App extends Vault_App {
 			new \Monolog\Formatter\LineFormatter(
 				"%channel%: %level_name%: %message% %context% %extra%\n" ) );
 		$this->log->setHandlers( [ $handler ] );
+		$this->audit->setHandlers( [ $handler ] );
 	}
 
 	protected function get_options() {

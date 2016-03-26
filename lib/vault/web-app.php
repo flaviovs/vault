@@ -41,7 +41,11 @@ abstract class Web_App extends Vault_App {
 			new \Monolog\Formatter\LineFormatter(
 				"[%level_name%] %channel%: %message% %context% %extra%\n" ) );
 		$this->log->setHandlers( [ $handler ] );
-		$this->log->pushProcessor( new \Monolog\Processor\WebProcessor() );
+		$this->audit->setHandlers( [ $handler ] );
+
+		$web_processor = new \Monolog\Processor\WebProcessor();
+		$this->log->pushProcessor( $web_processor );
+		$this->audit->pushProcessor( $web_processor );
 	}
 
 	protected function handle_exception( \Exception $ex ) {

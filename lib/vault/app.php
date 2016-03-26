@@ -5,6 +5,7 @@ namespace Vault;
 abstract class Vault_App {
 	protected $name;
 	protected $log;
+	protected $audit;
 	protected $conf;
 	protected $db;
 	protected $repo;
@@ -28,6 +29,7 @@ abstract class Vault_App {
 	public function __construct( $name ) {
 		$this->name = $name;
 		$this->log = new \Monolog\Logger( $name );
+		$this->audit = new \Monolog\Logger( $name );
 
 		$this->conf = new \UConfig\Config( static::DEFAULT_CONFIG );
 		$this->conf->addHandler( new \UConfig\INIFileHandler( VAULT_ROOT . '/vault.ini' ) );
@@ -59,14 +61,14 @@ abstract class Vault_App {
 	}
 
 	protected function init_database_logging() {
-		// Initialize database logging
-		$this->log->pushHandler( new DatabaseLoggingHandler( $this->db ) );
+		// Initialize database audit logging
+		$this->audit->pushHandler( new DatabaseLoggingHandler( $this->db ) );
 	}
 
 	protected function init_service() {
 		$this->service = new Service( $this->conf,
 		                              $this->repo,
-		                              $this->log,
+		                              $this->audit,
 		                              $this->views );
 	}
 
