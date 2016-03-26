@@ -109,7 +109,10 @@ class Service {
 		$request->input_key = base64_encode( openssl_random_pseudo_bytes( 24 ) );
 
 		$this->repo->add_request( $request );
-		$this->log->info( "Added request $request->reqid for '$email' by $key" );
+		$this->log->info( "Added request $request->reqid for '$email'",
+		                  [
+			                  'app' => $app,
+		                  ] );
 
 		$this->email_request( $request );
 
