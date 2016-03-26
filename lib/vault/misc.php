@@ -41,35 +41,8 @@ class Mailer extends \PHPMailer {
 	protected $debug;
 	protected $log;
 
-	public function __construct( \UConfig\Config $conf, \Monolog\Logger $log ) {
+	public function __construct( \Monolog\Logger $log ) {
 		parent::__construct( true ); // Tell PHPMailer that we want exceptions.
-
-		try {
-			$from_address = $conf->get( 'mailer', 'from_address' );
-		} catch ( \UConfig\Exception $ex ) {
-			throw new VaultException( 'Missing from_address mailer configuration' );
-		}
-
-		try {
-			$from_name = $conf->get( 'mailer', 'from_name' );
-		} catch ( \UConfig\Exception $ex ) {
-			throw new VaultException( 'Missing from_name mailer configuration' );
-		}
-
-		try {
-			$this->debug = $conf->get( 'debug', 'mailer' );
-		} catch ( \UConfig\Exception $ex ) {
-			$this->debug = FALSE;
-		}
-
-		if ( $this->debug ) {
-			// @codingStandardsIgnoreStart
-			$this->Mailer = 'debug';
-			// @codingStandardsIgnoreEnd
-		}
-
-		$this->setFrom( $from_address, $from_name );
-
 		$this->log = $log;
 	}
 
@@ -87,16 +60,46 @@ class Mailer extends \PHPMailer {
 
 
 class Mailer_Factory {
-	protected $conf;
 	protected $log;
 
+	protected $from_name;
+	protected $from_address;
+	protected $debug;
+
 	public function __construct( \UConfig\Config $conf, \Monolog\Logger $log ) {
-		$this->conf = $conf;
 		$this->log = $log;
+
+		try {
+			$this->from_name = $conf->get( 'mailer', 'from_name' );
+		} catch ( \UConfig\Exception $ex ) {
+			throw new VaultException( 'Missing from_name mailer configuration' );
+		}
+
+		try {
+			$this->from_address = $conf->get( 'mailer', 'from_address' );
+		} catch ( \UConfig\Exception $ex ) {
+			throw new VaultException( 'Missing from_address mailer configuration' );
+		}
+
+		try {
+			$this->debug = $conf->get( 'debug', 'mailer' );
+		} catch ( \UConfig\Exception $ex ) {
+			$this->debug = FALSE;
+		}
 	}
 
 	public function new_mailer() {
-		return new Mailer( $this->conf, $this->log );
+		$mailer = new Mailer( $this->log );
+
+		$mailer->setFrom( $this->from_address, $this->from_name );
+
+		if ( $this->debug ) {
+			// @codingStandardsIgnoreStart
+			$mailer->Mailer = 'debug';
+			// @codingStandardsIgnoreEnd
+		}
+
+		return $mailer;
 	}
 }
 
