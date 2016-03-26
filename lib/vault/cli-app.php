@@ -61,6 +61,29 @@ class CLI_App extends Console_App {
 		$this->print_result( $res );
 	}
 
+	protected function handle_secret() {
+		$reqid = $this->getopt->get( 2 );
+
+		if ( ! $reqid ) {
+			throw new \InvalidArgumentException( "Usage 'secret REQUEST-ID'" );
+		}
+
+		$request = $this->repo->find_request( $reqid );
+
+		try {
+			$this->repo->find_secret( $reqid );
+			throw new \InvalidArgumentException("A secret for request $reqid was already entered.");
+		} catch ( VaultDataException $ex ) {
+			// *NOTHING*
+		}
+
+		$secret = file_get_contents( 'php://stdin' );
+
+		$res = $this->service->register_secret( $request, $secret );
+
+		$this->print_result( $res );
+	}
+
 	protected function process_command() {
 		$command = $this->getopt->get( 1 );
 
@@ -78,6 +101,10 @@ class CLI_App extends Console_App {
 
 			case 'request':
 				$this->handle_request();
+				break;
+
+			case 'secret':
+				$this->handle_secret();
 				break;
 
 			default:

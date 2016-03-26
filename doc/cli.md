@@ -40,3 +40,16 @@ STDIN. Type Ctrl-D on an empty line to proceed.
 **Notice**: Use of the command line tool *only* to generate requests
 as a debugging tool, or to check that the system is properly
 installed.
+
+
+Adding secrets
+--------------
+
+To add a secret to a request, use the command line below:
+
+    $ php bin/vault.php secret REQUEST-ID
+
+Where *REQUEST-ID* is the request number.
+
+The command will read the secret from STDIN. Type Ctrl-D on an empty
+line to finish secret input.
