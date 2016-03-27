@@ -378,7 +378,7 @@ class ClientApp {
 				break;
 
 			case 'request.done':
-				$this->display_page( __('Done'),
+				$this->display_page( __( 'Done' ),
 				                     $this->views->get( 'request-done' ) );
 				break;
 

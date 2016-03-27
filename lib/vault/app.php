@@ -22,8 +22,8 @@ abstract class Vault_App {
 			'audit_level' => 'notice',
 		],
 		'debug' => [
-			'api' => FALSE,
-			'repeat_secret_input' => FALSE,
+			'api' => false,
+			'repeat_secret_input' => false,
 		],
 	];
 

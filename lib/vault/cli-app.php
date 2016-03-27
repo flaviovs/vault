@@ -72,7 +72,7 @@ class CLI_App extends Console_App {
 
 		try {
 			$this->repo->find_secret( $reqid );
-			throw new \InvalidArgumentException("A secret for request $reqid was already entered.");
+			throw new \InvalidArgumentException( "A secret for request $reqid was already entered." );
 		} catch ( VaultDataException $ex ) {
 			// *NOTHING*
 		}

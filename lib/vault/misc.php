@@ -84,7 +84,7 @@ class Mailer_Factory {
 		try {
 			$this->debug = $conf->get( 'debug', 'mailer' );
 		} catch ( \UConfig\Exception $ex ) {
-			$this->debug = FALSE;
+			$this->debug = false;
 		}
 	}
 
