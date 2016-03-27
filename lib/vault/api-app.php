@@ -57,8 +57,6 @@ class REST_App extends Web_App {
 		$reqid = $this->request->post->get( 'reqid' );
 		$key = base64_decode( $this->request->post->get( 'key' ) );
 
-		error_log("[$reqid] [$key]");
-
 		$secret = $this->repo->find_secret( $reqid );
 
 		if ( ! $secret->is_mac_valid( $key ) ) {
