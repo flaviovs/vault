@@ -36,9 +36,8 @@ class Repository {
 		}
 
 		$app = new App( $row['appkey'], $row['secret'],
-		                $row['vault_secret'], $row['name'] );
+		                $row['vault_secret'], $row['name'], $row['ping_url'] );
 		$app->appid = $appid;
-		$app->ping_url = $row['ping_url'];
 
 		return $app;
 	}
@@ -55,9 +54,8 @@ class Repository {
 		}
 
 		$app = new App($key, $row['secret'],
-		               $row['vault_secret'], $row['name']);
+		               $row['vault_secret'], $row['name'], $row['ping_url'] );
 		$app->appid = $row['vault_app_id'];
-		$app->ping_url = $row['ping_url'];
 
 		return $app;
 	}

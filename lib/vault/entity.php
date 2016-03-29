@@ -10,11 +10,12 @@ class App {
 	public $name;
 	public $ping_url;
 
-	public function __construct( $key, $secret, $vault_secret, $name ) {
+	public function __construct( $key, $secret, $vault_secret, $name, $ping_url ) {
 		$this->key = $key;
 		$this->secret = $secret;
 		$this->vault_secret = $vault_secret;
 		$this->name = $name;
+		$this->ping_url = $ping_url;
 	}
 }
 
