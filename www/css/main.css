@@ -51,6 +51,12 @@ input[type="submit"] {
 	margin-bottom: 1em;
 }
 
+#instructions code {
+	background-color: #f0e0e0;
+	border: 1px solid #ecc;
+	padding: 0 0.1em;
+}
+
 textarea#secret {
 	padding: 10px;
 	font-size: 100%;

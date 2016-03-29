@@ -115,7 +115,8 @@ class Esc {
 	}
 
 	static public function instructions( $string ) {
-		return strip_tags( $string, Request::INSTRUCTIONS_ALLOWED_TAGS );
+		$html = \Michelf\Markdown::defaultTransform( Esc::html( $string ) );
+		return strip_tags( $html, '<em><strong><code>' );
 	}
 }
 

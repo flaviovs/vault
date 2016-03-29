@@ -25,6 +25,13 @@ label {
 	display: block;
 }
 
+code {
+	background-color: #eee;
+	border: 1px solid #ddd;
+	padding-left: 0.1em;
+	padding-right: 0.1em;
+}
+
 input.input-text, textarea {
 	padding: 5px;
 	font-size: 110%;

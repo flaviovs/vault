@@ -26,7 +26,7 @@ use Vault\Esc;
   <div class="form-group">
 	<label for="instructions">Additional instructions</label>
 	<textarea name="instructions" rows="5"><?php echo Esc::html($instructions) ?></textarea>
-	<div class="help">You can use basic HTML like &lt;b&gt;, &lt;i&gt;, and HTML lists.</div>
+	<div class="help">You can use some basic Markdown here: <b>**bold**</b> <i>_italics_</i> <code>`code`</code></div>
 
   </div>
   <input type="submit" value="Send Request">
