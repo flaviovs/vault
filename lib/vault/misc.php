@@ -38,7 +38,6 @@ class DatabaseLoggingHandler extends \Monolog\Handler\AbstractProcessingHandler 
 
 
 class Mailer extends \PHPMailer {
-	protected $debug;
 	protected $log;
 
 	public function __construct( \Monolog\Logger $log ) {
