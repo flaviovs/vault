@@ -130,6 +130,7 @@ class Repository {
 		                    . 'SET input_key = NULL '
 		                    . 'WHERE vault_request_id = ?',
 		                    [ $request->reqid ] );
+		$request->input_key = null;
 	}
 
 	public function find_secret( $reqid ) {
