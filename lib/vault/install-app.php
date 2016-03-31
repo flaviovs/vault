@@ -1,16 +1,30 @@
 <?php
+/**
+ * Contains the CLI install app class.
+ */
 
 namespace Vault;
 
 require __DIR__ . '/schema.php';
 
+/**
+ * The CLI install app class.
+ */
 class Installer_App extends Console_App {
 
+	/**
+	 * {@inheritdocs}
+	 */
 	public function init_database_logging() {
 		// Since most likely WE will be creating the database, there's
 		// no point in trying to log to it.
 	}
 
+	/**
+	 * Perform a single SQL command in the database.
+	 *
+	 * @param string $sql The SQL command.
+	 */
 	protected function perform_sql( $sql ) {
 		$line1 = preg_replace( '/\s+/', ' ', $sql );
 		if ( strlen( $line1 ) > 60 ) {
@@ -31,6 +45,14 @@ class Installer_App extends Console_App {
 		return true;
 	}
 
+	/**
+	 * Perform a sequence os SQL commands in the database.
+	 *
+	 * The function will stop performing further commands if the
+	 * current one fails.
+	 *
+	 * @param array $sqls An array containing SQL commands.
+	 */
 	protected function perform_array( array $sqls ) {
 		foreach ( $sqls as $sql ) {
 			if ( ! $this->perform_sql( $sql ) ) {
@@ -40,6 +62,11 @@ class Installer_App extends Console_App {
 		return true;
 	}
 
+	/**
+	 * Return the current database schema version.
+	 *
+	 * @throws \PDOException in case of database errors.
+	 */
 	protected function get_schema_version() {
 		try {
 			$sth = $this->db->perform( 'SELECT MAX(version) AS version FROM vault_schema_versions' );
@@ -55,6 +82,9 @@ class Installer_App extends Console_App {
 		return null === $row['version'] ? -1 : $row['version'];
 	}
 
+	/**
+	 * Perform all SQL commands needed to bring the database up-to-date.
+	 */
 	protected function perform_updates() {
 		$version = $this->get_schema_version();
 		$updates = count( SCHEMA_UPDATES );
@@ -77,6 +107,9 @@ class Installer_App extends Console_App {
 		return true;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function run() {
 
 		$this->bootstrap();

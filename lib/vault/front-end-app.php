@@ -1,14 +1,48 @@
 <?php
+/**
+ * Contains the HTTP front-end app.
+ */
 
 namespace Vault;
 
+/**
+ * The HTTP front-end app.
+ */
 class Front_End_App extends Web_App {
 
+	/**
+	 * The Aura.Session root session object.
+	 *
+	 * @var Aura\Session\Session
+	 */
 	protected $root_session;
+
+	/**
+	 * Our session segment.
+	 *
+	 * @var Aura\Session\Segment
+	 */
 	protected $session;
+
+	/**
+	 * An array to hold script configuration that should be included
+	 * in the response page.
+	 *
+	 * @var array
+	 */
 	protected $script_config = [];
+
+	/**
+	 * An array to hold all script files that should be included in
+	 * the response page.
+	 *
+	 * @var array
+	 */
 	protected $script_files = [ '/script.js' ];
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function __construct( $name, array $globals = null ) {
 		parent::__construct( $name, $globals );
 
@@ -19,6 +53,9 @@ class Front_End_App extends Web_App {
 		$this->session = $this->root_session->getSegment( __CLASS__ );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function init_router() {
 		$this->router
 			->addTokens([
@@ -41,6 +78,11 @@ class Front_End_App extends Web_App {
 		                       '/unlock/{reqid}/view' );
 	}
 
+	/**
+	 * Checks the CSRF token in the submitted (POST) data.
+	 *
+	 * @throws \RuntimeException if the CSRF token is invalid.
+	 */
 	protected function check_form_token() {
 		$form_token = $this->request->post->get( 'form_token' );
 		if ( ! $this->root_session->getCsrfToken()->isValid( $form_token ) ) {
@@ -48,6 +90,16 @@ class Front_End_App extends Web_App {
 		}
 	}
 
+	/**
+	 * Display page contents.
+	 *
+	 * FIXME: this method is badly named -- it actually *sets up* the
+	 * response object with proper contents to be displayed as a
+	 * "page".
+	 *
+	 * @param string $title    The page title.
+	 * @param mixed  $contents The page contents.
+	 */
 	protected function display_page( $title, $contents ) {
 		$view = $this->views->get( 'page' );
 		$view->set( 'title', $title );
@@ -65,6 +117,13 @@ class Front_End_App extends Web_App {
 		$this->response->content->set( $view );
 	}
 
+	/**
+	 * Loads a request.
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if the request is not found.
+	 */
 	protected function load_request( $reqid ) {
 		try {
 			$request = $this->repo->find_request( $reqid );
@@ -74,6 +133,13 @@ class Front_End_App extends Web_App {
 		return $request;
 	}
 
+	/**
+	 * Handles secret input.
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if any problem is found.
+	 */
 	protected function handle_input_request( $reqid ) {
 
 		$request = $this->load_request( $reqid );
@@ -111,6 +177,13 @@ class Front_End_App extends Web_App {
 		$this->display_page( __( 'We need your information' ), $view );
 	}
 
+	/**
+	 * Handles submission of the secret input form.
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if any problem is found.
+	 */
 	protected function handle_input_request_submission( $reqid ) {
 		$this->check_form_token();
 
@@ -121,7 +194,7 @@ class Front_End_App extends Web_App {
 			throw new NotFoundException( 'No MAC' );
 		}
 
-		// See comment in handle_input_request() above
+		// See comment in handle_input_request() above.
 		if ( ! $request->input_key ) {
 			throw new NotFoundException( 'No input key' );
 		}
@@ -135,8 +208,8 @@ class Front_End_App extends Web_App {
 			$request,
 			$this->request->post->get( 'secret' ) );
 
-		// Add a flash flag so that we can control form submission in
-		// the "thank you" page.
+		// Add a flash flag so that we can check for a proper
+		// submission in the "thank you" page.
 		$this->session->setFlash( 'reqid', $request->reqid );
 
 		$this->response->redirect->afterPost(
@@ -146,6 +219,13 @@ class Front_End_App extends Web_App {
 			                         ] ) );
 	}
 
+	/**
+	 * Handles the secret input "thank you" feedback page.
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if the request ID is not valid.
+	 */
 	protected function handle_request_input_thank_you( $reqid ) {
 		if ( $this->session->getFlash( 'reqid' ) !== $reqid ) {
 			throw new NotFoundException();
@@ -155,6 +235,15 @@ class Front_End_App extends Web_App {
 		                     $this->views->get( 'input-thank-you' ));
 	}
 
+	/**
+	 * Handles the secret unlock request.
+	 *
+	 * FIXME: why such a weird method name?
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if any problem is found.
+	 */
 	protected function handle_unlock_unlock( $reqid ) {
 		$request = $this->load_request( $reqid );
 
@@ -198,6 +287,13 @@ class Front_End_App extends Web_App {
 			                         ] ) );
 	}
 
+	/**
+	 * Handles viewing of an unlocked secret.
+	 *
+	 * @param int $reqid The request ID.
+	 *
+	 * @throws NotFoundException if any problem is found.
+	 */
 	protected function handle_unlock_view( $reqid ) {
 		if ( $this->session->getFlash( 'reqid' ) !== $reqid ) {
 			throw new NotFoundException();
@@ -224,11 +320,17 @@ class Front_End_App extends Web_App {
 		$this->display_page( __( 'Unlocked' ), $view );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function handle_exception( \Exception $ex ) {
 		parent::handle_exception( $ex );
 		$this->display_page( __( 'Oops..' ), $this->views->get( 'exception' ) );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function handle_request( \Aura\Router\Route $route ) {
 
 		switch ( $route->params['action'] ) {
@@ -259,7 +361,9 @@ class Front_End_App extends Web_App {
 		}
 	}
 
-
+	/**
+	 * {@inheritdoc}
+	 */
 	public function handle_not_found( $message ) {
 		parent::handle_not_found( $message );
 		$this->display_page( __( 'Page not found' ),

@@ -1,13 +1,39 @@
 <?php
+/**
+ * Contains the abstract base class for Vault console apps
+ */
 
 namespace Vault;
 
+/**
+ * The abstract base class for console apps.
+ */
 abstract class Console_App extends Vault_App {
 
+	/**
+	 * Aura Cli getopt helper.
+	 *
+	 * @var \Aura\Cli\Getopt
+	 */
 	protected $getopt;
+
+	/**
+	 * Aura Cli stdio object.
+	 *
+	 * @var \Aura\Cli\Stdio
+	 */
 	protected $stdio;
+
+	/**
+	 * Aura Cli context.
+	 *
+	 * @var \Aura\Cli\Context
+	 */
 	private $cli_context;
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function __construct( $name ) {
 		parent::__construct( $name );
 
@@ -16,6 +42,9 @@ abstract class Console_App extends Vault_App {
 		$this->stdio = $cli_factory->newStdio();
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function init_basic_logging() {
 		$general_level = $this->conf->get( 'logging', 'general_level' );
 		$audit_level = $this->conf->get( 'logging', 'audit_level' );
@@ -37,6 +66,9 @@ abstract class Console_App extends Vault_App {
 		$this->audit->setHandlers( [ $audit_handler ] );
 	}
 
+	/**
+	 * Returns the global options array.
+	 */
 	protected function get_options() {
 		return [
 			'verbose,v' => 'Be verbose.',
@@ -44,10 +76,16 @@ abstract class Console_App extends Vault_App {
 		];
 	}
 
+	/**
+	 * Returns the global usage string.
+	 */
 	protected function get_usage() {
 		return '';
 	}
 
+	/**
+	 * Prints the help text.
+	 */
 	protected function print_help() {
 		$this->stdio->out( 'Usage: ' . $this->getopt->get( 0 ) . ' [OPTIONS]' );
 		$usage = $this->get_usage();
@@ -68,6 +106,11 @@ abstract class Console_App extends Vault_App {
 		}
 	}
 
+	/**
+	 * Parse the command line arguments.
+	 *
+	 * @throws \InvalidArgumentException if invalid arguments are found.
+	 */
 	protected function parse_arguments() {
 		$this->getopt = $this->cli_context->getopt( $this->get_options() );
 		$has_errors = $this->getopt->hasErrors();
@@ -82,6 +125,9 @@ abstract class Console_App extends Vault_App {
 		return ! $has_errors;
 	}
 
+	/**
+	 * Process the parsed arguments.
+	 */
 	protected function process_arguments() {
 		if ( $this->getopt->get( '--help' ) ) {
 			$this->print_help();
@@ -95,6 +141,11 @@ abstract class Console_App extends Vault_App {
 		}
 	}
 
+	/**
+	 * Prints a nicely formatted error message.
+	 *
+	 * @param string $message The error message to print.
+	 */
 	protected function print_error( $message ) {
 		$this->stdio->err( '<<red>>' );
 		fwrite( STDERR, $message );
@@ -102,6 +153,9 @@ abstract class Console_App extends Vault_App {
 		$this->stdio->errln( "Try '--help'." );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function bootstrap() {
 		parent::bootstrap();
 		try {

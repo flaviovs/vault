@@ -1,12 +1,21 @@
 <?php
+/**
+ * Database schema initialization/update SQL commands
+ */
 
 namespace Vault;
 
+/**
+ * Commands run first on install.
+ */
 const SCHEMA_INIT = [
 	'ALTER DATABASE DEFAULT CHARACTER SET = utf8',
 	'SET default_storage_engine=InnoDB',
 ];
 
+/**
+ * All schema commands.
+ */
 const SCHEMA_UPDATES = [
 	'CREATE TABLE vault_schema_versions (
 		version INTEGER PRIMARY KEY,

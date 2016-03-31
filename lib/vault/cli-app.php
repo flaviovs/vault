@@ -1,18 +1,37 @@
 <?php
+/**
+ * Contains the CLI interface app class
+ */
 
 namespace Vault;
 
+/**
+ * The CLI interface app class.
+ */
 class CLI_App extends Console_App {
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function get_usage() {
 		return 'COMMAND [COMMAND-ARGS]';
 	}
 
+	/**
+	 * Prints result array, usually returned by a service call.
+	 *
+	 * @param array $result The array to print.
+	 */
 	protected function print_result( array $result ) {
 		echo json_encode( $result, JSON_PRETTY_PRINT );
 		echo "\n";
 	}
 
+	/**
+	 * Handles the 'app add' command.
+	 *
+	 * @throws \InvalidArgumentException on invalid arguments.
+	 */
 	protected function handle_app_add() {
 		$name = $this->getopt->get( 3 );
 		if ( ! $name ) {
@@ -29,6 +48,11 @@ class CLI_App extends Console_App {
 		$this->print_result( $res );
 	}
 
+	/**
+	 * Handles the 'app' command.
+	 *
+	 * @throws \InvalidArgumentException on invalid arguments.
+	 */
 	protected function handle_app() {
 		$app_command = $this->getopt->get( 2 );
 
@@ -41,6 +65,11 @@ class CLI_App extends Console_App {
 		}
 	}
 
+	/**
+	 * Handles the 'request' command.
+	 *
+	 * @throws \InvalidArgumentException on invalid arguments.
+	 */
 	protected function handle_request() {
 		$appkey = $this->getopt->get( 2 );
 		$email = $this->getopt->get( 3 );
@@ -61,6 +90,11 @@ class CLI_App extends Console_App {
 		$this->print_result( $res );
 	}
 
+	/**
+	 * Handles the 'secret' command.
+	 *
+	 * @throws \InvalidArgumentException on invalid arguments.
+	 */
 	protected function handle_secret() {
 		$reqid = $this->getopt->get( 2 );
 
@@ -84,6 +118,11 @@ class CLI_App extends Console_App {
 		$this->print_result( $res );
 	}
 
+	/**
+	 * Process the command line.
+	 *
+	 * @throws \InvalidArgumentException if arguments are not valid.
+	 */
 	protected function process_command() {
 		$command = $this->getopt->get( 1 );
 
@@ -112,6 +151,9 @@ class CLI_App extends Console_App {
 		}
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function run() {
 		$this->bootstrap();
 

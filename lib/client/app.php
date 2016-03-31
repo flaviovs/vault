@@ -1,23 +1,107 @@
 <?php
+/**
+ * Defines the main Vault client app class
+ */
 
 namespace Vault;
 
+/**
+ * Exception thrown on unauthorized HTTP requests.
+ *
+ * By default, the app will issue a "401 Unauthorized" when this
+ * exception is caught.
+ */
 class ForbiddenException extends \Exception {}
 
+/**
+ * The client app class.
+ */
 class ClientApp {
+	/**
+	 * The default configuration.
+	 *
+	 * @var array
+	 */
 	const DEFAULT_CONFIG = [];
 
+	/**
+	 * The request object.
+	 *
+	 * @var \Aura\Web\Request
+	 */
 	protected $request;
+
+	/**
+	 * The response object.
+	 *
+	 * @var \Aura\Web\Response
+	 */
 	protected $response;
+
+	/**
+	 * The router object.
+	 *
+	 * @var \Aura\Router\Router
+	 */
 	protected $router;
+
+	/**
+	 * The config object.
+	 *
+	 * @var \UConfig\Config
+	 */
 	protected $conf;
+
+	/**
+	 * The root (main) Aura session.
+	 *
+	 * @var \Aura\Session\Session
+	 */
 	protected $root_session;
+
+	/**
+	 * This app session segment.
+	 *
+	 * We use a segment to avoid future clash with other tools that
+	 * might be integrated with the app.
+	 *
+	 * @var \Aura\Session\Segment
+	 */
 	protected $session;
+
+	/**
+	 * The logger object.
+	 *
+	 * @var \Monolog\Logger
+	 */
 	protected $log;
+
+	/**
+	 * The view registry.
+	 *
+	 * @var \UView\Registry
+	 */
 	protected $views;
+
+	/**
+	 * The message area object.
+	 *
+	 * @var Message_Area
+	 */
 	protected $messages;
+
+	/**
+	 * The current, logged-in, user.
+	 *
+	 * @var User
+	 */
 	protected $user;
 
+	/**
+	 * Constructs the object.
+	 *
+	 * @param string $name The app name.
+	 */
 	public function __construct( $name ) {
 		// Workaround '_SERVER' not present in $GLOBALS, unless
 		// referenced before (see
@@ -50,6 +134,9 @@ class ClientApp {
 
 	}
 
+	/**
+	 * Initializes logging.
+	 */
 	protected function init_logging() {
 		$handler = new \Monolog\Handler\ErrorLogHandler();
 		$handler->setFormatter(
@@ -59,12 +146,20 @@ class ClientApp {
 		$this->log->pushProcessor( new \Monolog\Processor\WebProcessor() );
 	}
 
+	/**
+	 * Handles uncaught exceptions.
+	 *
+	 * @param \Exception $ex The uncaught exception.
+	 */
 	protected function handle_exception( \Exception $ex ) {
 		$this->response->status->setCode( 500 );
 		$this->log->addError( $ex->getMessage(), [ 'exception' => $ex ] );
 		$this->display_page( __( 'Oops..' ), $this->views->get( 'exception' ) );
 	}
 
+	/**
+	 * Initializes the router object.
+	 */
 	protected function init_router() {
 		$this->router->addGet( 'request', '/' );
 		$this->router->addPost( 'request#submission', '/' );
@@ -74,7 +169,7 @@ class ClientApp {
 		$this->router->addGet( 'logout', '/logout' );
 
 		// We do not require a user to be logged in on the following
-		// paths
+		// paths.
 		$this->router->addPost( 'ping', '/ping' )
 			->addValues( [ '_skip_login_check' => true ] );
 
@@ -82,6 +177,16 @@ class ClientApp {
 			->addValues( [ '_skip_login_check' => true ] );
 	}
 
+	/**
+	 * Add a flash message.
+	 *
+	 * Flash messages are feedback messages that should be displayed in the next request.
+	 *
+	 * @param string $msg   The message to flash.
+	 * @param string $level The message level. Use either
+	 *   Message_Area::INFO or Message_Area::ERROR, for informational
+	 *   or error messages, respectively.
+	 */
 	protected function flash_message( $msg, $level ) {
 		$messages = $this->session->getFlashNext( 'messages', [] );
 		if ( ! array_key_exists( $level, $messages ) ) {
@@ -91,14 +196,35 @@ class ClientApp {
 		$this->session->setFlash( 'messages', $messages );
 	}
 
+	/**
+	 * Flash an informational message.
+	 *
+	 * @param string $msg The message to flash.
+	 */
 	protected function flash_info( $msg ) {
 		$this->flash_message( $msg, Message_Area::INFO );
 	}
 
+	/**
+	 * Flash an error message.
+	 *
+	 * @param string $msg The message to flash.
+	 */
 	protected function flash_error( $msg ) {
 		$this->flash_message( $msg, Message_Area::ERROR );
 	}
 
+
+	/**
+	 * Display page contents.
+	 *
+	 * FIXME: this method is badly named -- it actually *sets up* the
+	 * response object with proper contents to be displayed as a
+	 * "page".
+	 *
+	 * @param string $title The page title.
+	 * @param mixed  $contents The page contents.
+	 */
 	protected function display_page( $title, $contents ) {
 		$view = $this->views->get( 'page' );
 
@@ -116,6 +242,13 @@ class ClientApp {
 		$this->response->content->set( $view );
 	}
 
+	/**
+	 * Creates a properly configured client object.
+	 *
+	 * @return VaultClient The new client object.
+	 *
+	 * @throws \RuntimeException if the client cannot the be created.
+	 */
 	protected function new_client() {
 		try {
 			$url = $this->conf->get( 'api', 'url' );
@@ -138,6 +271,11 @@ class ClientApp {
 		return new VaultClient( $url, $key, $secret );
 	}
 
+	/**
+	 * Return the request form view.
+	 *
+	 * @return \UView\View The request form view.
+	 */
 	protected function get_request_form() {
 		$form = $this->views->get( 'request-form' );
 		$form->set( 'form_token',
@@ -146,6 +284,11 @@ class ClientApp {
 		return $form;
 	}
 
+	/**
+	 * Displays the login page.
+	 *
+	 * Displays (actually sets up response contents) the login page.
+	 */
 	protected function display_login_page() {
 		$wpcc_state = base64_encode( openssl_random_pseudo_bytes( 16 ) );
 		$this->session->setFlash( 'wpcc_state', $wpcc_state );
@@ -166,6 +309,11 @@ class ClientApp {
 		                     '<a id="login-button" href="' . $url_to . '"><img src="//s0.wp.com/i/wpcc-button.png" width="231"></a>' );
 	}
 
+	/**
+	 * Logs in an user.
+	 *
+	 * @param User $user The user object to log in.
+	 */
 	protected function log_in( User $user ) {
 		$this->root_session->regenerateId();
 		$this->log->addInfo( $user->email . ' logged in' );
@@ -173,9 +321,14 @@ class ClientApp {
 		$this->user = $user;
 	}
 
+	/**
+	 * Handles the OAuth return response.
+	 *
+	 * @throws \RuntimeException if the response is not valid.
+	 */
 	protected function handle_auth() {
 
-		// No matter what, we always redirect to the request page
+		// No matter what, we always redirect to the request page.
 		$this->response->redirect->to( $this->router->generate( 'request' ) );
 
 		$code = $this->request->query->get( 'code' );
@@ -226,6 +379,11 @@ class ClientApp {
 		                         $user['display_name'] ) );
 	}
 
+	/**
+	 * Checks that there's a user currently logged in.
+	 *
+	 * @throws ForbiddenException if no user is logged in.
+	 */
 	protected function check_user() {
 		$this->user = $this->session->get( 'user' );
 		if ( ! $this->user ) {
@@ -234,11 +392,20 @@ class ClientApp {
 		}
 	}
 
+	/**
+	 * Handles the request form.
+	 */
 	protected function handle_request_form() {
 		$this->display_page( __( 'Send a Vault Request' ),
 		                     $this->get_request_form() );
 	}
 
+	/**
+	 * Checks CSRF token in the current (POST) request.
+	 *
+	 * @throws \RuntimeException if the CSRF token is not present or
+	 * invalid.
+	 */
 	protected function check_form_token() {
 		$form_token = $this->request->post->get( 'form_token' );
 		if ( ! $this->root_session->getCsrfToken()->isValid( $form_token ) ) {
@@ -246,6 +413,9 @@ class ClientApp {
 		}
 	}
 
+	/**
+	 * Handles submission of the request form.
+	 */
 	protected function handle_request_form_submission() {
 		$this->check_form_token();
 
@@ -284,6 +454,9 @@ class ClientApp {
 		$this->display_page( __( 'Request Confirmation' ), $form );
 	}
 
+	/**
+	 * Handles submission of the confirmation form.
+	 */
 	protected function handle_confirm_submission() {
 		$this->check_form_token();
 
@@ -301,6 +474,11 @@ class ClientApp {
 			$this->router->generate( 'request.done' ) );
 	}
 
+	/**
+	 * Handles submission ping requests.
+	 *
+	 * @param array $args Ping argument.
+	 */
 	protected function handle_ping_submission( array $args ) {
 
 		$body = $this->views->get( 'email-unlock' );
@@ -321,12 +499,18 @@ class ClientApp {
 
 	}
 
+	/**
+	 * Handles and dispatches ping requests.
+	 *
+	 * @throws NotFoundException if the request seems not valid or
+	 * incomplete.
+	 */
 	protected function handle_ping() {
 		$subject = $this->request->post->get( 's' );
 		$payload = $this->request->post->get( 'p' );
 		$mac = $this->request->post->get( 'm' );
 
-		$known_mac = hash_hmac( 'sha1',  "$subject $payload",
+		$known_mac = hash_hmac( 'sha1', "$subject $payload",
 		                        $this->conf->get( 'api', 'vault_secret' ),
 		                        true );
 		if ( ! hash_equals( $known_mac, $mac ) ) {
@@ -345,6 +529,9 @@ class ClientApp {
 		}
 	}
 
+	/**
+	 * Handles user logout.
+	 */
 	protected function handle_logout() {
 		$this->session->set( 'user', null );
 		$this->root_session->regenerateId();
@@ -352,6 +539,15 @@ class ClientApp {
 		$this->response->redirect->to( $this->router->generate( 'request' ) );
 	}
 
+	/**
+	 * Front-controller request dispatcher.
+	 *
+	 * The method will look for an authenticated user by default,
+	 * unless the "_skip_login_check" parameter is empty in the route.
+	 *
+	 * @throws NotFoundException if the requested route is not found.
+	 * @throws \RuntimeException if any other internal problem is found.
+	 */
 	protected function handle_request() {
 		$path = $this->request->url->get( PHP_URL_PATH );
 		$route = $this->router->match( $path, $this->request->server->get() );
@@ -404,6 +600,9 @@ class ClientApp {
 		}
 	}
 
+	/**
+	 * Sets up a HTTP "Not found" response.
+	 */
 	protected function handle_not_found() {
 		$this->response->status->setCode( 404 );
 		$this->session->setFlashNow( 'messages', [] );
@@ -411,11 +610,17 @@ class ClientApp {
 		                     __( "Sorry, the page you were looking for doesn't exist or has been moved." ) );
 	}
 
+	/**
+	 * Sets up a HTTP "Forbidden" response.
+	 */
 	protected function handle_forbidden() {
 		$this->response->status->setCode( 403 );
 		$this->session->setFlashNow( 'messages', [] );
 	}
 
+	/**
+	 * Sets up response metadata.
+	 */
 	protected function prepare_response() {
 		$type = $this->response->content->getType();
 		$charset = $this->response->content->getCharset();
@@ -428,6 +633,9 @@ class ClientApp {
 		}
 	}
 
+	/**
+	 * Sends out the response object down the wire.
+	 */
 	protected function send_response() {
 		header( $this->response->status->get(),
 		        true,
@@ -450,6 +658,9 @@ class ClientApp {
 		echo $this->response->content->get();
 	}
 
+	/**
+	 * Run the client application.
+	 */
 	public function run() {
 		try {
 			$this->init_logging();

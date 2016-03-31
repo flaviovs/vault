@@ -1,16 +1,58 @@
 <?php
+/**
+ * Contains the Vault service class.
+ */
 
 namespace Vault;
 
+/**
+ * General exception raised by the service.
+ */
 class VaultException extends \Exception {}
 
+/**
+ * The Vault service class.
+ */
 class Service {
+
+	/**
+	 * The configuration object.
+	 *
+	 * @var UConfig\Config
+	 */
 	protected $conf;
+
+	/**
+	 * The repository object.
+	 *
+	 * @var Repository
+	 */
 	protected $repo;
+
+	/**
+	 * The logger object.
+	 *
+	 * @var Monolog\Logger
+	 */
 	protected $log;
+
+	/**
+	 * The view registry.
+	 *
+	 * @var UViews\Registry
+	 */
 	protected $views;
+
+	/**
+	 * The mailer factory.
+	 *
+	 * @var Mailer_Factory
+	 */
 	protected $mailer_factory;
 
+	/**
+	 * Constructs the object.
+	 */
 	public function __construct( \UConfig\Config $conf,
 	                             Repository $repo,
 	                             \Monolog\Logger $log,
@@ -23,14 +65,28 @@ class Service {
 		$this->mailer_factory = $mailer_factory;
 	}
 
+	/**
+	 * Generates a new random app key.
+	 */
 	protected function generate_app_key() {
 		return base64_encode( openssl_random_pseudo_bytes( 12 ) );
 	}
 
+	/**
+	 * Generates a new random app secret.
+	 */
 	protected function generate_app_secret() {
 		return base64_encode( openssl_random_pseudo_bytes( 30 ) );
 	}
 
+	/**
+	 * Adds an app.
+	 *
+	 * @param string $name     The app name.
+	 * @param string $ping_url The ping URL to be associated with the app.
+	 *
+	 * @throws VaultException if the object cannot be constructed.
+	 */
 	public function add_app( $name, $ping_url ) {
 		$secret = $this->generate_app_secret();
 		$app = new App( $this->generate_app_key(),
@@ -50,6 +106,14 @@ class Service {
 		];
 	}
 
+	/**
+	 * Calculates a request MAC.
+	 *
+	 * @param Request $request The request object to calculate the MAC from.
+	 *
+	 * @param string  $key     The optional key to use to calculate the MAC
+	 * (defaults to using the request input_key).
+	 */
 	public function get_request_mac( Request $request, $key = null ) {
 		if ( ! $key ) {
 			$key = $request->input_key;
@@ -60,6 +124,11 @@ class Service {
 		                  true );
 	}
 
+	/**
+	 * Returns the URL to be used to input the secret for a request.
+	 *
+	 * @param Request $request The request object.
+	 */
 	protected function get_input_url( Request $request ) {
 		$input_hash = $this->get_request_mac( $request );
 
@@ -68,6 +137,12 @@ class Service {
 			. 'm=' . urlencode( base64_encode( $input_hash ) );
 	}
 
+	/**
+	 * Returns the URL to be used to unlock the secret for a request.
+	 *
+	 * @param Request $request    The request object.
+	 * @param string  $unlock_key The unlock key.
+	 */
 	protected function get_unlock_url( Request $request, $unlock_key ) {
 		$mac = $this->get_request_mac( $request, $unlock_key );
 
@@ -77,6 +152,14 @@ class Service {
 			. 'm=' . urlencode( base64_encode( $mac ) );
 	}
 
+	/**
+	 * Sends out a request e-mail.
+	 *
+	 * The e-mail is sent to the e-mail address associated with the
+	 * request.
+	 *
+	 * @param Request $request The request object.
+	 */
 	protected function email_request( Request $request ) {
 		$mail = $this->mailer_factory->new_mailer();
 
@@ -98,6 +181,16 @@ class Service {
 		}
 	}
 
+	/**
+	 * Registers a new request.
+	 *
+	 * @param string $key          The app key.
+	 * @param string $email        The user e-mail address.
+	 * @param string $instructions The request instructions (may be null).
+	 * @param string $app_data     The request-specific application data (may be null).
+	 *
+	 * @throws \InvalidArgumentException if an invalid argument is found.
+	 */
 	public function register_request( $key, $email, $instructions, $app_data ) {
 		if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
 			throw new \InvalidArgumentException( "Invalid e-mail '$email'" );
@@ -123,6 +216,15 @@ class Service {
 		];
 	}
 
+	/**
+	 * Performs a ping-back.
+	 *
+	 * @param App    $app     The app that should the pinged-back.
+	 * @param string $subject The ping-back subject.
+	 * @param array  $payload The subject-specific payload array.
+	 *
+	 * @throws VaultException if ping fails.
+	 */
 	protected function ping_back( App $app, $subject, array $payload ) {
 
 		$postdata = [
@@ -163,6 +265,14 @@ class Service {
 		}
 	}
 
+	/**
+	 * Performs a "submission" ping-back for a request.
+	 *
+	 * @param Request $request    The request object.
+	 * @param string  $unlock_key The unlock key.
+	 *
+	 * @throws VaultException if ping fails.
+	 */
 	protected function ping_back_submission( Request $request, $unlock_key ) {
 		$app = $this->repo->find_app( $request->appid );
 		if ( ! $app->ping_url ) {
@@ -186,6 +296,14 @@ class Service {
 		}
 	}
 
+	/**
+	 * Register a secret.
+	 *
+	 * @param Request $request   The request that the secret is to be
+	 * associated with.
+	 *
+	 * @param string  $plaintext The plaintext secret.
+	 */
 	public function register_secret( Request $request, $plaintext ) {
 
 		$unlock_key = base64_encode( openssl_random_pseudo_bytes( 24 ) );
@@ -223,6 +341,16 @@ class Service {
 		];
 	}
 
+	/**
+	 * Unlock a secret.
+	 *
+	 * This will *not* check if the key is valid. The caller is
+	 * responsible for calling `$secret->is_mac_valid( $key )` for
+	 * this.
+	 *
+	 * @param Secret $secret The secret object.
+	 * @param string $key    The unlock key.
+	 */
 	public function unlock_secret( Secret $secret, $key ) {
 		$this->repo->record_unlock( $secret );
 
@@ -235,6 +363,9 @@ class Service {
 		                        substr( $secret->secret, 0, $iv_size ) );
 	}
 
+	/**
+	 * Deletes all answered requests older that the configured period.
+	 */
 	public function delete_answered_requests() {
 		$period = $this->conf->get( 'maintenance',
 		                            'expire_answered_requests_after' );
@@ -244,6 +375,9 @@ class Service {
 		$this->repo->delete_answered_requests( $before );
 	}
 
+	/**
+	 * Deletes all unanswered requests older that the configured period.
+	 */
 	public function delete_unanswered_requests() {
 		$period = $this->conf->get( 'maintenance',
 		                            'expire_unanswered_requests_after' );
@@ -253,6 +387,9 @@ class Service {
 		$this->repo->delete_unanswered_requests( $before );
 	}
 
+	/**
+	 * Runs all Vault maintenance task.
+	 */
 	public function maintenance() {
 		$this->delete_answered_requests();
 		$this->delete_unanswered_requests();
