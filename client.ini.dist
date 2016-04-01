@@ -1,5 +1,4 @@
 [api]
-; No trailing slashes in the API URL.
 url = ?
 key = ?
 secret = ?

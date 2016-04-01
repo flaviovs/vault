@@ -44,7 +44,7 @@ class VaultClient {
 	 * @param string $secret The client secret.
 	 */
 	public function __construct( $url, $key, $secret ) {
-		$this->url = $url;
+		$this->url = rtrim( $url, '/' );
 		$this->key = $key;
 		$this->secret = $secret;
 	}

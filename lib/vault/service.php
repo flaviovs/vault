@@ -132,7 +132,7 @@ class Service {
 	protected function get_input_url( Request $request ) {
 		$input_hash = $this->get_request_mac( $request );
 
-		return $this->conf->get( 'url', 'input' )
+		return rtrim( $this->conf->get( 'url', 'input' ), '/' )
 			. '/request/' . $request->reqid . '/input?'
 			. 'm=' . urlencode( base64_encode( $input_hash ) );
 	}
@@ -146,7 +146,7 @@ class Service {
 	protected function get_unlock_url( Request $request, $unlock_key ) {
 		$mac = $this->get_request_mac( $request, $unlock_key );
 
-		return $this->conf->get( 'url', 'unlock' )
+		return rtrim( $this->conf->get( 'url', 'unlock' ), '/' )
 			. '/unlock/' . $request->reqid . '/unlock?'
 			. 'k=' . urlencode( base64_encode( $unlock_key ) ) . '&'
 			. 'm=' . urlencode( base64_encode( $mac ) );
