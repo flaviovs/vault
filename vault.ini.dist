@@ -54,7 +54,7 @@ audit_level = notice
 ; to see it before it get deleted.
 ; See http://php.net/manual/en/datetime.formats.relative.php for
 ; accepted date formats.
-expire_answered_requests_after = 4 hours
+expire_answered_requests_after = 3 days
 
 ; This control the amount of time an engineer request that is still
 ; waiting for the user to input the secret will be kept. From a
