@@ -27,7 +27,15 @@ from_name = Automattic Vault
 
 
 [url]
-; Base URLs only. No trailing slashes.
+
+; Base URLs used to generate links to this Vault. 'input' is the base
+; Vault URL for secret input, and 'unlock' is for unlocking
+; secrets. Usually, they are the same URL, but you may want to use
+; different URLs, for example to implement access control (i.e., make
+; 'input' open, but restrict 'unlock' to your intranet). Notice that
+; there is no provision in the system to restrict access -- you'll
+; have to do it using your web server configuration. These settings
+; control *only* link generation.
 input = https://vault.automattic.com
 unlock = https://vault.automattic.com
 
