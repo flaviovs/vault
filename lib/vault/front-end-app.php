@@ -366,7 +366,7 @@ class Front_End_App extends Web_App {
 	 */
 	public function handle_not_found( $message ) {
 		parent::handle_not_found( $message );
-		$this->display_page( __( 'Page not found' ),
-		                     __( "Sorry, the page you were looking for doesn't exist or has been moved." ) );
+		$this->display_page( __( 'Not found' ),
+		                     $this->views->get( '404-not-found' ) );
 	}
 }

@@ -85,3 +85,9 @@ textarea#secret {
 	border-radius: 10px;
 	white-space: pre-wrap;
 }
+
+#not-found {
+	padding-left: 360px;
+	background: url(../img/empty-box.png) top left no-repeat;
+	min-height: 320px;
+}
