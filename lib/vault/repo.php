@@ -97,8 +97,8 @@ class Repository {
 			throw new VaultDataException( "App '$key' not found" );
 		}
 
-		$app = new App($key, $row['secret'],
-		               $row['vault_secret'], $row['name'], $row['ping_url'] );
+		$app = new App( $key, $row['secret'],
+		                $row['vault_secret'], $row['name'], $row['ping_url'] );
 		$app->appid = $row['vault_app_id'];
 
 		return $app;

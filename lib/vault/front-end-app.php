@@ -38,7 +38,7 @@ class Front_End_App extends Web_App {
 	 *
 	 * @var array
 	 */
-	protected $script_files = [ '/script.js' ];
+	protected $script_files = ['/script.js'];
 
 	/**
 	 * {@inheritdoc}
@@ -58,9 +58,9 @@ class Front_End_App extends Web_App {
 	 */
 	public function init_router() {
 		$this->router
-			->addTokens([
-				            'reqid'     => '\d+',
-			            ]);
+			->addTokens( [
+				            'reqid' => '\d+',
+			             ] );
 
 		$this->router->addGet( 'request.reqid.input',
 		                       '/request/{reqid}/input' );
@@ -232,7 +232,7 @@ class Front_End_App extends Web_App {
 		}
 
 		$this->display_page( __( 'Thank you!' ),
-		                     $this->views->get( 'input-thank-you' ));
+		                     $this->views->get( 'input-thank-you' ) );
 	}
 
 	/**
@@ -275,7 +275,7 @@ class Front_End_App extends Web_App {
 		$this->session->setFlash( 'reqid', $request->reqid );
 		$this->session->setFlash( 'view_expire',
 		                          time() + $this->conf->get( 'general',
-		                                                     'view_time', 60) );
+		                                                     'view_time', 60 ) );
 		$this->session->setFlash( 'plaintext',
 		                          $this->service->unlock_secret( $secret,
 		                                                         $unlock_key ) );
@@ -311,7 +311,7 @@ class Front_End_App extends Web_App {
 		// over (which then will fatally return a 404).
 		$remaining_time++;
 		$this->response->headers->set( 'Refresh',
-		                               $remaining_time . '; URL=' . $this->request->url->get());
+		                               $remaining_time . '; URL=' . $this->request->url->get() );
 		$this->script_config['refresh'] = $remaining_time;
 
 		$view = $this->views->get( 'unlock-view' );
