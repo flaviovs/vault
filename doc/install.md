@@ -1,10 +1,8 @@
 Vault installation instructions
 ===============================
 
-Setting up the base engine
---------------------------
-
-Here are the steps to install the base Vault engine:
+Initial tasks
+-------------
 
 1. Run `composer install` on the project root to bring in all package
    dependencies.
@@ -14,7 +12,7 @@ Here are the steps to install the base Vault engine:
 3. Copy the file `vault.ini.dist` to `vault.ini`.
 
 4. Edit `vault.ini` and edit/review the settings. You should at least
-   do the following:
+   check the following:
 
    - Review the `db.default` section and input your database
      connection information.
@@ -24,67 +22,86 @@ Here are the steps to install the base Vault engine:
 
    - Configure the `url` section. Initially, point both `input` and
      `unlock` URLs to the address where you plan to run the Vault
-      web front-end on (see below).
+	 web front-end on (see below).
 
 5. Run `php bin/install.php`.
 
 The `bin/install.php` script will try to connect to the configured
 database, and set up all tables and indexes needed for the system to
-function. If you see no errors, proceed to set up the web front-end
-and API.
+function. If you see no errors, proceed to set up the web server.
 
 
-Setting up the web front-end and API
-------------------------------------
+Setting up the web server
+-------------------------
 
 The Vault system has a web front-end where users input their secrets,
-and engineers unlock them. It also has a web API that is used by
-client apps to communicate with the Vault (for example, to generate
-requests). For the system to be usable, you must configure both.
+and engineers unlock them. It has also a web API that is used by
+client apps to communicate with the Vault. Lastly, a basic client app
+is available to allow engineers issue secret requests, and notify then
+when users respond. All those parts of the software are available
+through web interfaces, and this section contain the instructions to
+configure them.
 
-Fortunately, setting up the web front-end and API is very
-straightforward. All you have to to is to point your web server
-document root to the corresponding directory in the Vault package.
+Here's the corresponding web root directories in the Vault package for
+each one of the interfaces mentioned above:
+
+- `www/` - front-end
+
+- `api/` - API
+
+- `client/` - client app
+
+Configuring the web server depends on the actual server software being
+used. For Apache, the directories above already contain `.htaccess`
+files that may allow the system work almost out-of-box (you should
+check if the server-wide `AllowOverride` directive allows `.htaccess`
+to be used to configure the server). For NGINX, a
+[sample configuration file is available](doc/nginx.conf).
 
 For the sake of these instructions, let's suppose that your web
-front-end should be accessed at URL http://vault.example.com, and the
-web API at http://api.example.com. Here's how you should configure
-your web server:
+front-end should be accessed at URL http://vault.example.com, the web
+API at http://api.example.com, and the client at
+http://client.example.com. Then, the mapping of URLs to server
+directories should be done as follows:
 
-- Point http://vault.example.com document root to the `www/` directory
+- http://vault.example.com → `www/`
 
-- Point http://api.example.com document root to the `api/` directory
+- http://api.example.com → `api/`
 
-The system was tested under Apache. A `.htaccess` file is provided
-under each of the directories above, that promptly configure the
-service to work with it, but which also may be used as a starting
-point to configure other web software.
+- http://client.example.com → `client/`
 
-If everything is OK, when you navigate to http://vault.example.com you
-should see a "Not found" page saying something about the link having
-expired. At http://api.example.com you should receive a JSON-encoded
-"Unknown request" response.
+After configuring and restarting your web server, if everything is OK
+when you navigate to http://vault.example.com you should see a "Not
+found" page saying something about the link having expired. At
+http://api.example.com you should receive a JSON-encoded "Unknown
+request" response. Lastly, at http://client.example.com you should
+receive an error page saying that something unexpected has happened
+(don't worry about this -- the message is issued because you didn't
+configure the client yet -- we will cover this in a moment).
 
-At this point, if you confirmed that both the front-end and API are
-properly configured, you can proceed to set up the client app.
+At this point, if you confirmed that your web server is properly
+configured, you can proceed to set up the client app.
 
 
 Setting up the client app
 -------------------------
 
 Setting up the client app is relatively easy. The first step is to
-copy the file `client.ini.dist` to `client.ini`. Then, you should
-review the `client.ini` file and edit its settings. For the client app
-to work properly, you *must* configure at least the `api` and `oauth`
-section.
+copy the file `client.ini.dist` to `client.ini`, and then review the
+file and edit its settings. For the client app to work properly, you
+*must* configure at least the `api` and `oauth` section.
 
 ## Configuring the `api` section ##
 
-The `api` section of `client.ini` contains the details needed by the
-software to talk to the Vault. The first setting is `url`, which
-should contain the URL where the Vault API is responding. In our
-example above, it would be http://api.example.com, but of course you
-should use your actual API URL.
+Although the client app resides in the same package as the main Vault
+engine, it communicates with Vault using the Vault API. The `api`
+section of `client.ini` contains the details needed by the client to
+talk to the Vault API, so you must configure the settings available in
+that section for the client to work properly.
+
+The first setting is `url`, which should contain the URL where the
+Vault API is responding. In our example above, it would be
+http://api.example.com. Of course, you should use your actual API URL.
 
 Next you need the `key`, `secret`, and `vault_secret` values. These
 are obtained by registering the client app with Vault, which can be
@@ -93,41 +110,38 @@ made with the following command:
     $ php bin/vault.php app add *APP-NAME* *PING-URL*
 
 Where *APP-NAME* is the human-readable name of the app, and *PING-URL*
-is the ping address used by Vault to communicate with it.
+is the ping address used by Vault to communicate with the app.
 
-Suppose you plan to access the client at http://www.example.com/. In
-this case, the ping URL would be http://www.example.com/ping, and to
-create this app with name "Vault Client", you can use the following
-command:
+The Vault client app expects ping requests to be directed at the
+`/ping` path of its web address. For example, in our example URL
+http://client.example.com, the *PING-URL* would be
+http://client.example.com/ping. So to register a client named "My
+Vault Client" using our example client URL, you would use the
+following command:
 
-    $ php bin/vault.php app add "Vault Client" http://www.example.com/ping
+    $ php bin/vault.php app add "My Vault Client" http://client.example.com/ping
 
-The command above will output the other three values needed to
-configure the `url` section:
-
-- `key` - This is the app key used to identify the app.
-
-- `secret` - The app secret, used to authenticate the app.
-
-- `vault_secret` - A shared secret used by Vault to securely
-  communicate with the app.
+The command above will output the `key`, `secret`, and `vault_secret`
+values that you should put in the `url` section.
 
 
 ## Configure the `oauth` section ##
 
-The next configuration step is to fill out the OAuth values in the
+The next configuration step is to fill out the OAuth settings in the
 `oauth` section. Basically what you need to do is to navigate to
-https://developer.wordpress.com/apps/ and create a new WordPress.com
-app for your Vault client. Next, you should copy the "Client ID" and
+https://developer.wordpress.com/apps/ and create a WordPress.com app
+for your Vault client. Next, you should copy the "Client ID" and
 "Client Secret" values to the corresponding options in the `url`
 section.
 
 The `redirect_url` should contain your client app URL OAuth return
-address. For example, in our example, that would be
-http://www.example.com/auth.
+address. The Vault client expect the OAuth server to return the user
+to the `/auth` path (using our example URLs, the `redirect_url`
+setting would be http://client.example.com/auth).
 
 *Do not* change `request_token_url` and `authenticate_url`, unless you
 know what you're doing.
+
 
 ## Other miscellaneous settings ##
 
@@ -137,27 +151,20 @@ settings in the `mailer` section, which is where the sender
 name/address to be used by e-mails sent by the app are configured.
 
 
-## Configure your web server ##
-
-Lastly, you should configure your web server and point the client
-document root to the `client/` directory in the Vault package.
-
-If everything is set up properly, navigating to your Vault client
-address should display a WordPress.com log in button.
-
-
 Testing the installation
 ------------------------
 
 To test the installation, do the following steps:
 
-1. Go to your Vault client URL and log in using your WordPress.com
+1. Go to your Vault client URL. You should be presented with a
+   WordPress.com log in button. Log in using your WordPress.com
    account.
 
 2. Fill out the request form. Notice that your WordPress.com e-mail
-   address is pre-filled and cannot be changed. To avoid confusion
-   during the test, do not use the same e-mail address that is in your
-   WordPress.com account in the "User's e-mail address" field.
+   address is pre-filled and cannot be changed. Hint: to avoid
+   confusion during the test, do not use the same e-mail address that
+   is configured in your WordPress.com account as the "User's e-mail
+   address" field.
 
 3. After adding the request, check the e-mail inbox that you supplied
    in the request form (don't forget to check spam/junk folders, as
@@ -182,11 +189,11 @@ Troubleshooting
 
 The system sends detailed information to the web server logs when it
 encounters errors and failures. So if something seems not to be
-working properly, check the web server logs! There is a `logging`
-section in the Vault engine configuration file (`vault.ini`) that may
-be helpful to debug the system. For instance, changing `general_level`
-to `debug` will make Vault logging to be a lot more verbose about what
-it is doing.
+working properly, check the logs! There is a `logging` section in the
+Vault engine configuration file (`vault.ini`) that may be helpful to
+debug the system. For instance, changing `general_level` to `debug`
+will make Vault logging to be a lot more verbose about what it is
+doing.
 
 
 Maintenance
